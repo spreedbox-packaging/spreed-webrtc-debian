@@ -1,0 +1,24 @@
+# Spreed Speak Freely server example configuration
+
+[http]
+listen = 127.0.0.1:8080
+#root = /usr/share/spreed-speakfreely-server/www
+#readtimeout = 10
+#writetimeout = 10
+#basePath = /some/sub/path/ # Set this when running behind a web server under a sub path.
+
+[app]
+#title = Spreed Speak Freely
+#ver = 1234 # version string to use for static resource
+#stunURIs = stun.l.google.com:19302
+#turnURIs = turn:turnserver:port?transport=udp turn:anotherturnserver:port?transport=tcp turns:turnserver:443?transport=tcp
+#turnSecret = the-default-turn-shared-secret-do-not-keep
+sessionSecret = the-default-secret-do-not-keep
+#tokenFile = tokens.txt # If set, everyone needs to give one of the tokens to launch the web client. One token per line in the file.
+#globalRoom = global # Enables a global room. Users in that room are in all rooms.
+#defaultRoomEnabled = true # Set to false to disable default room.
+#extra = /usr/share/spreed-speakfreely-server/extra # Extra templates directory. Add .html files to define extra-* template slots here.
+#plugin = plugins/example1 # Plugin support.
+
+[log]
+#logfile = /var/log/spreed-speakfreely-server.log
