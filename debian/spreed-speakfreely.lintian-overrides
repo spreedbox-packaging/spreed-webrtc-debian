@@ -1,0 +1,7 @@
+# No ITP bug exists, initial packaging done outside Ubuntu.
+spreed-speakfreely: new-package-should-close-itp-bug
+# AGPL-3 license text triggers this error, remove when fixed
+# or update upon inclusion in licenses-common.
+spreed-speakfreely: copyright-should-refer-to-common-license-file-for-gpl
+# The Go compiler cannot currently produce read-only relocations.
+spreed-speakfreely: hardening-no-relro usr/sbin/spreed-speakfreely-server

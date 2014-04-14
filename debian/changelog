@@ -1,0 +1,5 @@
+spreed-speakfreely (0.15.0-1) precise; urgency=low
+
+  * Initial release for Ubuntu Precise.
+
+ -- Lance Cooper <lance@struktur.de>  Thu, 13 Mar 2014 11:15:30 -0500

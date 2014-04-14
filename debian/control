@@ -1,0 +1,32 @@
+Source: spreed-speakfreely
+Section: web
+Priority: extra
+Maintainer: Lance Cooper <lance@struktur.de>
+Build-Depends: debhelper (>= 8.0.0),
+               golang (>= 1.1),
+               nodejs,
+               ruby-sass (>= 3.2),
+               ruby-compass,
+               golang-phoenix-dev,
+               golang-context-dev,
+               golang-mux-dev,
+               golang-securecookie-dev,
+               golang-websocket-dev,
+               golang-goacceptlanguageparser-dev,
+               golang-httputils-dev
+Standards-Version: 3.9.3
+Homepage: http://spreedspeakfreely.org
+
+Package: spreed-speakfreely
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: WebRTC audio/video call and conferencing server
+ The spreed-spreakfreely server supports WebRTC based
+ conferencing using the latest web standards. Full STUN
+ and TURN integration is supported, and client connect to
+ the server over HTTP+WebSockets, making it possible to make
+ calls through almost any firewall with the correct
+ configuration. All calls use WebRTC's encrypted peer-to-peer
+ support and chat will also use peer-to-peer connections
+ whenever possible, providing a high degree of privacy and
+ security.

@@ -1,0 +1,57 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+#export DH_VERBOSE=1
+export DH_OPTIONS
+
+PACKAGE = $(firstword $(shell dh_listpackages))
+TMP     = $(CURDIR)/debian/$(PACKAGE)
+
+## Based on http://wiki.debian.org/onlyjob/get-orig-source
+PKD   = $(abspath $(dir $(MAKEFILE_LIST)))
+PKG   = $(word 2,$(shell dpkg-parsechangelog -l$(PKD)/changelog | grep ^Source))
+UVER  = $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
+DTYPE = 
+VERSION  ?= $(subst $(DTYPE),,$(UVER))
+export VERSION
+
+get-orig-source: $(PKG)_$(VERSION)$(DTYPE).orig.tar.xz $(info I: $(PKG)_$(VERSION)$(DTYPE))
+		@
+
+$(PKG)_$(VERSION)$(DTYPE).orig.tar.xz:
+		@echo "# Downloading..."
+		uscan --noconf --verbose --rename --destdir=$(CURDIR) --check-dirname-level=0 --force-download --download-version $(VERSION) $(PKD)
+		$(if $(wildcard $(PKG)-$(VERSION)),$(error $(PKG)-$(VERSION) exist, aborting..))
+		@echo "# Extracting..."
+		mkdir $(PKG)-$(VERSION) \
+		&& tar -xf $(PKG)_$(VERSION).orig.tar.* --directory $(PKG)-$(VERSION) --strip-components 1 \
+		|| $(RM) -r $(PKG)-$(VERSION)
+		$(RM) -v $(PKG)_$(VERSION).orig.tar.*
+		@echo "# Cleaning-up..."
+		cd $(PKG)-$(VERSION) && $(RM) -r -v debian
+		@echo "# Packing..."
+		find -L "$(PKG)-$(VERSION)" -xdev -type f -print | sort \
+		| XZ_OPT="-6v" tar -caf "$(PKG)_$(VERSION)$(DTYPE).orig.tar.xz" -T- --owner=root --group=root --mode=a+rX \
+		&& $(RM) -r "$(PKG)-$(VERSION)"
+
+override_dh_auto_test:
+		dh_auto_build -- releasetest
+
+override_dh_auto_build:
+		dh_auto_build -- release
+
+override_dh_auto_install:
+		DESTDIR='$(TMP)' dh_auto_build -- install
+		sed -i 's|#root = .*|root = /usr/share/spreed-speakfreely-server/www|' $(TMP)/etc/spreed-speakfreely-server.conf
+		find $(TMP)/usr/share/spreed-speakfreely-server -type f -executable -exec chmod -x {} +
+		install -d $(TMP)/usr/share/doc/spreed-speakfreely
+		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-speakfreely/AGPL-3
+		$(RM) $(TMP)/usr/share/spreed-speakfreely-server/www/static/fonts/LICENSE
+
+override_dh_auto_clean:
+		dh_auto_build -- distclean
+		find $(CURDIR) -type d -name .sass-cache -exec rm -rf {} +
+
+%:
+	dh $@ 
+
+.PHONY: get-orig-source

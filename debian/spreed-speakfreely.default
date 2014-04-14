@@ -1,0 +1,10 @@
+# Defaults for spreed-speakfreely initscripts
+SPEAKFREELY_USER='spreed-speakfreely'
+SPEAKFREELY_GROUP='www-data'
+SPEAKFREELY_CONF='/etc/spreed-speakfreely-server.conf'
+SPEAKFREELY_LOG='/var/log/spreed-speakfreely/server.log'
+SPEAKFREELY_ARGS=""
+SPEAKFREELY_RUN_DIR='/var/run/spreed-speakfreely/'
+SPEAKFREELY_PID="${SPEAKFREELY_RUN_DIR}/server.pid"
+SPEAKFREELY_GOMAXPROCS=1
+SPEAKFREELY_NOFILE=1024
