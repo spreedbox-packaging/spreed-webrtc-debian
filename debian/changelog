@@ -1,3 +1,98 @@
+spreed-speakfreely (0.17.3-1) precise; urgency=low
+
+  * Security fixes:
+    + Use context aware text element quoting instead of sanitize.
+    + Properly sanitize room names in chat.
+  * Bug fixes:
+    + Fix file download ending prematurely on slow connections.
+    + Remove 1080p video resolution from option as it does not
+      seem likely that Chrome will get this any time soon (see
+      https://code.google.com/p/webrtc/issues/detail?id=1750).
+    + Fixed iceServers response to be an array for Chrome >= 34.
+    + Fixed audio indicator to actually work correctly.
+    + Avoid spurious bye and close events and fixed hangup in
+      certain conference cases.
+    + Prevent duplicate room creation.
+    + Fix panic when users disconnect while they were looped for
+      Users request.
+    + Fix error callback when room data could not be loaded.
+    + Fix timeouts in case of disconnects.
+    + No longer disconnect ongoing calls on websocket disconnnect
+      or error. Instead resurrect state when id still is the same
+      on successfull reconnect.
+    + Ignore strange char 2 received from data channel after connect.
+    + Do not restore chat on room switch.
+  * User interface improvements:
+    + New chat interface with message state indicators
+      and list of open chats.
+    + Revamped buddy list interface.
+    + Major improvements to room management.
+    + Disabled text selection on various components.
+    + Overlay Spreed logo on video.
+    + Add loading screen while connecting.
+  * New languages supported:
+    + Traditional Chinese.
+    + Simplified Chinese.
+    + Japanese.
+    + Korean.
+  * Improved theming support:
+    + Support Angular Modules in plugins.
+    + Better example plugin.
+    + Support serving static resources from extra subfolder static.
+  * Improved fullscreen support:
+    + Force fullscreen styles.
+    + Also use dblclick event for fullscreen trigger.
+  * Screensharing improvements:
+    + Fixed screensharing bye message in conference mode.
+    + Always make screen sharing availble when browser supports it.
+    + Support screen sharing options (fit screen).
+    + Made the screen sharing view show full resolution and a scroll pane.
+    + Add info about Id field in Screenshare document.
+    + No longer use ice connection state as screen sharing stop event,
+      but use bye event sent through data channel.
+    + Use video waiter for screensharing videos and
+      show screen sharing resolution in log.
+  * Use strong random number generator.
+  * TURN user names now use expiration time stamp. This fixes compatibility
+    with latest TURN REST specification and requires a reasonably recent
+    TURN server (eg. rfc5766-turn-server >= 2.5)..
+  * Implemented stats API.
+  * Support configuring pprof HTTP server.
+  * Performance improvements, supports 100k+ connections:
+    + Use multiple channels for caching of buffers.
+    + Store pending messages in list.
+    + Use refcounted buffers for IO.
+    + Writepump optimizations
+    + Don't run ping ticker in own goroutine and
+      get rid of long-running "defer"s.
+    + Avoid excessive timer usage to throttle clients.
+    + Cache buffers when encoding broadcast JSON.
+    + Reuse buffers when reading/writing data.
+    + Do not initialize queue with fixed size.
+    + Added 100ms delay while sending chat messages.
+    + Throttle roomStatus event.
+    + Removed large loops over connections and users and
+      implemented per room processing.
+    + Implemented sending pings while in queue flush loop and
+      added ping/pong logging.
+    + Configure maxfds and set GOMAXPROCS to the number of cpu's by default.
+  * Logging improvements:
+    + Timestamps in log are now with microseconds.
+    + Removed debug logging of register and unregister.
+    + Do not log io.EOF errors.
+  * Upgraded Javascript libraries.
+    + AngularJS 1.2.15
+    + modernizr 2.7.1
+    + howler 1.1.18.
+    + lodash 2.4.1.
+    + BigScreen 2.0.4.
+    + Latest version of jquery.mobile-events.js.
+    + Latest version of webrtc.adapter.js.
+  * Upgraded SCSS libraries.
+    + bootstrap 3.1.1.
+
+ -- Lance Cooper <lance@struktur.de>  Thu, 17 Apr 2014 11:36:24 -0500
+
 spreed-speakfreely (0.15.0-1) precise; urgency=low
 
   * Initial release for Ubuntu Precise.
