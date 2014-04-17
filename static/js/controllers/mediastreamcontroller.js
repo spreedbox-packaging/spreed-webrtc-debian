@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], function(_, BigScreen, moment) {
+define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter'], function(_, BigScreen, moment) {
 
-    return ["$scope", "$rootScope", "$window", "$timeout", "safeDisplayName", "safeApply", "mediaStream", "appData", "playSound", "desktopNotify", "alertify", "toastr", "translation", "fileDownload", function($scope, $rootScope, $window, $timeout, safeDisplayName, safeApply, mediaStream, appData, playSound, desktopNotify, alertify, toastr, translation, fileDownload) {
+    return ["$scope", "$rootScope", "$element", "$window", "$timeout", "safeDisplayName", "safeApply", "mediaStream", "appData", "playSound", "desktopNotify", "alertify", "toastr", "translation", "fileDownload", function($scope, $rootScope, $element, $window, $timeout, safeDisplayName, safeApply, mediaStream, appData, playSound, desktopNotify, alertify, toastr, translation, fileDownload) {
 
         /*console.log("route", $route, $routeParams, $location);*/
 
@@ -39,11 +39,11 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
         });
 
         // Enable app full screen listener.
-        $("#bar .logo").on("doubletap", function() {
+        $("#bar .logo").on("doubletap dblclick", _.debounce(function() {
             if (BigScreen.enabled) {
                 BigScreen.toggle($("body").get(0));
             }
-        });
+        }, 100, true));
 
         // Load default sounds.
         playSound.initialize({
@@ -131,13 +131,16 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
         $scope.status = "initializing";
         $scope.id = null;
         $scope.peer = null;
-        $scope.mainView = null;
         $scope.dialing = null;
         $scope.conference = null;
         $scope.conferencePeers = [];
         $scope.incoming = null;
         $scope.microphoneMute = false;
         $scope.cameraMute = false;
+        $scope.layout = {
+            main: null
+        };
+        $scope.chatMessagesUnseen = 0;
         $scope.autoAccept = null;
         $scope.master = {
             displayName: null,
@@ -146,13 +149,14 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
                 videoQuality: "high",
                 stereo: true,
                 maxFrameRate: 20,
-                screensharingMedia: false,
-                defaultRoom: ""
+                defaultRoom: "",
+                language: ""
             }
         };
 
-        // Cache.
+        // Data voids.
         var cache = {};
+        var resurrect = null;
 
         $scope.update = function(user, noRefresh) {
             $scope.master = angular.copy(user);
@@ -166,6 +170,10 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
         $scope.setStatus = function(status) {
             // This is the connection status to signaling server.
             $scope.$emit("status", status);
+        };
+
+        $scope.getStatus = function() {
+            return $scope.status;
         };
 
         $scope.updateStatus = (function() {
@@ -283,8 +291,8 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             if (id) {
                 console.log("Auto accept requested", id);
                 $scope.autoAccept = id;
-                $window.clearTimeout(autoAcceptTimeout);
-                autoAcceptTimeout = window.setTimeout(function() {
+                $timeout.cancel(autoAcceptTimeout);
+                autoAcceptTimeout = $timeout(function() {
                     $scope.autoAccept=null;
                     console.warn("Auto accept expired!")
                     safeApply($scope);
@@ -292,7 +300,7 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             } else {
                 if ($scope.autoAccept && $scope.autoAccept === from) {
                     $scope.autoAccept = null;
-                    $window.clearTimeout(autoAcceptTimeout);
+                    $timeout.cancel(autoAcceptTimeout);
                     console.log("Auto accept success", from)
                     return from;
                 }
@@ -313,6 +321,18 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             }
 
         };
+
+        $scope.toggleBuddylist = (function() {
+            var oldState = null;
+            return function(status, force) {
+                if (status || force) {
+                    oldState = $scope.layout.buddylist;
+                    $scope.layout.buddylist = !!status;
+                } else {
+                    $scope.layout.buddylist = oldState;
+                }
+            }
+        }());
 
         $scope.$watch("cameraMute", function(cameraMute) {
             mediaStream.webrtc.setVideoMute(cameraMute);
@@ -345,7 +365,7 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
         var reloadDialog = false;
 
         mediaStream.api.e.on("received.self", function(event, data) {
-            $window.clearTimeout(ttlTimeout);
+            $timeout.cancel(ttlTimeout);
             safeApply($scope, function(scope) {
                 scope.id = scope.myid = data.Id;
                 scope.turn = data.Turn;
@@ -367,14 +387,27 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             }
             // Support to upgrade stuff when ttl was reached.
             if (data.Turn.ttl) {
-                ttlTimeout = $window.setTimeout(function() {
+                ttlTimeout = $timeout(function() {
                     console.log("Ttl reached - sending refresh request.");
                     mediaStream.api.sendSelf();
                 }, data.Turn.ttl / 100 * 90 * 1000);
             }
+            // Support resurrection shrine.
+            if (resurrect) {
+                var resurrection = resurrect;
+                resurrect = null;
+                $timeout(function() {
+                    if (resurrection.id === $scope.id) {
+                        console.log("Using resurrection shrine", resurrection);
+                        // Valid resurrection.
+                        $scope.setStatus(resurrection.status);
+                    }
+                }, 0);
+            }
         });
 
         mediaStream.webrtc.e.on("peercall", function(event, peercall) {
+
             // Kill timeout.
             $timeout.cancel(pickupTimeout);
             pickupTimeout = null;
@@ -451,6 +484,14 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
 
         var reconnect = function() {
             if (connected && autoreconnect) {
+                if (resurrect == null) {
+                    // Storage data at the resurrection shrine.
+                    resurrect = {
+                        status: $scope.getStatus(),
+                        id: $scope.id
+                    }
+                    console.log("Stored data at the resurrection shrine", resurrect);
+                }
                 reconnecting = false;
                 _.delay(function() {
                     if (autoreconnect && !reconnecting) {
@@ -467,6 +508,7 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
         mediaStream.connector.e.on("open error close", function(event, options) {
             var t = event.type;
             var opts = $.extend({}, options);
+            $timeout.cancel(ttlTimeout);
             switch (t) {
             case "open":
                 t = "waiting";
@@ -526,18 +568,24 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             } else {
                 $scope.setStatus('connected');
             }
+            $timeout(function() {
+                if ($scope.peer) {
+                    $scope.layout.buddylist = false;
+                    $scope.layout.buddylistAutoHide = true;
+                }
+            }, 1000);
 
         });
 
         $scope.$on("mainview", function(event, mainview, state) {
             console.info("Main view update", mainview, state);
             var changed = false;
-            if ($scope.mainview === mainview && !state) {
-                $scope.mainview = null;
+            var layout = $scope.layout;
+            if (layout.main === mainview && !state) {
+                layout.main = null;
                 changed = true;
-
             } else if (state) {
-                $scope.mainview = mainview;
+                layout.main = mainview;
                 changed = true;
             }
             if (changed) {
@@ -545,10 +593,41 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
             }
         });
 
+        // Apply all layout stuff as classes to our element.
+        $scope.$watch("layout", (function() {
+            var makeName = function(prefix, n) {
+                return prefix+n.substr(0, 1).toUpperCase()+n.substr(1);
+            };
+            return function(layout, old) {
+                _.each(layout, function(v, k) {
+                    if (k === "main") {
+                        return;
+                    }
+                    var n = makeName("with", k);
+                    if (v) {
+                        $element.addClass(n);
+                    } else {
+                        $element.removeClass(n);
+                    }
+                });
+                if (old.main !== layout.main) {
+                    if (old.main) {
+                        $element.removeClass(makeName("main", old.main));
+                    }
+                    if (layout.main) {
+                        $element.addClass(makeName("main", layout.main));
+                    }
+                }
+                $scope.$broadcast("mainresize");
+            }}()
+        ), true);
+
         mediaStream.webrtc.e.on("done", function() {
             if (mediaStream.connector.connected) {
                 $scope.setStatus("waiting");
             }
+            $scope.layout.buddylist = true;
+            $scope.layout.buddylistAutoHide = false;
         });
 
         mediaStream.webrtc.e.on("busy", function(event, from) {
@@ -626,13 +705,18 @@ define(['underscore', 'bigscreen', 'moment', 'webrtc.adapter', 'webrtc.ice'], fu
 
         });
 
-        $scope.$on("screenshare", function(event, status) {
+        var chatMessagesUnseen = {};
+        $scope.$on("chatincoming", function(event, id) {
+            var count = chatMessagesUnseen[id] || 0;
+            count++;
+            chatMessagesUnseen[id]=count;
+            $scope.chatMessagesUnseen++;
+        });
 
-            //console.log("AAAAAAAAAAA screenshare", status, $scope.enableScreenshare);
-            if ($scope.enableScreenshare !== status) {
-                $scope.enableScreenshare = !!status;
-            }
-
+        $scope.$on("chatseen", function(event, id) {
+            var count = chatMessagesUnseen[id] || 0;
+            delete chatMessagesUnseen[id];
+            $scope.chatMessagesUnseen = $scope.chatMessagesUnseen - count ;
         });
 
         _.defer(function() {

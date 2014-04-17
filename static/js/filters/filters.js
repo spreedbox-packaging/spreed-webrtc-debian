@@ -22,12 +22,14 @@ define([
   'underscore',
 
   'filters/displayname',
-  'filters/buddyimagesrc'
-], function(_, displayName, buddyImageSrc) {
+  'filters/buddyimagesrc',
+  'filters/displayconference'
+], function(_, displayName, buddyImageSrc, displayConference) {
 
   var filters = {
       displayName: displayName,
-      buddyImageSrc: buddyImageSrc
+      buddyImageSrc: buddyImageSrc,
+      displayConference: displayConference
   };
 
   var initialize = function (angModule) {

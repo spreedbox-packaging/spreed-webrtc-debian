@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed Speak Freely 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-03-03 19:16+0100\n"
+"POT-Creation-Date: 2014-04-14 16:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,9 @@ msgstr ""
 "Generated-By: Babel 0.9.6\n"
 
 msgid "Share your screen"
+msgstr ""
+
+msgid "Chat"
 msgstr ""
 
 msgid "Mute microphone"
@@ -45,16 +48,13 @@ msgstr ""
 msgid "No other users online"
 msgstr ""
 
+msgid "Chat sessions"
+msgstr ""
+
+msgid "Room chat"
+msgstr ""
+
 msgid "Peer to peer"
-msgstr ""
-
-msgid "Maximize"
-msgstr ""
-
-msgid "Normal size"
-msgstr ""
-
-msgid "Minimize"
 msgstr ""
 
 msgid "Close chat"
@@ -111,6 +111,12 @@ msgstr ""
 msgid "Current room"
 msgstr ""
 
+msgid "Screen sharing options"
+msgstr ""
+
+msgid "Fit screen."
+msgstr ""
+
 msgid "Your picture"
 msgstr ""
 
@@ -144,16 +150,10 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-msgid "720p"
-msgstr ""
-
-msgid "1080p"
+msgid "HD"
 msgstr ""
 
 msgid "Language"
-msgstr ""
-
-msgid "Use browser language"
 msgstr ""
 
 msgid "Language changes become active on reload."
@@ -187,12 +187,6 @@ msgid "Max video frame rate"
 msgstr ""
 
 msgid "auto"
-msgstr ""
-
-msgid "Media screen sharing"
-msgstr ""
-
-msgid "Chrome usermedia screen capture feature is required."
 msgstr ""
 
 msgid "Experimental settings"
@@ -270,42 +264,10 @@ msgstr ""
 msgid "Waiting for camera/microphone access"
 msgstr ""
 
+msgid "Please wait"
+msgstr ""
+
 msgid "Checking camera and microphone access."
-msgstr ""
-
-msgid "Link:"
-msgstr ""
-
-msgid "You are in this room."
-msgstr ""
-
-msgid "Share this URL with the people you want to meet."
-msgstr ""
-
-msgid "You can use and re-use this room as many times as you want."
-msgstr ""
-
-msgid "You are in the general room."
-msgstr ""
-
-msgid ""
-"Break out into a seperate room at any time by clicking on the icon in the"
-" top left corner."
-msgstr ""
-
-msgid "Create your room"
-msgstr ""
-
-msgid "This is your room link:"
-msgstr ""
-
-msgid "Creating room link ..."
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "Just click start"
 msgstr ""
 
 msgid "Please allow access to your camera and microphone."
@@ -331,6 +293,27 @@ msgstr ""
 msgid ""
 "Please note that some settings require you to reload or to make a new "
 "call to become effective."
+msgstr ""
+
+msgid "Create your room"
+msgstr ""
+
+msgid "This is your room link:"
+msgstr ""
+
+msgid "Creating room link ..."
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Just click start"
+msgstr ""
+
+msgid "Share this URL with the people you want to meet."
+msgstr ""
+
+msgid "You can use and re-use this room as many times as you want."
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -399,10 +382,21 @@ msgstr ""
 msgid "Message from "
 msgstr ""
 
-msgid "Group chat"
+#, python-format
+msgid "You are now in room %s ..."
 msgstr ""
 
 msgid "Your browser does not support file transfer."
+msgstr ""
+
+msgid ""
+"Permission to start screen sharing was denied. Make sure to have enabled "
+"screen sharing access for your browser. Copy chrome://flags/#enable-"
+"usermedia-screen-capture and open it with your browser and enable the "
+"flag on top. Then restart the browser and you are ready to go."
+msgstr ""
+
+msgid "Use browser language"
 msgstr ""
 
 msgid "Meet with me here:"
@@ -438,5 +432,22 @@ msgstr ""
 msgid ""
 "Failed to verify access code. Check your Internet connection and try "
 "again."
+msgstr ""
+
+#, python-format
+msgid "and %s"
+msgstr ""
+
+#, python-format
+msgid "and %d others"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Someone"
+msgstr ""
+
+msgid "Me"
 msgstr ""
 

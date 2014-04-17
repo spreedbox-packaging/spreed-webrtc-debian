@@ -27,7 +27,7 @@ define(['underscore', 'text!partials/buddylist.html'], function(_, template) {
 
         var controller = ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
 
-            //console.log("BuddylistController", $buddylist, $element, $scope);
+            $scope.layout.buddylist = false;
             $scope.enabled = false;
 
             $scope.doCall = function(id) {
@@ -55,8 +55,12 @@ define(['underscore', 'text!partials/buddylist.html'], function(_, template) {
                     $scope.enabled = status;
                     $scope.$emit("roomStatus", status);
                 }
+                if (status && !$scope.layout.buddylistAutoHide) {
+                    $scope.layout.buddylist = true
+                }
             };
 
+            //XXX(longsleep): Debug leftover ?? Remove this.
             window.doAudioConference = $scope.doAudioConference;
 
             var buddylist = $scope.buddylist = buddyList.buddylist($element, $scope, {});
@@ -97,7 +101,18 @@ define(['underscore', 'text!partials/buddylist.html'], function(_, template) {
 
         var link = function(scope, iElement, iAttrs, controller) {
 
-            //console.log("buddyList directive link", arguments);
+            // Add events to buddy list parent container to show/hide.
+            var parent = iElement.parent();
+            parent.on("mouseenter mouseleave", function(event) {
+                if (event.type === "mouseenter") {
+                    scope.layout.buddylist = true;
+                } else {
+                    if (scope.layout.buddylistAutoHide) {
+                        scope.layout.buddylist = false;
+                    }
+                }
+                scope.$apply();
+            });
 
         };
 

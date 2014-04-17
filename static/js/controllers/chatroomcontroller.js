@@ -25,6 +25,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html'], function(_, mome
 
         $scope.outputElement = $(".output", $element);
         $scope.inputElement = $(".input", $element);
+        $scope.bodyElement = $(".chatbody", $element);
         var lastSender = null;
         var lastDate = null;
         var lastMessageContainer = null;
@@ -36,7 +37,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html'], function(_, mome
         var scrollAfterInput = false;
 
         // Mark seen on several events.
-        $element.on("mouseover mouseenter touchstart", _.debounce(function(event) {
+        $scope.bodyElement.on("mouseover mouseenter touchstart", _.debounce(function(event) {
             $scope.$parent.seen();
             $scope.$apply();
         }, 100));
@@ -212,6 +213,10 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html'], function(_, mome
 
         };
 
+        $scope.$on("display", function(event, s, nodes) {
+            $scope.display(s, nodes);
+        });
+
         $scope.append = function(s, nodes) {
 
             if (!lastMessageContainer) {
@@ -288,18 +293,23 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html'], function(_, mome
             var title = null;
             var picture = null;
 
-            if (is_new_message) {
-                var buddyScope;
-                title = $("<strong>");
-                title.html(displayName(from, true));
-                lastSender = from;
-                extra_css += "with_name ";
-                $scope.showdate(timestamp);
-                var imgSrc = buddyImageSrc(from);
-                picture = $('<div class="buddyimage"><i class="fa fa-user fa-3x"/><img/></div>');
-                if (imgSrc) {
-                    picture.find("img").attr("src", imgSrc);
+            var showTitleAndPicture = function() {
+                if ($scope.isgroupchat) {
+                    title = $("<strong>");
+                    title.html(displayName(from, true));
+                    extra_css += "with_name ";
+                    var imgSrc = buddyImageSrc(from);
+                    picture = $('<div class="buddyimage"><i class="fa fa-user fa-3x"/><img/></div>');
+                    if (imgSrc) {
+                        picture.find("img").attr("src", imgSrc);
+                    }
                 }
+            };
+
+            if (is_new_message) {
+                lastSender = from;
+                $scope.showdate(timestamp);
+                showTitleAndPicture()
             }
 
             var message = s.join(" ");
@@ -309,6 +319,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html'], function(_, mome
                 if (element) {
                     return element;
                 }
+                showTitleAndPicture();
             }
 
             if (is_self) {

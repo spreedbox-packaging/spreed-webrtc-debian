@@ -18,12 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-.screenshare .remoteScreen {
-	width:100%;
-	height:100%;
+
+.mainScreenshare #screenshare {
+	display: block;
+}
+.screenshare {
+	position:absolute;
+	left:0px;
+	right:0px;
+	top:0px;
+	bottom:0px;
+}
+.screensharepane {
+	position:absolute;
+	left:0px;
+	right:0px;
+	bottom:0px;
+	top:0px;
+	overflow:auto;
+	background:black;
+}
+.screensharepane .remotescreen {
 	position:relative;
 }
-.screenshare video {
-	width:100%;
-	max-height:100%;
+.screensharepane video {
+	width: 100%;
+	max-height: 99%;
+}
+.remotesize .screensharepane video {
+	width: auto;
+	max-height: none;
+}
+
+.screenshare .overlaybar {
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
 }

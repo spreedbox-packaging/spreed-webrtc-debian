@@ -20,7 +20,7 @@
  */
 define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials/screensharepeer.html', 'bigscreen'], function($, _, template, templatePeer, BigScreen) {
 
-	return ["$window", "mediaStream", "$compile", "safeApply", function($window, mediaStream, $compile, safeApply) {
+	return ["$window", "mediaStream", "$compile", "safeApply", "videoWaiter", "$timeout", "alertify", "translation", function($window, mediaStream, $compile, safeApply, videoWaiter, $timeout, alertify, translation) {
 
 		var peerTemplate = $compile(templatePeer);
 
@@ -28,9 +28,52 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 
 			var screenCount = 0;
 			var screens = {};
+			var pane = $element.find(".screensharepane");
 
+			$scope.layout.screenshare = false;
 			$scope.usermedia = null;
 			$scope.connected = false;
+
+			$scope.hideOptionsBar = true;
+			$scope.fitScreen = true;
+
+			var handleRequest = function(event, currenttoken, to, data, type, to2, from, peerscreenshare) {
+
+				console.log("Screen share answer message", currenttoken, data, type);
+
+				if (typeof data === "string") {
+
+					if (data.charCodeAt(0) === 2) {
+						// Ignore whatever shit is sent us by Firefox.
+						return;
+					}
+					// Control data request.
+					try {
+						var msg = JSON.parse(data);
+					} catch(e) {
+						// Invalid JSON.
+						console.warn("Invalid JSON received from screen share channel.", data);
+						peerscreenshare.close()
+					}
+
+					switch (msg.m) {
+					case "bye":
+						// Close this screen share.
+						peerscreenshare.close();
+						break;
+					default:
+						console.log("Unknown screen share control request", msg.m, msg);
+						break;
+					}
+
+				} else {
+
+					console.warn("Unkown data type received -> ignored", typeof data, [data]);
+					peerscreenshare.close();
+
+				}
+
+			};
 
 			mediaStream.api.e.on("received.screenshare", function(event, id, from, data, p2p) {
 
@@ -42,9 +85,7 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 				var token = data.id;
 
 				// Bind token.
-				var handler = mediaStream.tokens.on(token, function(event, currenttoken, to, data, type, to2, from, peerscreenshare) {
-					console.log("Screen share answer message", currenttoken, data, type);
-				}, "screenshare");
+				var handler = mediaStream.tokens.on(token, handleRequest, "screenshare");
 
 				// Subscribe to peers screensharing.
 				mediaStream.webrtc.doSubscribeScreenshare(from, token, {
@@ -87,10 +128,15 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 				var peerid = subscope.peerid = currentscreenshare.id;
 
 				peerTemplate(subscope, function(clonedElement, scope) {
-					$element.append(clonedElement);
+					pane.append(clonedElement);
 					scope.element = clonedElement;
 					var video = clonedElement.find("video").get(0);
 					$window.attachMediaStream(video, stream);
+					videoWaiter.wait(video, stream, function() {
+						console.log("Screensharing size: ", video.videoWidth, video.videoHeight);
+					}, function() {
+						console.warn("We did not receive screen sharing video data", currentscreenshare, stream, video);
+					});
 					screens[peerid] = scope;
 				});
 
@@ -115,12 +161,17 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 
 			$scope.doScreenshare = function() {
 
-				$scope.$emit("screenshare", true);
+				if ($scope.layout.screenshare) {
+					$scope.stopScreenshare();
+				};
+
+				$scope.layout.screenshare = true;
 
 				// Create userMedia with screen share type.
 				var usermedia = mediaStream.webrtc.doScreenshare();
 				var handler;
 				var peers = {};
+				var screenshares = [];
 
 				var connector = function(token, peercall) {
 					if (peers.hasOwnProperty(peercall.id)) {
@@ -138,10 +189,12 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 
 				usermedia.e.one("mediasuccess", function(event, usermedia) {
 					$scope.$apply(function(scope) {
+
 						scope.usermedia = usermedia;
 						// Create token to register with us and send token out to all peers.
 						// Peers when connect to us with the token and we answer.
 						var token = "screenshare_"+scope.id+"_"+(screenCount++);
+
 						// Updater function to bring in new calls.
 						var updater = function(event, state, currentcall) {
 							switch (state) {
@@ -151,34 +204,52 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 								break;
 							}
 						};
+
+						// Create callbacks are called for each incoming connections.
 						handler = mediaStream.tokens.create(token, function(event, currenttoken, to, data, type, to2, from, peerscreenshare) {
-							//console.log("Screen share create", currenttoken, data, type, peerscreenshare);
-							usermedia.e.one("stopped", function() {
-								peerscreenshare.close()
-								mediaStream.tokens.off(token, handler);
-								mediaStream.webrtc.e.off("statechange", updater);
-								handler = null;
-								updated = null;
-								peers = {};
-								safeApply(scope, function(scope) {
-									scope.stopScreenshare();
-								});
-							});
+							console.log("Screen share create", currenttoken, data, type, peerscreenshare);
+							screenshares.push(peerscreenshare);
 							usermedia.addToPeerConnection(peerscreenshare.peerconnection);
 						}, "screenshare");
+
 						// Connect all current calls.
 						mediaStream.webrtc.callForEachCall(function(peercall) {
 							connector(token, peercall);
 						});
 						// Catch later calls too.
 						mediaStream.webrtc.e.on("statechange", updater);
+
+						// Cleanup on stop of media.
+						usermedia.e.one("stopped", function() {
+							mediaStream.tokens.off(token, handler);
+							mediaStream.webrtc.e.off("statechange", updater);
+							handler = null;
+							updated = null;
+							// Send by to all connected peers.
+							_.each(screenshares, function(peerscreenshare) {
+								peerscreenshare.send({m: "bye"});
+								$timeout(function() {
+									peerscreenshare.close();
+								}, 0);
+							});
+							peers = {};
+							screenshares = [];
+							// Make sure to clean up.
+							safeApply(scope, function(scope) {
+								scope.stopScreenshare();
+							});
+						});
+
 					});
 				});
 
-				usermedia.e.one("mediaerror", function() {
+				usermedia.e.one("mediaerror", function(event, usermedia, error) {
 					$scope.$apply(function(scope) {
-						scope.usermedia = null;
+						scope.stopScreenshare();
 					});
+					if (error && error.name === "PermissionDeniedError") {
+						alertify.dialog.alert(translation._("Permission to start screen sharing was denied. Make sure to have enabled screen sharing access for your browser. Copy chrome://flags/#enable-usermedia-screen-capture and open it with your browser and enable the flag on top. Then restart the browser and you are ready to go."));
+					}
 				});
 
 			};
@@ -191,7 +262,7 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 					console.log("Screen share stopped.");
 				}
 
-				$scope.$emit("screenshare", false);
+				$scope.layout.screenshare = false;
 
 			};
 
@@ -201,13 +272,13 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 					if (elem) {
 						BigScreen.toggle(elem);
 					} else {
-						BigScreen.toggle($element.get(0));
+						BigScreen.toggle(pane.get(0));
 					}
                 }
 
 			};
 
-	        $scope.$watch("enableScreenshare", function(newval, oldval) {
+	        $scope.$watch("layout.screenshare", function(newval, oldval) {
 	            if (newval && !oldval) {
 	                $scope.doScreenshare();
 	            } else if(!newval && oldval) {
@@ -219,9 +290,9 @@ define(['jquery', 'underscore', 'text!partials/screenshare.html', 'text!partials
 
 		var compile = function(tElement, tAttr) {
 			return function(scope, iElement, iAttrs, controller) {
-				$(iElement).on("dblclick", ".remoteScreen", function(event) {
+				$(iElement).on("dblclick", ".remotescreen", _.debounce(function(event) {
 					scope.toggleFullscreen(event.delegateTarget);
-				});
+				}, 100, true));
 			}
 		};
 
