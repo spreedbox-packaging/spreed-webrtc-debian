@@ -48,7 +48,6 @@ override_dh_auto_install:
 
 override_dh_auto_clean:
 		dh_auto_build -- distclean
-		find $(CURDIR) -type d -name .sass-cache -exec rm -rf {} +
 
 %:
 	dh $@ 
