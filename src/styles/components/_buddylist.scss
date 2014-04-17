@@ -19,23 +19,58 @@
  *
  */
 #buddylist {
-position: fixed;
-top: 44px;
+position: absolute;
+top: 0px;
 right: 0px;
 bottom: 0px;
-width:260px;
-z-index:5;
-pointer-events:none;
+width:285px;
+z-index:50;
+}
+#buddylist:before {
+position:absolute;
+width:25px;
+height:55px;
+line-height:55px;
+margin: auto;
+left: 0px;
+top:0px;
+bottom:0px;
+content:"\f100";
+font-family: 'FontAwesome';
+color:rgba(0,0,0,0.3);
+font-size:1.8em;
+text-align:center;
+cursor:pointer;
+pointer-events:auto;
+background:$componentbg;
+border-left:1px solid $bordercolor;
+border-top:1px solid $bordercolor;
+border-bottom:1px solid $bordercolor;
+-webkit-border-top-left-radius: 6px;
+-webkit-border-bottom-left-radius: 6px;
+-moz-border-radius-topleft: 6px;
+-moz-border-radius-bottomleft: 6px;
+border-top-left-radius: 6px;
+border-bottom-left-radius: 6px;
+display:none;
+}
+.withBuddylist #buddylist:before {
+content:"\f101";
+}
+.withBuddylistAutoHide #buddylist:before {
+display:block;
 }
 .buddylist {
 position:absolute;
-left:0px;
+left:25px;
 right:0px;
 top:0px;
 bottom:0px;
 overflow-x: hidden;
 overflow-y: auto;
 border-top: 1px solid $bordercolor;
+background: $componentbg;
+pointer-events:auto;
 }
 .buddylist .buddycontainer {
 -webkit-user-select: none;
@@ -44,10 +79,17 @@ pointer-events:auto;
 }
 .buddylist .buddylistloading, .buddylist .buddylistempty {
 padding:.4em;
-background: $sidepanebg;
-font-size:0.8em;
+font-size:1.4em;
 text-align:center;
 display:none;
+position:absolute;
+left:0px;
+right:0px;
+bottom:0px;
+top:0px;
+margin:auto;
+height:2em;
+color:rgba(0,0,0,0.3);
 }
 .buddylist.loading .buddylistloading {
 display:block;
@@ -128,7 +170,6 @@ background:rgba(255,255,255,0.5);
 z-index:5;
 line-height:66px;
 padding:0 10px;
-/*width:110px;*/
 transition-property: right;
 -webkit-transition-property: right;
 transition-duration: .3s;
@@ -141,17 +182,4 @@ font-size:2em;
 }
 .buddy.hovered .buddyactions {
 right:0px;
-}
-
-@media only screen and (max-width: 400px) {
-	#buddylist {
-		left:0px;
-		width:auto;
-		margin-bottom:26px;
-	}
-	.buddylist .buddylistempty {
-		background: transparent;
-		color:#ccc;
-		padding-top:14px;
-	}
 }

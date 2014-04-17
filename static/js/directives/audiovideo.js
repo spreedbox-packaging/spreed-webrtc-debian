@@ -20,47 +20,10 @@
  */
 define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/audiovideopeer.html', 'bigscreen', 'injectCSS', 'webrtc.adapter', 'rAF'], function($, _, template, templatePeer, BigScreen) {
 
-    return ["$window", "$compile", "$filter", "mediaStream", "safeApply", "desktopNotify", "buddyData", function($window, $compile, $filter, mediaStream, safeApply, desktopNotify, buddyData) {
+    return ["$window", "$compile", "$filter", "mediaStream", "safeApply", "desktopNotify", "buddyData", "videoWaiter", "videoLayout", function($window, $compile, $filter, mediaStream, safeApply, desktopNotify, buddyData, videoWaiter, videoLayout) {
 
         var requestAnimationFrame = $window.requestAnimationFrame;
         var peerTemplate = $compile(templatePeer);
-
-        var waitForVideo = function(video, stream, cb, err_cb) {
-            var Waiter = function() {
-                this.stop = false;
-                this.count = 0;
-                this.retries = 100;
-                _.defer(_.bind(this.start, this), this);
-            };
-            Waiter.prototype.start = function() {
-                if (this.stop) {
-                    if (err_cb) {
-                        err_cb(video, stream);
-                    }
-                    return;
-                }
-                var videoTracks = stream.getVideoTracks();
-                //console.log("wait for video", videoTracks.length, video.currentTime, video)
-                if (videoTracks.length === 0) {
-                    cb(false, video, stream);
-                } else if (video.currentTime > 0 && video.videoHeight > 0) {
-                    cb(true, video, stream);
-                } else {
-                    this.count++;
-                    if (this.count < this.retries) {
-                        $window.setTimeout(_.bind(this.start, this), 100);
-                    } else {
-                        if (err_cb) {
-                            err_cb(video, stream);
-                        }
-                    }
-                }
-            };
-            Waiter.prototype.stop = function() {
-                this.stop = true;
-            };
-            return new Waiter();
-        };
 
         var controller = ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
 
@@ -88,14 +51,10 @@ define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/
                 buddyData.push(peerid);
                 subscope.withvideo = false;
                 subscope.onlyaudio = false;
+                subscope.talking = false;
                 subscope.applyTalking = function(talking) {
-                    var element = subscope.element;
-                    var has = element.hasClass("talking");
-                    if (talking && !has) {
-                        element.addClass("talking");
-                    } else if (!talking && has) {
-                        element.removeClass("talking");
-                    }
+                    subscope.talking = !!talking;
+                    safeApply(subscope);
                 };
                 subscope.$on("active", function() {
                     console.log("Stream scope is now active", peerid);
@@ -105,11 +64,12 @@ define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/
 
                 peerTemplate(subscope, function(clonedElement, scope) {
                     $($scope.remoteVideos).append(clonedElement);
+                    clonedElement.data("peerid", scope.peerid);
                     scope.element = clonedElement;
                     var video = clonedElement.find("video").get(0);
                     $window.attachMediaStream(video, stream);
                     // Waiter callbacks also count as connected, as browser support (FireFox 25) is not setting state changes properly.
-                    waitForVideo(video, stream, function(withvideo) {
+                    videoWaiter.wait(video, stream, function(withvideo) {
                         peers[peerid] = scope;
                         if (withvideo) {
                             scope.$apply(function($scope) {
@@ -188,6 +148,7 @@ define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/
             });
 
             $scope.toggleFullscreen = function() {
+                //console.log("Toggle full screen", BigScreen.enabled, $scope.isActive, $scope.hasUsermedia);
                 if (BigScreen.enabled && ($scope.isActive || $scope.hasUsermedia)) {
                     $scope.layoutparent.toggleClass("fullscreen");
                     BigScreen.toggle($scope.layoutparent.get(0));
@@ -276,9 +237,10 @@ define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/
 
                 //console.log("compile", arguments)
 
-                $(scope.card).on("doubletap", function() {
-                    scope.toggleFullscreen();
-                });
+                $(scope.card).on("doubletap dblclick", _.debounce(scope.toggleFullscreen, 100, true));
+
+                //scope.rendererName = "conferencekiosk";
+                scope.rendererName = "onepeople";
 
                 var needsResize = false;
                 scope.resize = function() {
@@ -286,101 +248,15 @@ define(['jquery', 'underscore', 'text!partials/audiovideo.html', 'text!partials/
                 };
 
                 var resize = function() {
-
-                    var videos = _.keys(controller.peers);
-
-                    var videoWidth;
-                    var videoHeight;
-
-                    if (videos.length) {
-                        if (videos.length === 1) {
-                            var remoteVideo = controller.peers[videos[0]].element.find("video").get(0);
-                            videoWidth = remoteVideo.videoWidth;
-                            videoHeight = remoteVideo.videoHeight;
-                            console.log("Remote video size: ", videoWidth, videoHeight);
-                        } else {
-                            videoWidth = 1920;
-                            videoHeight = 1080;
-                        }
+                    var size = {
+                        width: scope.layoutparent.width(),
+                        height: scope.layoutparent.height()
                     }
-
-                    if (!videoWidth) {
-                        if (scope.localVideo.style.opacity === '1') {
-                            videoWidth = scope.localVideo.videoWidth;
-                            videoHeight = scope.localVideo.videoHeight;
-                            console.log("Local video size: ", videoWidth, videoHeight);
-                            videos = [null];
-                        }
-                    }
-
-                    if (!videos.length) {
-                        return;
-                    }
-
-                    if (!videoWidth) {
-                        videoWidth = 640;
-                    }
-                    if (!videoHeight) {
-                        videoHeight = 360;
-                    }
-
-                    var aspectRatio = videoWidth/videoHeight;
-                    var innerHeight = scope.layoutparent.height();
-                    var innerWidth = scope.layoutparent.width();
-                    var container = scope.container;
-
-                    //console.log("resize", innerHeight, innerWidth);
-                    //console.log("resize", container, videos.length, aspectRatio, innerHeight, innerWidth);
-
-                    if (videos.length === 1) {
-                        var newVideoWidth = innerWidth < aspectRatio * innerHeight ? innerWidth : aspectRatio * innerHeight;
-                        var newVideoHeight = innerHeight < innerWidth / aspectRatio ? innerHeight : innerWidth / aspectRatio;
-                        container.style.width = newVideoWidth + 'px';
-                        container.style.height = newVideoHeight + 'px';
-                        container.style.left = ((innerWidth - newVideoWidth) / 2) + 'px';
-                        var extraCSS = {};
-                    } else {
-                        var space = innerHeight*innerWidth; // square pixels
-                        var videoSpace = space/videos.length;
-                        var singleVideoWidthOptimal = Math.pow(videoSpace * aspectRatio, 0.5);
-                        var videosPerRow = Math.ceil(innerWidth/singleVideoWidthOptimal)
-                        var singleVideoWidth = Math.ceil(innerWidth/videosPerRow);
-                        var singleVideoHeight = Math.ceil(singleVideoWidth/aspectRatio);
-                        var newContainerWidth = (videosPerRow*singleVideoWidth);
-                        var newContainerHeight = Math.ceil(videos.length/videosPerRow)*singleVideoHeight;
-                        if (newContainerHeight*1.3 <= innerHeight) {
-                            newContainerHeight = newContainerHeight*1.3;
-                        }
-                        /*
-                        console.log("space", space);
-                        console.log("videospace", videoSpace);
-                        console.log("singleVideoWidthOptimal", singleVideoWidthOptimal);
-                        console.log("videosPerRow", videosPerRow);
-                        console.log("singleVideoWidth", singleVideoWidth);
-                        console.log("singleVideoHeight", singleVideoHeight);
-                        */
-                        container.style.width = newContainerWidth + "px";
-                        container.style.height = newContainerHeight + "px";
-                        container.style.left = ((innerWidth - newContainerWidth) / 2) + 'px';
-                        extraCSS = {
-                            "#remoteVideos": {
-                                ">div": {
-                                    width: singleVideoWidth+"px",
-                                    height: singleVideoHeight+"px"
-                                }
-                            }
-                        };
-                    }
-                    $.injectCSS(extraCSS, {
-                        truncateFirst: true,
-                        containerName: "audiovideo-dynamic"
-                    });
-
-                }
+                    videoLayout.update(scope.rendererName, size, scope, controller);
+                };
 
                 $($window).on("resize", scope.resize);
                 scope.$on("mainresize", function() {
-                    console.log("mainResize called");
                     _.defer(scope.resize);
                 });
                 scope.resize();

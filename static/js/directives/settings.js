@@ -18,24 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['text!partials/settings.html'], function(template) {
+define(['underscore', 'text!partials/settings.html'], function(_, template) {
 
 	return ["$compile", function($compile) {
 
-        var controller = ['$scope', 'desktopNotify', 'mediaSources', 'safeApply', function($scope, desktopNotify, mediaSources, safeApply) {
+        var controller = ['$scope', 'desktopNotify', 'mediaSources', 'safeApply', 'availableLanguages', 'translation', function($scope, desktopNotify, mediaSources, safeApply, availableLanguages, translation) {
 
-            var localStream = null;
-
-            $scope.showSettings = 0;
+            $scope.layout.settings = false;
             $scope.showAdvancedSettings = true;
             $scope.showTakePicture = false;
             $scope.showTakePictureReady = true;
             $scope.rememberSettings = true;
             $scope.desktopNotify = desktopNotify;
             $scope.mediaSources = mediaSources;
+            $scope.availableLanguages = [
+                {
+                    code: "",
+                    name: translation._("Use browser language")
+                }
+            ];
+            _.each(availableLanguages, function(name, code) {
+                $scope.availableLanguages.push({
+                    code: code,
+                    name: name
+                });
+            });
+
+            var localStream = null;
+
             $scope.saveSettings = function(user) {
                 $scope.update(user);
-                $scope.showSettings = 0;
+                $scope.layout.settings = false;
                 if ($scope.rememberSettings) {
                     localStorage.setItem("mediastream-user", JSON.stringify(user));
                     localStorage.setItem("mediastream-language", user.settings.language || "");
@@ -44,11 +57,11 @@ define(['text!partials/settings.html'], function(template) {
                     localStorage.removeItem("mediastream-language");
                     localStorage.removeItem("mediastream-access-code");
                 }
-            }
+            };
             $scope.cancelSettings = function() {
                 $scope.reset();
-                $scope.showSettings = 0;
-            }
+                $scope.layout.settings = false;
+            };
             $scope.requestDesktopNotifyPermission = function() {
                 $scope.desktopNotify.requestPermission(function() {
                     safeApply($scope);
@@ -131,8 +144,8 @@ define(['text!partials/settings.html'], function(template) {
             $scope.mediaSources.refresh(function() {
                 safeApply($scope, $scope.checkDefaultMediaSources);
             });
-            $scope.$watch("showSettings", function(showSettings) {
-                if (showSettings === 1) {
+            $scope.$watch("layout.settings", function(showSettings) {
+                if (showSettings) {
                     $scope.desktopNotify.refresh();
                     $scope.mediaSources.refresh(function(audio, video) {
                         safeApply($scope, function(scope) {
@@ -158,6 +171,7 @@ define(['text!partials/settings.html'], function(template) {
         };
 
         return {
+            scope: true,
             restrict: 'E',
             replace: true,
             template: template,

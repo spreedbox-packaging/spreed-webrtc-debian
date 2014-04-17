@@ -23,31 +23,129 @@ position:absolute;
 left:0px;
 top:44px;
 bottom:0px;
-right:260px;
+right:0px;
 boder-top:1px solid $bordercolor;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-o-user-select: none;
+user-select: none;
 }
 #audiovideo.fullscreen {
-top:0px;
-right:0px;
-bottom:0px;
-left:0px;
-background:black;
+top:0px !important;
+right:0px !important;
+bottom:0px !important;
+left:0px !important;
+background:black !important;
 }
 #audiovideo.fullscreen .remoteVideo .peeractions {
 display:none;
 }
-#audiovideo.leftsided {
-width:150px
+.withChat #audiovideo, .withBuddylist #audiovideo {
+right:260px;
 }
-#audiovideo.leftsided .remoteVideo .peerlabel {
-font-size:12px;
-font-weight:bold;
+.withBuddylist.withChat #audiovideo {
+right:520px;
 }
-#audiovideo.leftsided .remoteVideo .peeractions i {
-font-size:1em;
+.mainScreenshare {
+	#audiovideo {
+		width:150px;
+		.remoteVideo .peerlabel {
+			font-size:12px;
+			font-weight:bold;
+		}
+		.remoteVideo .peeractions i {
+			font-size:1em;
+		}
+	}
 }
+
+.remoteVideo .peerlabel {
+	-webkit-transition: color 500ms ease-out;
+	-moz-transition: color 500ms ease-out;
+	-o-transition: color 500ms ease-out;
+	transition: color 500ms ease-out;
+}
+
+.remoteVideo.talking .peerlabel {
+	color: #9dd53a;
+}
+
+.remoteVideo .overlaylogo {
+	position:absolute;
+	right:4%;
+	top:4%;
+	width:20%;
+	height:20%;
+	max-height:40px;
+	max-width:111px;
+	background-image: url(../img/logo-overlay.png);
+	background-size:100%;
+	background-repeat:no-repeat;
+	background-position:center;
+	opacity:0.5;
+	z-index:2;
+	pointer-events: none;
+}
+
+.localVideo video {
+	border:1px solid transparent;
+}
+
+.localVideo.talking video {
+	border:1px solid #9dd53a;
+}
+
+.renderer-conferencekiosk {
+	#remoteVideos {
+		top:auto;
+		bottom:2px;
+		text-align:center;
+		background:rgba(0,0,0,0.4);
+		padding-right:192px;
+		>div {
+			height:108px;
+			width:192px;
+			cursor:pointer;
+		}
+		.overlaylogo {
+			display:none;
+		}
+		.peerlabel, .peeractions i {
+			font-size:1.1em;
+		}
+		.peerlabel {
+			background: rgba(0,0,0,0.9);
+		}
+	}
+	#mini {
+		max-height: none;
+		height:108px;
+		width:192px;
+	}
+	.bigVideo {
+		position:absolute;
+		left:0px;
+		right:0px;
+		bottom:112px;
+		top:2px;
+		margin: auto;
+		opacity: 0;
+		transition-property: opacity;
+		-webkit-transition-property: opacity;
+		transition-duration: 2s;
+		-webkit-transition-duration: 2s;
+	}
+
+}
+
+.bigVideo video {
+	width:100%;
+	height:100%;
+}
+
 @media only screen and (max-width: 630px) {
-	#audiovideo.leftsided {
+	.mainScreenshare #audiovideo {
 		display:none;
 	}
 }

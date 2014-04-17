@@ -28,14 +28,13 @@ define([
 
 ], function($, _, Connector, Api, WebRTC, tokens) {
 
-    return ["$route", "$location", "$window", "visibility", "alertify", "$http", "safeApply", function($route, $location, $window, visibility, alertify, $http, safeApply) {
+    return ["globalContext", "$route", "$location", "$window", "visibility", "alertify", "$http", "safeApply", "$timeout", "$sce", function(context, $route, $location, $window, visibility, alertify, $http, safeApply, $timeout, $sce) {
 
-        var globalcontext = $("#globalcontext").text();
-        var context = JSON.parse(globalcontext);
         var url = (context.Ssl ? "wss" : "ws") + "://" + context.Host + (context.Cfg.B || "/") + "ws";
         var version = context.Cfg.Version || "unknown";
         console.log("Service version: "+version);
         console.log("Ws URL: "+ url);
+        console.log("Secure Contextual Escaping: "+$sce.isEnabled());
 
         var connector = new Connector(version);
         var api = new Api(connector);
@@ -58,7 +57,7 @@ define([
 
         var mediaStream = {
             version: version,
-            url: url,
+            ws: url,
             config: context.Cfg,
             webrtc: webrtc,
             connector: connector,
@@ -68,6 +67,9 @@ define([
                 room: function(id) {
                     id = $window.encodeURIComponent(id);
                     return $window.location.protocol+'//'+$window.location.host+context.Cfg.B+id;
+                },
+                buddy: function(id) {
+                    return $window.location.protocol+'//'+$window.location.host+context.Cfg.B+"static/img/buddy/s46/"+id;
                 },
                 api: function(path) {
                     return (context.Cfg.B || "/") + "api/v1/" + path;
@@ -82,14 +84,6 @@ define([
                 $rootScope.roomid = null;
                 $rootScope.roomlink = null;
                 $rootScope.roomstatus = false;
-
-                connector.e.on("closed error", _.bind(function(event, options) {
-                    var opts = $.extend({}, options);
-                    if (!opts.soft) {
-                        // Do not hang up when this is a soft event.
-                        webrtc.doHangup();
-                    }
-                }, this));
 
                 var connect = function() {
                     if (ready && cont) {
@@ -107,6 +101,13 @@ define([
                         $location.path("/"+room).replace();
                     });
                 };
+
+                var title = (function(e) {
+                    return {
+                        element: e,
+                        text: e.text()
+                    }
+                }($("title")));
 
                 // Room selector.
                 $rootScope.$on("$locationChangeSuccess", function(event) {
@@ -133,12 +134,31 @@ define([
                     }
                     $rootScope.roomid = room;
                     $rootScope.roomlink = room ? mediaStream.url.room(room) : null;
+
+                    if ($rootScope.roomlink) {
+                        title.element.text(room + " - " + title.text);
+                    } else {
+                        title.element.text(title.text);
+                    }
+
                 });
 
+                // Cache events, to avoid ui flicker during quick room changes.
+                var roomStatusCache = $rootScope.roomstatus;
+                var roomCache = null;
+                var roomCache2 = null;
                 $rootScope.$on("roomStatus", function(event, status) {
-                    $rootScope.roomstatus = status ? true : false;
-                    var room = status ? $rootScope.roomid : null;
-                    $rootScope.$broadcast("room", room);
+                    roomStatusCache = status ? true : false;
+                    roomCache = status ? $rootScope.roomid : null;
+                    $timeout(function() {
+                        if ($rootScope.roomstatus !== roomStatusCache) {
+                            $rootScope.roomstatus = roomStatusCache;
+                        }
+                        if (roomCache !== roomCache2) {
+                            $rootScope.$broadcast("room", roomCache);
+                            roomCache2 = roomCache;
+                        }
+                    }, 100);
                 });
 
                 visibility.afterPrerendering(function() {

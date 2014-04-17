@@ -31,6 +31,8 @@ define([
     'filters/filters',
     'controllers/controllers',
 
+    'translation/languages',
+
     'ui-bootstrap',
     'angular-sanitize',
     'angular-animate',
@@ -39,11 +41,18 @@ define([
     'mobile-events',
     'dialogs'
 
-], function(require, $, _, angular, modernizr, moment, services, directives, filters, controllers) {
+], function(require, $, _, angular, modernizr, moment, services, directives, filters, controllers, languages) {
 
-    var initialize = function() {
+    var initialize = function(ms) {
 
-        var app = angular.module('app', ['ui.bootstrap', 'ngSanitize', 'ngAnimate', 'ngHumanize', 'ngRoute', 'dialogs']);
+        var modules = ['ui.bootstrap', 'ngSanitize', 'ngAnimate', 'ngHumanize', 'ngRoute', 'dialogs'];
+        if (ms && ms.length) {
+            _.each(ms, function(module) {
+                modules.push(module);
+            });
+        }
+
+        var app = angular.module('app', modules);
         services.initialize(app);
         directives.initialize(app);
         filters.initialize(app);
@@ -65,9 +74,14 @@ define([
             mediaStream.initialize($rootScope, translation);
         }]);
 
+        app.constant("availableLanguages", languages);
+
         angular.element(document).ready(function() {
 
-            // Detect language.
+            var globalContext = JSON.parse($("#globalcontext").text());
+            app.constant("globalContext", globalContext);
+
+            // Configure language.
             var lang = (function() {
                 var lang;
                 var html = document.getElementsByTagName("html")[0];
@@ -77,16 +91,28 @@ define([
                         lang = null;
                     }
                 }
-                if (lang) {
-                    html.setAttribute("lang", lang);
-                    return lang;
-                } else {
-                    try {
-                        return html.getAttribute("lang");
-                    } catch(e) {
-                        return "en";
-                    };
+                if (!lang) {
+                    var browserLanguages = [];
+                    // Expand browser languages with combined fallback.
+                    _.each(globalContext.Languages, function(l) {
+                        browserLanguages.push(l);
+                        if (l.indexOf("-") != -1) {
+                            browserLanguages.push(l.split("-")[0])
+                        }
+                    });
+                    // Loop through browser languages and use first one we got.
+                    for (var i=0; i<browserLanguages.length; i++) {
+                        if (languages.hasOwnProperty(browserLanguages[i])) {
+                            lang = browserLanguages[i];
+                            break;
+                        }
+                    }
                 }
+                if (!lang) {
+                    lang = "en";
+                }
+                html.setAttribute("lang", lang);
+                return lang;
             }());
 
             // Prepare bootstrap function with injected locale data.

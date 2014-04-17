@@ -21,14 +21,18 @@
 package main
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/securecookie"
 	"log"
+	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -41,25 +45,41 @@ const (
 type MessageRequest struct {
 	From    string
 	To      string
-	Message []byte
+	Message Buffer
 	Id      string
 }
 
-type Hub struct {
-	server          *Server
-	connectionTable map[string]*Connection
-	userTable       map[string]*User
-	roomTable       map[string]*RoomWorker
-	version         string
-	config          *Config
-	sessionSecret   []byte
-	turnSecret      []byte
-	tickets         *securecookie.SecureCookie
-	count           uint64
-	mutex           sync.RWMutex
+type HubStat struct {
+	Rooms                 int                  `json:"rooms"`
+	Connections           int                  `json:"connections"`
+	Users                 int                  `json:"users"`
+	Count                 uint64               `json:"count"`
+	BroadcastChatMessages uint64               `json:"broadcastchatmessages"`
+	UnicastChatMessages   uint64               `json:"unicastchatmessages"`
+	IdsInRoom             map[string][]string  `json:"idsinroom,omitempty"`
+	UsersById             map[string]*DataUser `json:"usersbyid,omitempty"`
+	ConnectionsByIdx      map[string]string    `json:"connectionsbyidx,omitempty"`
 }
 
-func NewHub(version string, config *Config, sessionSecret string, turnSecret string) *Hub {
+type Hub struct {
+	server                *Server
+	connectionTable       map[string]*Connection
+	userTable             map[string]*User
+	roomTable             map[string]*RoomWorker
+	version               string
+	config                *Config
+	sessionSecret         []byte
+	turnSecret            []byte
+	tickets               *securecookie.SecureCookie
+	count                 uint64
+	mutex                 sync.RWMutex
+	buffers               BufferCache
+	broadcastChatMessages uint64
+	unicastChatMessages   uint64
+	buddyImages           ImageCache
+}
+
+func NewHub(version string, config *Config, sessionSecret, turnSecret string) *Hub {
 
 	h := &Hub{
 		connectionTable: make(map[string]*Connection),
@@ -72,8 +92,45 @@ func NewHub(version string, config *Config, sessionSecret string, turnSecret str
 	}
 
 	h.tickets = securecookie.New(h.sessionSecret, nil)
+	h.buffers = NewBufferCache(1024, bytes.MinRead)
+	h.buddyImages = NewImageCache()
 	return h
 
+}
+
+func (h *Hub) Stat(details bool) *HubStat {
+	h.mutex.RLock()
+	defer h.mutex.RUnlock()
+	stat := &HubStat{
+		Rooms:       len(h.roomTable),
+		Connections: len(h.connectionTable),
+		Users:       len(h.userTable),
+		Count:       h.count,
+		BroadcastChatMessages: atomic.LoadUint64(&h.broadcastChatMessages),
+		UnicastChatMessages:   atomic.LoadUint64(&h.unicastChatMessages),
+	}
+	if details {
+		rooms := make(map[string][]string)
+		for roomid, room := range h.roomTable {
+			users := make([]string, 0, len(room.connections))
+			for id, _ := range room.connections {
+				users = append(users, id)
+			}
+			rooms[roomid] = users
+		}
+		stat.IdsInRoom = rooms
+		users := make(map[string]*DataUser)
+		for userid, user := range h.userTable {
+			users[userid] = user.Data()
+		}
+		stat.UsersById = users
+		connections := make(map[string]string)
+		for id, connection := range h.connectionTable {
+			connections[fmt.Sprintf("%d", connection.Idx)] = id
+		}
+		stat.ConnectionsByIdx = connections
+	}
+	return stat
 }
 
 func (h *Hub) CreateTurnData(id string) *DataTurn {
@@ -85,8 +142,12 @@ func (h *Hub) CreateTurnData(id string) *DataTurn {
 	if len(h.turnSecret) == 0 {
 		return &DataTurn{}
 	}
+	bar := sha256.New()
+	bar.Write([]byte(id))
+	id = base64.StdEncoding.EncodeToString(bar.Sum(nil))
 	foo := hmac.New(sha1.New, h.turnSecret)
-	user := fmt.Sprintf("%s:%d", id, int32(time.Now().Unix()))
+	expiration := int32(time.Now().Unix()) + turnTTL
+	user := fmt.Sprintf("%d:%s", expiration, id)
 	foo.Write([]byte(user))
 	password := base64.StdEncoding.EncodeToString(foo.Sum(nil))
 	return &DataTurn{user, password, turnTTL, h.config.TurnURIs}
@@ -118,23 +179,56 @@ func (h *Hub) GetRoom(id string) *RoomWorker {
 	if !ok {
 		h.mutex.RUnlock()
 		h.mutex.Lock()
-		room = NewRoomWorker(h, id)
-		h.roomTable[id] = room
-		h.mutex.Unlock()
-		go func() {
-			// Start room, this blocks until room expired.
-			room.Start()
-			// Cleanup room when we are done.
-			h.mutex.Lock()
-			defer h.mutex.Unlock()
-			delete(h.roomTable, id)
-			log.Printf("Cleaned up room '%s'\n", id)
-		}()
+		// need to re-check, another thread might have created the room
+		// while we waited for the lock
+		room, ok = h.roomTable[id]
+		if !ok {
+			room = NewRoomWorker(h, id)
+			h.roomTable[id] = room
+			h.mutex.Unlock()
+			go func() {
+				// Start room, this blocks until room expired.
+				room.Start()
+				// Cleanup room when we are done.
+				h.mutex.Lock()
+				defer h.mutex.Unlock()
+				delete(h.roomTable, id)
+				log.Printf("Cleaned up room '%s'\n", id)
+			}()
+		} else {
+			h.mutex.Unlock()
+		}
 	} else {
 		h.mutex.RUnlock()
 	}
 
 	return room
+
+}
+
+func (h *Hub) GetGlobalConnections() []*Connection {
+
+	if h.config.globalRoomid == "" {
+		return make([]*Connection, 0)
+	}
+	h.mutex.RLock()
+	if room, ok := h.roomTable[h.config.globalRoomid]; ok {
+		h.mutex.RUnlock()
+		return room.GetConnections()
+	} else {
+		h.mutex.RUnlock()
+	}
+	return make([]*Connection, 0)
+
+}
+
+func (h *Hub) RunForAllRooms(f func(room *RoomWorker)) {
+
+	h.mutex.RLock()
+	for _, room := range h.roomTable {
+		f(room)
+	}
+	h.mutex.RUnlock()
 
 }
 
@@ -168,12 +262,12 @@ func (h *Hub) registerHandler(c *Connection) {
 		ec.close()
 		h.connectionTable[c.Id] = c
 		h.mutex.Unlock()
-		log.Printf("Register (%d) from %s: %s (existing)\n", c.Idx, c.RemoteAddr, c.Id)
+		//log.Printf("Register (%d) from %s: %s (existing)\n", c.Idx, c.RemoteAddr, c.Id)
 	} else {
 		h.connectionTable[c.Id] = c
 		//fmt.Println("registered", c.Id)
 		h.mutex.Unlock()
-		log.Printf("Register (%d) from %s: %s\n", c.Idx, c.RemoteAddr, c.Id)
+		//log.Printf("Register (%d) from %s: %s\n", c.Idx, c.RemoteAddr, c.Id)
 		h.server.OnRegister(c)
 	}
 
@@ -186,71 +280,16 @@ func (h *Hub) unregisterHandler(c *Connection) {
 		h.mutex.Unlock()
 		return
 	}
+	user := c.User
 	c.close()
 	delete(h.connectionTable, c.Id)
 	delete(h.userTable, c.Id)
 	h.mutex.Unlock()
-	log.Printf("Unregister (%d) from %s: %s\n", c.Idx, c.RemoteAddr, c.Id)
+	if user != nil {
+		h.buddyImages.DeleteUserImage(user.Id)
+	}
+	//log.Printf("Unregister (%d) from %s: %s\n", c.Idx, c.RemoteAddr, c.Id)
 	h.server.OnUnregister(c)
-
-}
-
-func (h *Hub) broadcastHandler(m *MessageRequest) {
-
-	h.mutex.RLock()
-
-	//fmt.Println("in h.broadcast", h.userTable, h.connectionTable)
-	roomid := m.Id
-	users := make([]string, len(h.userTable))
-	i := 0
-	// TODO(longsleep): Keep a userTable per room to avoid looping all users every time.
-	for id, u := range h.userTable {
-		if id == m.From || (u.Roomid != roomid && !h.isGlobalRoomid(roomid)) {
-			// Skip self and users not in the correct room.
-			continue
-		}
-		users[i] = id
-		i++
-	}
-	h.mutex.RUnlock()
-
-	room := h.GetRoom(roomid)
-	worker := func() {
-
-		for _, id := range users {
-			h.mutex.RLock()
-			u, ok := h.userTable[id]
-			if !ok {
-				// User gone.
-				h.mutex.RUnlock()
-				continue
-			}
-			ec, ok := h.connectionTable[id]
-			if !ok {
-				// Connection gone
-				h.mutex.RUnlock()
-				continue
-			}
-			userRoomid := u.Roomid
-			//fmt.Println("in h.broadcast id", id, m.From, userRoomid, roomid)
-			//fmt.Println("broadcasting to", id, ec.Idx, userRoomid, roomid)
-			h.mutex.RUnlock()
-			if userRoomid != roomid && !h.isGlobalRoomid(roomid) {
-				// Skip other rooms.
-				continue
-			}
-			//fmt.Printf("%s\n", m.Message)
-			ec.send(m.Message)
-		}
-
-	}
-
-	// Run worker in room.
-	if !room.Run(worker) {
-		// This handles the case that the room was cleaned up while we retrieved.
-		room = h.GetRoom(roomid)
-		room.Run(worker)
-	}
 
 }
 
@@ -267,42 +306,18 @@ func (h *Hub) unicastHandler(m *MessageRequest) {
 
 }
 
-func (h *Hub) usersHandler(c *Connection) {
-
-	h.mutex.RLock()
-	users := &DataUsers{Type: "Users", Index: 0, Batch: 0}
-	usersList := users.Users
-	roomid := c.User.Roomid
-	// TODO(longsleep): Keep per room userTable to avoid looping all users.
-	for id, u := range h.userTable {
-		if u.Roomid == roomid || h.isGlobalRoomid(u.Roomid) {
-			user := &DataUser{Type: "Online", Id: id, Ua: u.Ua, Status: u.Status, Rev: u.UpdateRev}
-			usersList = append(usersList, user)
-			if len(usersList) >= maxUsersLength {
-				log.Println("Limiting users response length in channel", roomid)
-				break
-			}
-		}
-	}
-	h.mutex.RUnlock()
-	users.Users = usersList
-	usersJson, err := json.Marshal(&DataOutgoing{From: c.Id, Data: users})
-	if err != nil {
-		log.Println("Users error while encoding JSON", err)
-		return
-	}
-	c.send(usersJson)
-
-}
-
 func (h *Hub) aliveHandler(c *Connection, alive *DataAlive) {
 
-	aliveJson, err := json.Marshal(&DataOutgoing{From: c.Id, Data: alive})
+	aliveJson := h.buffers.New()
+	encoder := json.NewEncoder(aliveJson)
+	err := encoder.Encode(&DataOutgoing{From: c.Id, Data: alive})
 	if err != nil {
 		log.Println("Alive error while encoding JSON", err)
+		aliveJson.Decref()
 		return
 	}
 	c.send(aliveJson)
+	aliveJson.Decref()
 
 }
 
@@ -314,9 +329,19 @@ func (h *Hub) userupdateHandler(u *UserUpdate) uint64 {
 	h.mutex.RUnlock()
 	var rev uint64
 	if ok {
-		h.mutex.Lock()
 		rev = user.Update(u)
-		h.mutex.Unlock()
+		if u.Status != nil {
+			status, ok := u.Status.(map[string]interface{})
+			if ok && status["buddyPicture"] != nil {
+				pic := status["buddyPicture"].(string)
+				if strings.HasPrefix(pic, "data:") {
+					imageId := h.buddyImages.Update(u.Id, pic[5:])
+					if imageId != "" {
+						status["buddyPicture"] = "img:" + imageId
+					}
+				}
+			}
+		}
 	} else {
 		log.Printf("Update data for unknown user %s\n", u.Id)
 	}

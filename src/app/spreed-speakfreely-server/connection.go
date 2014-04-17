@@ -21,8 +21,10 @@
 package main
 
 import (
+	"bytes"
+	"container/list"
 	"github.com/gorilla/websocket"
-	"io/ioutil"
+	"io"
 	"log"
 	"sync"
 	"time"
@@ -57,13 +59,13 @@ type Connection struct {
 
 	// Data handling.
 	condition *sync.Cond
-	queue     [][]byte
+	queue     list.List
 	mutex     sync.Mutex
 	isClosed  bool
 
 	// Metadata.
 	Id           string
-	Roomid       string
+	Roomid       string // Keep Roomid here for quick acess without locking c.User.
 	Idx          uint64
 	User         *User
 	IsRegistered bool
@@ -80,7 +82,6 @@ func NewConnection(h *Hub, ws *websocket.Conn, remoteAddr string) *Connection {
 		RemoteAddr: remoteAddr,
 	}
 	c.condition = sync.NewCond(&c.mutex)
-	c.queue = make([][]byte, 0, queueSize)
 
 	return c
 
@@ -93,7 +94,15 @@ func (c *Connection) close() {
 		c.mutex.Lock()
 		c.User = nil
 		c.isClosed = true
-		c.queue = c.queue[:0]
+		for {
+			head := c.queue.Front()
+			if head == nil {
+				break
+			}
+			c.queue.Remove(head)
+			message := head.Value.(Buffer)
+			message.Decref()
+		}
 		c.condition.Signal()
 		c.mutex.Unlock()
 	}
@@ -130,43 +139,73 @@ func (c *Connection) unregister() {
 	c.h.unregisterHandler(c)
 }
 
-// readPump pumps messages from the websocket connection to the hub.
-func (c *Connection) readPump() {
-
-	ticker := time.NewTicker(time.Second / maxRatePerSecond)
+func (c *Connection) readAll(dest Buffer, r io.Reader) error {
+	var err error
 	defer func() {
-		ticker.Stop()
-		c.unregister()
-		c.ws.Close()
+		e := recover()
+		if e == nil {
+			return
+		}
+		if panicErr, ok := e.(error); ok && panicErr == bytes.ErrTooLarge {
+			err = panicErr
+		} else {
+			panic(e)
+		}
 	}()
 
+	_, err = dest.ReadFrom(r)
+	return err
+}
+
+// readPump pumps messages from the websocket connection to the hub.
+func (c *Connection) readPump() {
 	c.ws.SetReadLimit(maxMessageSize)
 	c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error {
 		c.ws.SetReadDeadline(time.Now().Add(pongWait))
 		return nil
 	})
+	times := list.New()
 	for {
 		//fmt.Println("readPump wait nextReader", c.Idx)
 		op, r, err := c.ws.NextReader()
 		if err != nil {
-			log.Println("Error while reading", c.Idx, err)
+			if err == io.EOF {
+			} else {
+				log.Println("Error while reading", c.Idx, err)
+			}
 			break
 		}
 		switch op {
 		case websocket.TextMessage:
-			message, err := ioutil.ReadAll(r)
+			message := c.h.buffers.New()
+			err = c.readAll(message, r)
 			if err != nil {
+				message.Decref()
 				break
 			}
-			<-ticker.C
+			now := time.Now()
+			if times.Len() == maxRatePerSecond {
+				front := times.Front()
+				times.Remove(front)
+				delta := time.Second - now.Sub(front.Value.(time.Time))
+				if delta > 0 {
+					// client is sending messages too fast, delay him
+					time.Sleep(delta)
+				}
+			}
+			times.PushBack(now)
 			c.h.server.OnText(c, message)
+			message.Decref()
 		}
 	}
+
+	c.unregister()
+	c.ws.Close()
 }
 
 // Write message to outbound queue.
-func (c *Connection) send(message []byte) {
+func (c *Connection) send(message Buffer) {
 
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
@@ -174,11 +213,12 @@ func (c *Connection) send(message []byte) {
 		return
 	}
 	//fmt.Println("Outbound queue size", c.Idx, len(c.queue))
-	if len(c.queue) >= maxQueueSize {
-		log.Println("Outbound queue overflow", c.Idx, len(c.queue))
+	if c.queue.Len() >= maxQueueSize {
+		log.Println("Outbound queue overflow", c.Idx, c.queue.Len())
 		return
 	}
-	c.queue = append(c.queue, message)
+	message.Incref()
+	c.queue.PushBack(message)
 	c.condition.Signal()
 
 }
@@ -186,68 +226,71 @@ func (c *Connection) send(message []byte) {
 // writePump pumps messages from the queue to the websocket connection.
 func (c *Connection) writePump() {
 
-	closer := make(chan bool)
-	ticker := time.NewTicker(pingPeriod)
+	var timer *time.Timer
 	ping := false
 
-	defer func() {
-		//fmt.Println("writePump done")
-		closer <- true
-		ticker.Stop()
-		c.ws.Close()
-	}()
-
-	// Spawn a new go routine to emit websocket pings.
-	go func() {
-		for {
-			select {
-			case <-closer:
-				return
-			case <-ticker.C:
-				c.mutex.Lock()
-				if c.isClosed {
-					c.mutex.Unlock()
-					return
-				}
-				ping = true
-				c.condition.Signal()
-				c.mutex.Unlock()
-			}
+	// Spawn a timer to emit websocket pings.
+	timer = time.AfterFunc(pingPeriod, func() {
+		c.mutex.Lock()
+		if c.isClosed {
+			c.mutex.Unlock()
+			return
 		}
-	}()
+		ping = true
+		c.condition.Signal()
+		c.mutex.Unlock()
+		timer.Reset(pingPeriod)
+	})
 
 	// Wait for actions.
 	for {
 
 		c.mutex.Lock()
 		// Wait until something todo.
-		for !ping && !c.isClosed && len(c.queue) == 0 {
+		for !ping && !c.isClosed && c.queue.Len() == 0 {
 			// Wait on signal (this also unlocks while waiting, and locks again when got the signal).
 			c.condition.Wait()
 		}
 		// Fast exit if in closed state.
 		if c.isClosed {
 			c.mutex.Unlock()
-			return
+			goto cleanup
 		}
 		// Flush queue if something.
-		for len(c.queue) > 0 {
-			message := c.queue[0]
-			c.queue = c.queue[1:]
-			c.mutex.Unlock()
-			if err := c.write(websocket.TextMessage, message); err != nil {
-				log.Println("Error while writing", c.Idx, err)
-				return
+		for {
+			head := c.queue.Front()
+			if head == nil {
+				break
 			}
+			c.queue.Remove(head)
+			message := head.Value.(Buffer)
+			if ping {
+				// Send ping.
+				ping = false
+				c.mutex.Unlock()
+				if err := c.ping(); err != nil {
+					log.Println("Error while sending ping", c.Idx, err)
+					message.Decref()
+					goto cleanup
+				}
+			} else {
+				c.mutex.Unlock()
+			}
+			if err := c.write(websocket.TextMessage, message.Bytes()); err != nil {
+				log.Println("Error while writing", c.Idx, err)
+				message.Decref()
+				goto cleanup
+			}
+			message.Decref()
 			c.mutex.Lock()
 		}
-		// Send pings.
 		if ping {
+			// Send ping.
 			ping = false
 			c.mutex.Unlock()
-			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
+			if err := c.ping(); err != nil {
 				log.Println("Error while sending ping", c.Idx, err)
-				return
+				goto cleanup
 			}
 		} else {
 			// Final unlock.
@@ -255,6 +298,16 @@ func (c *Connection) writePump() {
 		}
 
 	}
+
+cleanup:
+	//fmt.Println("writePump done")
+	timer.Stop()
+	c.ws.Close()
+}
+
+// Write ping message.
+func (c *Connection) ping() error {
+	return c.write(websocket.PingMessage, []byte{})
 }
 
 // Write writes a message with the given opCode and payload.

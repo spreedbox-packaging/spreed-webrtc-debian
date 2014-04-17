@@ -64,13 +64,6 @@ define(['jquery', 'underscore', 'mediastream/peercall', 'mediastream/tokens'], f
 			data._id = this.id;
 		}, this));
 
-		this.e.on("connectionStateChange", _.bind(function(event, iceConnectionState) {
-			if (iceConnectionState === "disconnected") {
-				// Auto cleanup stuff when we get disconnected.
-				this.close();
-			}
-		}, this));
-
 	};
 
 	PeerScreenshare.getMediaContraints = function(options) {
@@ -93,6 +86,7 @@ define(['jquery', 'underscore', 'mediastream/peercall', 'mediastream/tokens'], f
 	        	optional: []
 	      	}
 		}
+		console.log("Setting screen sharing media constraints", mandatoryVideoConstraints);
 		return mediaConstraints;
 
 	};

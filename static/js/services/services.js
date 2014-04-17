@@ -41,7 +41,9 @@ define([
   'services/filetransfer',
   'services/safedisplayname',
   'services/randomgen',
-  'services/fastscroll'
+  'services/fastscroll',
+  'services/videowaiter',
+  'services/videolayout'
 ], function(_,
   desktopNotify,
   playSound,
@@ -63,7 +65,9 @@ define([
   fileTransfer,
   safeDisplayName,
   randomGen,
-  fastScroll
+  fastScroll,
+  videoWaiter,
+  videoLayout
 ) {
 
   var services = {
@@ -87,7 +91,9 @@ define([
     fileTransfer: fileTransfer,
     safeDisplayName: safeDisplayName,
     randomGen: randomGen,
-    fastScroll: fastScroll
+    fastScroll: fastScroll,
+    videoWaiter: videoWaiter,
+    videoLayout: videoLayout
   };
 
   var initialize = function (angModule) {

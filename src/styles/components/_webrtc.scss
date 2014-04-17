@@ -67,8 +67,8 @@ transform: rotateY(180deg);
 }
 #mini {
 position: absolute;
-height: 20%;
-bottom: 4px;
+max-height: 18%;
+bottom: 2px;
 right: 2px;
 transform: scale(-1, 1);
 -webkit-transform: scale(-1, 1);
@@ -86,6 +86,7 @@ transition-property: opacity;
 -webkit-transition-property: opacity;
 transition-duration: 2s;
 -webkit-transition-duration: 2s;
+background: rgba(0,0,0,0.4);
 /*background: red;*/
 }
 #remoteVideos {
@@ -106,30 +107,8 @@ width:100%;
 height:100%;
 }
 #miniVideo {
-height: 100%;
-}
-.indicator {
-position: absolute;
-z-index: 5;
-right: 5px;
-top: 2px;
-color: #9dd53a;
-opacity: 0;
--webkit-transition: opacity .2s ease-in-out;
--moz-transition: opacity .2s ease-in-out;
--ms-transition: opacity .2s ease-in-out;
--o-transition: opacity .2s ease-in-out;
-transition: opacity .2s ease-in-out;
-text-shadow: 0px 0px 6px black;
-}
-.talking .indicator {
-opacity: 0.8;
-}
-#remoteVideos .indicator {
-left: 5%;
-top: 5%;
-right: auto;
-font-size:2em;
+max-height: 100%;
+max-width:100%;
 }
 .remoteVideo {
 display: inline-block;
@@ -138,6 +117,7 @@ height:100%;
 vertical-align:bottom;
 position:relative;
 visibility:hidden;
+background: rgba(0,0,0,0.4);
 }
 .remoteVideo.withvideo {
 visibility:visible;
@@ -185,14 +165,15 @@ opacity:.5;
 .remoteVideo .peerlabel {
 position: absolute;
 z-index:8;
-left:5%;
-bottom:5%;
+left:4%;
+bottom:4%;
 font-size:2.5vw;
 color:white;
 opacity:.7;
-text-shadow: 0px 0px 10px rgb(0, 0, 0);
+text-shadow: 0px 0px 4px black;
 max-width:30%;
 overflow:hidden;
 white-space:nowrap;
 text-overflow:ellipsis;
+padding:4px;
 }
