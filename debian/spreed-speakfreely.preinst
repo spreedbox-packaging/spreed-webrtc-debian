@@ -15,10 +15,10 @@ set -e
 
 case "$1" in
     install|upgrade)
-        SPEAKFREELY_USER='spreed-speakfreely'
+        SPEAKFREELY_USER='spreed-webrtc'
         SPEAKFREELY_GROUP='www-data'
-        SPEAKFREELY_LOG_DIR='/var/log/spreed-speakfreely'
-        SPEAKFREELY_HOME='/var/lib/spreed-speakfreely'
+        SPEAKFREELY_LOG_DIR='/var/log/spreed/webrtc'
+        SPEAKFREELY_HOME='/var/lib/spreed/webrtc'
 
         # Create system user account
         if ! getent passwd | grep -q "^${SPEAKFREELY_USER}:"; then

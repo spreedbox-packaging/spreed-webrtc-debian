@@ -21,14 +21,18 @@ set -e
 
 case "$1" in
     purge)
-        SPEAKFREELY_LOG_DIR='/var/log/spreed-speakfreely'
-        SPEAKFREELY_RUN_DIR='/var/run/spreed-speakfreely/'
+        BASE_LOG_DIR='/var/log/spreed'
+        SPEAKFREELY_LOG_DIR="${BASE_LOG_DIR}/webrtc"
+        BASE_RUN_DIR='/var/run/spreed'
+        SPEAKFREELY_RUN_DIR="${BASE_RUN_DIR}/webrtc"
 
         # Purge logs
         rm -rf "${SPEAKFREELY_LOG_DIR}" 2>/dev/null || true
+        rmdir --ignore-fail-on-non-empty "${BASE_LOG_DIR}" 2>/dev/null || true
 
         # Purge run directory
         rm -rf "${SPEAKFREELY_RUN_DIR}" 2>/dev/null || true
+        rmdir --ignore-fail-on-non-empty "${BASE_RUN_DIR}" 2>/dev/null || true
         ;;
 
     remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)

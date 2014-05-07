@@ -1,3 +1,10 @@
+spreed-speakfreely (0.17.3-2) precise; urgency=low
+
+  * Use spreed-webrtc for configuration where possible
+    to ease transition to the renamed 0.18.x series.
+
+ -- Lance Cooper <lance@struktur.de>  Wed, 07 May 2014 15:04:19 -0500
+
 spreed-speakfreely (0.17.3-1) precise; urgency=low
 
   * Security fixes:
