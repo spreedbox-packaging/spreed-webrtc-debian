@@ -1,3 +1,53 @@
+spreed-webrtc (0.19.1-1) precise; urgency=low
+
+  * The project is now named Spreed WebRTC. All reference to the old
+    name Spreed Speak Freely have been replaced.
+  * Session data no longer overwrites contact data.
+  * Implemented authenticated sessions.
+  * Implemented contacts.
+  * Implemented aggregated sessions in buddy list.
+  * Implemented contact and attestation tokens to fetch contact
+    details/sessions with such a token.
+  * Tokens are now AES encrypted where appropriate.
+  * New ui workflow to take your own picture in settings.
+  * Fixed plugins for english language.
+  * Implemented event hub in appData.
+  * Updates to various base libraries.
+  * Added support for external plugins.
+  * Added support to inject additional settings from plugins.
+  * Translation updates to German, Chinese and Japanese.
+  * Multiple bug fixes.
+  * Build SCSS compressed in release mode.
+  * Implemented server side support for user authentication and authorization.
+  * Added an REST API end point (see docs).
+  * Settings are now implicitly stored.
+  * Javascript console log is now disabled per default. Enable with ?debug
+    URL parameter or by typing debug(true) in console.
+  * The integrated TLS server can now provide TLS client authentication.
+  * Updated example plugins to latest APIs.
+  * All styles now use a common set of variables for colors and font sizes.
+  * Removed vendor prefixes from scss and generate them on build with
+    the autoprefixes utility.
+  * Fixed compatibility with mobile Safari < 6 which did not load.
+  * Fixed compatibility with Firefox in case the Firefox peer has no camera.
+  * Settings do now auto open on start when there is no display name set.
+  * The accept a call button does now share in sync with the ringing sound.
+  * Added support to specify the default language by URL parameter (?lang=en).
+  * Added support for .webp images as buddy images.
+  * Updated Japanese translation.
+  * Fixed a possible conference connection issue when all ICE connected were successfull.
+  * Videos are now properly aligned to window top.
+  * Top bar buttons no longer overlap.
+  * Use onepeople audio video renderer per default.
+  * Added support for native HTTPS server.
+  * Fixed a data channel not ready error.
+  * Use new video layout implementation to draw when there is a main view.
+  * Added UI controls to switch video layout.
+  * Made the conferencekiosk renderer mode working and enabled it in Ui.
+  * No longer hang up on reload when not confirmed.
+
+ -- Lance Cooper <lance@struktur.de>  Thu, 03 Jul 2014 18:40:28 -0500
+
 spreed-speakfreely (0.17.3-2) precise; urgency=low
 
   * Use spreed-webrtc for configuration where possible

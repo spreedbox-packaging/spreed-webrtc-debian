@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: spreed-speakfreely
-Source: https://github.com/strukturag/spreed-speakfreely
+Upstream-Name: spreed-webrtc
+Source: https://github.com/strukturag/spreed-webrtc
 
 Files: *
 Copyright: 2014 Struktur AG <opensource@struktur.de>

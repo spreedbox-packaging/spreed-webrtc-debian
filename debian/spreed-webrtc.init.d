@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          spreed-speakfreely
+# Provides:          spreed-webrtc
 # Required-Start:    $network $local_fs
 # Required-Stop:
 # Default-Start:     2 3 4 5
@@ -13,8 +13,8 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC='Spreed Speak Freely'
-NAME=spreed-speakfreely
-DAEMON=/usr/sbin/spreed-speakfreely-server
+NAME=spreed-webrtc
+DAEMON=/usr/sbin/spreed-webrtc-server
 SCRIPTNAME=/etc/init.d/$NAME
 
 # Bail out if we're running under Upstart.
@@ -46,31 +46,31 @@ do_start()
 {
 	start-stop-daemon --start \
                       --quiet \
-                      --pidfile $SPEAKFREELY_PID \
+                      --pidfile $WEBRTC_PID \
                       --startas $DAEMON \
                       --test > /dev/null \
 	|| return 1
 
     # Create the run directory.
-    test -e $SPEAKFREELY_RUN_DIR || mkdir -p $SPEAKFREELY_RUN_DIR || true
-    chown -R $SPEAKFREELY_USER:$SPEAKFREELY_GROUP $SPEAKFREELY_RUN_DIR || true
-    chmod 770 $SPEAKFREELY_RUN_DIR || true
+    test -e $WEBRTC_RUN_DIR || mkdir -p $WEBRTC_RUN_DIR || true
+    chown -R $WEBRTC_USER:$WEBRTC_GROUP $WEBRTC_RUN_DIR || true
+    chmod 770 $WEBRTC_RUN_DIR || true
 
     # Set some performance parameters
-    ulimit -n $SPEAKFREELY_NOFILE
-    export GOMAXPROCS=$SPEAKFREELY_GOMAXPROCS
+    ulimit -n $WEBRTC_NOFILE
+    export GOMAXPROCS=$WEBRTC_GOMAXPROCS
 
     start-stop-daemon --start \
                       --quiet \
                       --make-pidfile \
-                      --pidfile $SPEAKFREELY_PID \
-                      --chuid $SPEAKFREELY_USER \
-                      --group $SPEAKFREELY_GROUP \
+                      --pidfile $WEBRTC_PID \
+                      --chuid $WEBRTC_USER \
+                      --group $WEBRTC_GROUP \
                       --startas $DAEMON \
                       -- \
-                      -c $SPEAKFREELY_CONF \
-                      -l $SPEAKFREELY_LOG \
-                      $SPEAKFREELY_ARGS \
+                      -c $WEBRTC_CONF \
+                      -l $WEBRTC_LOG \
+                      $WEBRTC_ARGS \
     || return 2
 
     return 0
@@ -84,12 +84,12 @@ do_stop()
 	start-stop-daemon --stop \
                       --quiet \
                       --retry=TERM/30/KILL/5 \
-                      --pidfile $SPEAKFREELY_PID \
+                      --pidfile $WEBRTC_PID \
                       --name $NAME
 	RETVAL="$?"
 	[ "$RETVAL" = 2 ] && return 2
 
-	rm -f $SPEAKFREELY_PID
+	rm -f $WEBRTC_PID
 	return "$RETVAL"
 }
 

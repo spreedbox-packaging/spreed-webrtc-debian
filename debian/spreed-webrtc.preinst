@@ -1,5 +1,5 @@
 #!/bin/sh
-# preinst script for spreed-speakfreely
+# preinst script for spreed-webrtc
 #
 # see: dh_installdeb(1)
 
@@ -15,28 +15,28 @@ set -e
 
 case "$1" in
     install|upgrade)
-        SPEAKFREELY_USER='spreed-webrtc'
-        SPEAKFREELY_GROUP='www-data'
-        SPEAKFREELY_LOG_DIR='/var/log/spreed/webrtc'
-        SPEAKFREELY_HOME='/var/lib/spreed/webrtc'
+        WEBRTC_USER='spreed-webrtc'
+        WEBRTC_GROUP='www-data'
+        WEBRTC_LOG_DIR='/var/log/spreed/webrtc'
+        WEBRTC_HOME='/var/lib/spreed/webrtc'
 
         # Create system user account
-        if ! getent passwd | grep -q "^${SPEAKFREELY_USER}:"; then
-            echo -n "Adding system user ${SPEAKFREELY_USER}.."
+        if ! getent passwd | grep -q "^${WEBRTC_USER}:"; then
+            echo -n "Adding system user ${WEBRTC_USER}.."
             adduser --quiet \
                     --system \
-                    --ingroup "${SPEAKFREELY_GROUP}" \
-                    --home "${SPEAKFREELY_HOME}" \
+                    --ingroup "${WEBRTC_GROUP}" \
+                    --home "${WEBRTC_HOME}" \
                     --no-create-home \
                     --disabled-login \
-                    "${SPEAKFREELY_USER}" 2>/dev/null || true
+                    "${WEBRTC_USER}" 2>/dev/null || true
             echo "..done"
         fi
 
         # Create the log directory.
-        test -e "${SPEAKFREELY_LOG_DIR}" || mkdir -p "${SPEAKFREELY_LOG_DIR}"
-        chown -R "${SPEAKFREELY_USER}:${SPEAKFREELY_GROUP}" "${SPEAKFREELY_LOG_DIR}"
-        chmod 700 "${SPEAKFREELY_LOG_DIR}"
+        test -e "${WEBRTC_LOG_DIR}" || mkdir -p "${WEBRTC_LOG_DIR}"
+        chown -R "${WEBRTC_USER}:${WEBRTC_GROUP}" "${WEBRTC_LOG_DIR}"
+        chmod 700 "${WEBRTC_LOG_DIR}"
         ;;
 
     abort-upgrade)

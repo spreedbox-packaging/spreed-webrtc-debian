@@ -1,5 +1,5 @@
 #!/bin/sh
-# prerm script for spreed-speakfreely
+# prerm script for spreed-webrtc
 #
 # see: dh_installdeb(1)
 
@@ -18,8 +18,8 @@ set -e
 
 case "$1" in
     remove)
-        if [ -e "/etc/default/spreed-speakfreely" ]; then
-            invoke-rc.d spreed-speakfreely stop || true
+        if [ -e "/etc/default/spreed-webrtc" ]; then
+            invoke-rc.d spreed-webrtc stop || true
         fi
         ;;
 

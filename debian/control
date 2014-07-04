@@ -1,4 +1,4 @@
-Source: spreed-speakfreely
+Source: spreed-webrtc
 Section: web
 Priority: extra
 Maintainer: Lance Cooper <lance@struktur.de>
@@ -17,11 +17,12 @@ Build-Depends: debhelper (>= 8.0.0),
 Standards-Version: 3.9.3
 Homepage: http://spreedspeakfreely.org
 
-Package: spreed-speakfreely
+Package: spreed-webrtc
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: spreed-speakfreely
 Description: WebRTC audio/video call and conferencing server
- The spreed-spreakfreely server supports WebRTC based
+ The spreed-webrtc server supports WebRTC based
  conferencing using the latest web standards. Full STUN
  and TURN integration is supported, and client connect to
  the server over HTTP+WebSockets, making it possible to make

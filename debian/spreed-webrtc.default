@@ -1,0 +1,10 @@
+# Defaults for spreed-webrtc initscripts
+WEBRTC_USER='spreed-webrtc'
+WEBRTC_GROUP='www-data'
+WEBRTC_CONF='/etc/spreed/webrtc.conf'
+WEBRTC_LOG='/var/log/spreed/webrtc/server.log'
+WEBRTC_ARGS=""
+WEBRTC_RUN_DIR='/var/run/spreed/webrtc/'
+WEBRTC_PID="${WEBRTC_RUN_DIR}/server.pid"
+WEBRTC_GOMAXPROCS=1
+WEBRTC_NOFILE=1024

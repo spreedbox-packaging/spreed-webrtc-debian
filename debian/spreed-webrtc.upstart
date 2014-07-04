@@ -1,0 +1,48 @@
+# spreed-webrtc
+
+description "Spreed Speak Freely server"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+env DAEMON=/usr/sbin/spreed-webrtc-server
+env DEFAULTS=/etc/default/spreed-webrtc
+
+respawn
+respawn limit 10 2
+umask 022
+
+pre-start script
+    test -x $DAEMON || { stop; exit 0; }
+    test -r $DEFAULTS || { stop; exit 0; }
+end script
+
+script
+    . $DEFAULTS
+
+    # Create the run directory.
+    test -e $WEBRTC_RUN_DIR || mkdir -p $WEBRTC_RUN_DIR || true
+    chown -R $WEBRTC_USER:$WEBRTC_GROUP $WEBRTC_RUN_DIR || true
+    chmod 770 $WEBRTC_RUN_DIR || true
+
+    # Set some performance parameters
+    ulimit -n $WEBRTC_NOFILE
+    export GOMAXPROCS=$WEBRTC_GOMAXPROCS
+
+    exec start-stop-daemon --start \
+                           --make-pidfile \
+                           --pidfile $WEBRTC_PID \
+                           --chuid $WEBRTC_USER \
+                           --group $WEBRTC_GROUP \
+                           --startas $DAEMON \
+                           -- \
+                           -c $WEBRTC_CONF \
+                           -l $WEBRTC_LOG \
+                           $WEBRTC_ARGS
+end script
+
+post-stop script
+    . $DEFAULTS
+
+    rm -f $WEBRTC_PID
+end script

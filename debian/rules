@@ -42,11 +42,11 @@ override_dh_auto_build:
 override_dh_auto_install:
 		DESTDIR='$(TMP)' dh_auto_build -- install
 		install -d $(TMP)/etc/spreed
-		mv $(TMP)/etc/spreed-speakfreely-server.conf $(TMP)/etc/spreed/webrtc.conf
-		sed -i 's|#root = .*|root = /usr/share/spreed-speakfreely-server/www|' $(TMP)/etc/spreed/webrtc.conf
-		install -d $(TMP)/usr/share/doc/spreed-speakfreely
-		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-speakfreely/AGPL-3
-		$(RM) $(TMP)/usr/share/spreed-speakfreely-server/www/static/fonts/LICENSE
+		mv $(TMP)/etc/spreed-webrtc-server.conf $(TMP)/etc/spreed/webrtc.conf
+		sed -i 's|#root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/etc/spreed/webrtc.conf
+		install -d $(TMP)/usr/share/doc/spreed-webrtc
+		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-webrtc/AGPL-3
+		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
 
 override_dh_auto_clean:
 		dh_auto_build -- distclean

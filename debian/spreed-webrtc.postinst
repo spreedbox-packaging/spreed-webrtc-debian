@@ -1,5 +1,5 @@
 #!/bin/sh
-# postinst script for spreed-speakfreely
+# postinst script for spreed-webrtc
 #
 # see: dh_installdeb(1)
 
@@ -19,8 +19,8 @@ set -e
 
 case "$1" in
     configure|triggered)
-        if [ -e "/etc/default/spreed-speakfreely" ]; then
-            invoke-rc.d spreed-speakfreely restart || true
+        if [ -e "/etc/default/spreed-webrtc" ]; then
+            invoke-rc.d spreed-webrtc restart || true
         fi
         ;;
 
