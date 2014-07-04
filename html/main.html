@@ -5,19 +5,21 @@
 </head>
 <body ng-controller="MediastreamController">
 <div id="background"></div>
-<div id="loader"><div><i class="fa fa-spinner fa-spin"></i></div></div>
+<div id="loader"><div><i class="fa fa-circle-o-notch fa-spin"></i><div class="loader-message"></div></div></div>
 <page></page>
 <div id="bar">
-    <div class="left">
-    	<%template "logo" .%>
-    </div>
-    <status-message></status-message>
-    <div class="ng-cloak right">
-        <button title="{{_('Share your screen')}}" class="btn aenablebtn" ng-show="isChrome && webrtcDetectedVersion >= 32 && (status=='connected' || status=='conference' || layout.screenshare)" ng-model="layout.screenshare" btn-checkbox><i class="fa fa-desktop"></i></button>
-        <button title="{{_('Chat')}}" ng-show="roomstatus" class="btn" ng-class="{messagesunseen: chatMessagesUnseen>0}" ng-model="layout.chat" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-comments-o"></i><span class="badge" ng-show="chatMessagesUnseen">{{chatMessagesUnseen}}</span></button>
-        <button title="{{_('Mute microphone')}}" class="btn amutebtn" ng-model="microphoneMute" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-microphone-slash"></i></button>
-        <button title="{{_('Turn camera off')}}" class="btn amutebtn" ng-model="cameraMute" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-eye-slash"></i></button>
-        <button title="{{_('Settings')}}" class="btn" ng-model="layout.settings" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-cog"></i></button>
+    <div class="bar">
+        <div class="left">
+          <%template "logo" .%>
+        </div>
+        <status-message></status-message>
+        <div class="ng-cloak right">
+           <button title="{{_('Share your screen')}}" class="btn aenablebtn" ng-show="isChrome && webrtcDetectedVersion >= 32 && (status=='connected' || status=='conference' || layout.screenshare)" ng-model="layout.screenshare" btn-checkbox><i class="fa fa-desktop"></i></button>
+           <button title="{{_('Chat')}}" class="btn" ng-class="{messagesunseen: chatMessagesUnseen>0}" ng-model="layout.chat" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-comments-o"></i><span class="badge" ng-show="chatMessagesUnseen">{{chatMessagesUnseen}}</span></button>
+           <button title="{{_('Mute microphone')}}" class="btn amutebtn" ng-model="microphoneMute" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-microphone-slash"></i></button>
+           <button title="{{_('Turn camera off')}}" class="btn amutebtn" ng-model="cameraMute" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-eye-slash"></i></button>
+           <button title="{{_('Settings')}}" class="btn" ng-model="layout.settings" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false"><i class="fa fa-cog"></i></button>
+        </div>
     </div>
 </div>
 <div id="roombar" class="ng-cloak">
@@ -27,15 +29,13 @@
     <div class="audio-level" title="{{_('Your audio level')}}"></div>
 </div>
 <div id="audiovideo" class="ng-cloak" ng-show="peer">
-    <div id="container">
-        <audio-video/>
-    </div>
+    <audio-video/>
 </div>
 <div id="screenshare" class="ng-cloak mainview">
     <screenshare/>
 </div>
-<div class="ng-cloak nicescroll" id="rightslide">
-    <div class="rightslidepane" ng-show="roomstatus">
+<div class="ng-cloak" id="rightslide">
+    <div class="rightslidepane">
         <div id="buddylist"><buddy-list/></div>
         <div id="chat"><chat/></div>
     </div>

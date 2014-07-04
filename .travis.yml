@@ -1,29 +1,31 @@
 # stats available at
-# https://travis-ci.org/strukturag/spreed-speakfreely/
+# https://travis-ci.org/strukturag/spreed-webrtc/
 language: go
 
 go:
   - 1.1
   - 1.2
+  - 1.3
   - tip
 
 env:
   - GEM_HOME=/var/lib/gems/1.8
 
 before_install:
+  - sudo add-apt-repository -y ppa:chris-lea/node.js
   - sudo apt-get update
 
 install:
-  - sudo apt-get -y install nodejs npm rubygems python-babel
+  - sudo apt-get -y install nodejs rubygems python-babel
   - sudo gem install compass
-    # 'npm config set ca ""' required only for node 0.6
-    # which is installed on Travis CI
-    # see https://github.com/npm/npm/issues/4379#issuecomment-31590254
-  - sudo npm config set ca ""
   - sudo npm install -g po2json
+  - sudo npm install -g autoprefixer
 
 script:
+  - ./autogen.sh
+  - ./configure
   - make get
   - make styles
   - make javascript
   - make binary
+  - make build-i18n

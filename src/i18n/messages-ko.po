@@ -1,16 +1,16 @@
-# Korean translations for Spreed Speak Freely.
+# Korean translations for Spreed WebRTC.
 # Copyright (C) 2014 struktur AG
-# This file is distributed under the same license as the Spreed Speak Freely
+# This file is distributed under the same license as the Spreed WebRTC
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# Curt Frisemo <curt.frisemo@spreed.com>, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Spreed Speak Freely 1.0\n"
+"Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-04-14 16:16+0200\n"
+"POT-Creation-Date: 2014-06-23 12:33+0200\n"
 "PO-Revision-Date: 2014-04-13 20:30+0900\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
@@ -36,6 +36,12 @@ msgstr "설정"
 msgid "Your audio level"
 msgstr "음성크기"
 
+msgid "Standard view"
+msgstr ""
+
+msgid "Kiosk view"
+msgstr ""
+
 msgid "Start chat"
 msgstr "대화시작"
 
@@ -47,6 +53,24 @@ msgstr "음성회의 시작"
 
 msgid "No other users online"
 msgstr "온라인에 다른 대화상대 없음"
+
+msgid "Take"
+msgstr ""
+
+msgid "Retake"
+msgstr ""
+
+msgid "Cancel"
+msgstr "취소"
+
+msgid "Set as Profile Picture"
+msgstr ""
+
+msgid "Take picture"
+msgstr "사진 찍음"
+
+msgid "Waiting for camera"
+msgstr "카메라 대기중"
 
 msgid "Chat sessions"
 msgstr "대화 세션"
@@ -84,9 +108,6 @@ msgstr "다운로드"
 msgid "Open"
 msgstr "열기"
 
-msgid "Cancel"
-msgstr "취소"
-
 msgid "Unshare"
 msgstr "비공유"
 
@@ -117,14 +138,11 @@ msgstr "화면 공유 옵션"
 msgid "Fit screen."
 msgstr "화면에 맟춤"
 
+msgid "Profile"
+msgstr ""
+
 msgid "Your picture"
 msgstr "사용자 사진"
-
-msgid "Take picture"
-msgstr "사진 찍음"
-
-msgid "Waiting for camera"
-msgstr "카메라 대기중"
 
 msgid "Your name"
 msgstr "사용자 이름"
@@ -132,8 +150,44 @@ msgstr "사용자 이름"
 msgid "Name"
 msgstr "이름"
 
-msgid "Your picture and name are visible to others."
-msgstr "사용자의 사진과 이름이 다른사람에게 보일수 있습니다."
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+#, fuzzy
+msgid "Profile information is public."
+msgstr "더 많은 정보가 필요함"
+
+msgid "Account"
+msgstr ""
+
+msgid "Your ID"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid ""
+"Authenticated by certificate. To log out you have to remove your "
+"certificate from the browser."
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Register account"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Manage account"
+msgstr ""
+
+msgid "Media"
+msgstr ""
 
 msgid "Microphone"
 msgstr "마이크"
@@ -201,8 +255,13 @@ msgstr "고급 설정 감추기"
 msgid "Remember settings"
 msgstr "설정 기억"
 
-msgid "Apply"
-msgstr "적용"
+msgid ""
+"Your ID will still be kept - press the log out button above to delete the"
+" ID."
+msgstr ""
+
+msgid "Close"
+msgstr "닫음"
 
 msgid "Share by Email"
 msgstr "이메일로 공유"
@@ -334,8 +393,26 @@ msgstr "공유 화일:"
 msgid "Incoming file:"
 msgstr "도착하는 화일:"
 
-msgid "Quit from Spreed Speak Freely?"
-msgstr "Spreed Speak Freely사용을 중지 하시겠습니까?"
+msgid "You accepted the contact request."
+msgstr ""
+
+msgid "You rejected the contact request."
+msgstr ""
+
+msgid "You sent a contact request."
+msgstr ""
+
+msgid "Your contact request was accepted."
+msgstr ""
+
+msgid "Incoming contact request."
+msgstr ""
+
+msgid "Your contact request was rejected."
+msgstr ""
+
+msgid "Close this window and disconnect?"
+msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
 msgstr "업데이트를 적용하려면 재시작이 필요 합니다. 지금 재시작 하려면 ok를 클릭 하십시오"
@@ -419,9 +496,6 @@ msgstr "더 많은 정보가 필요함"
 
 msgid "Ok"
 msgstr "오케이"
-
-msgid "Close"
-msgstr "닫음"
 
 msgid "Access code required"
 msgstr "접속코드 필요함"

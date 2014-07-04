@@ -1,0 +1,91 @@
+/*
+ * Spreed WebRTC.
+ * Copyright (C) 2013-2014 struktur AG
+ *
+ * This file is part of Spreed WebRTC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+.buddyPicture {
+  .picture {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .videoPicture {
+    margin-bottom: 4px;
+    .videoPictureVideo {
+      background-color: black;
+      overflow: hidden;
+      position: relative;
+    }
+    video {
+      object-fit: cover;
+    }
+  }
+  .videoFlash {
+    position: absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+    background-color:white;
+    border: 1px dotted $bordercolor;
+    visibility: hidden;
+    z-index: 5;
+  }
+  .videoFlash.flash {
+    visibility: visible;
+  }
+  .preview {
+    left: 0;
+    position: absolute;
+    top: 0;
+    &.previewPicture {
+      position: relative;
+    }
+  }
+  .showTakePicture {
+    .btn {
+    }
+  }
+  .btn-takePicture,
+  .btn-retakePicture {
+    left: 0px;
+    right: 0px;
+    position: absolute;
+    top: 50%;
+    margin:0 auto;
+    max-width:40%;
+  }
+  .btn-retakePicture {
+    visibility:hidden;
+  }
+  .videoPictureVideo:hover .btn-retakePicture {
+    visibility:visible;
+  }
+  .countdownPicture {
+    color: $componentbg;
+    font-size: 45px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
+    top: 75px;
+    margin:0 auto;
+    text-align: center;
+    text-shadow: 0 0 5px black;
+    opacity:0.8;
+  }
+}

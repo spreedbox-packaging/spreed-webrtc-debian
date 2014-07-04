@@ -1,8 +1,8 @@
-/*
- * Spreed Speak Freely.
+/*!
+ * Spreed WebRTC.
  * Copyright (C) 2013-2014 struktur AG
  *
- * This file is part of Spreed Speak Freely.
+ * This file is part of Spreed WebRTC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +19,12 @@
  *
  */
 
+// must set custom compass variables before import of compass
+@import "global/variables";
 @import "compass";
-
 @import "libs/libs";
 
-@import "global/colors";
+@import "global/mixins";
 
 @import "global/base";
 @import "global/angular";
@@ -33,8 +34,8 @@
 
 @import "components/rightslide";
 @import "components/bar";
-@import "components/webrtc";
 @import "components/buddylist";
+@import "components/buddypicture";
 @import "components/settings";
 @import "components/chat";
 @import "components/usability";
