@@ -1,8 +1,8 @@
 /*
- * Spreed Speak Freely.
+ * Spreed WebRTC.
  * Copyright (C) 2013-2014 struktur AG
  *
- * This file is part of Spreed Speak Freely.
+ * This file is part of Spreed WebRTC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,11 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['jquery', 'underscore', 'rAF'], function($, _) {
+define(['jquery', 'underscore'], function($, _) {
 
-	return ["$window", "mediaStream", "safeApply", function($window, mediaStream, safeApply) {
+	return ["$window", "mediaStream", "safeApply", "animationFrame", function($window, mediaStream, safeApply, animationFrame) {
 
-		var requestAnimationFrame = $window.requestAnimationFrame;
 		var webrtc = mediaStream.webrtc;
 
 		// Consider anyting lower than this % as no audio.
@@ -43,21 +42,22 @@ define(['jquery', 'underscore', 'rAF'], function($, _) {
 
 			// Own audio level indicator.
 			var element = $element[0];
+			var width = 0;
 			this.update = _.bind(function() {
-				if (this.active) {
-					requestAnimationFrame(this.update);
-				}
-				var width = 0;
-				if (webrtc.usermedia.audioLevel) {
-					width = Math.round(100 * webrtc.usermedia.audioLevel);
-					// Hide low volumes.
-					if (width<threshhold) {
+				if (this.active || width > 0) {
+					if (webrtc.usermedia.audioLevel) {
+						width = Math.round(100 * webrtc.usermedia.audioLevel);
+						// Hide low volumes.
+						if (width < threshhold) {
+							width = 0;
+						}
+					} else {
 						width = 0;
 					}
+					element.style.width = width + '%';
 				}
-				element.style.width = width + '%';
 			}, this);
-			this.update();
+			animationFrame.register(this.update);
 
 			// Talking state.
 			this.audioActivityHistory = [];
@@ -65,13 +65,13 @@ define(['jquery', 'underscore', 'rAF'], function($, _) {
 
 			this.meter = _.bind(function() {
 
- 				var talking;
+				var talking;
 				if (this.active) {
 					var level = Math.round(100 * webrtc.usermedia.audioLevel);
 					if (level < threshhold) {
 						level = 0;
 					} else {
-						level = level*activityMuliplier;
+						level = level * activityMuliplier;
 					}
 					this.audioActivityHistory.push(level);
 					if (this.audioActivityHistory.length > activityHistorySize) {
@@ -80,25 +80,25 @@ define(['jquery', 'underscore', 'rAF'], function($, _) {
 					this.audioActivityMeter = this.audioActivityHistory.reduce(function(a, b) {
 						return a + b;
 					}) / this.audioActivityHistory.length;
-	 				//console.log("audioActivityMeter", this.audioActivityMeter, $scope.talking);
-	 				if (!$scope.talking) {
-	 					talking = this.audioActivityMeter > activityThreshold ? true : false;
-	 				} else {
-	 					talking = this.audioActivityMeter > activityThresholdInactivity ? true : false;
-	 				}
- 				} else {
- 					// Clean up.
- 					//console.log("cleaning up");
- 					this.audioActivityHistory = [];
- 					this.audioActivityMeter = 0;
+					//console.log("audioActivityMeter", this.audioActivityMeter, $scope.talking);
+					if (!$scope.talking) {
+						talking = this.audioActivityMeter > activityThreshold ? true : false;
+					} else {
+						talking = this.audioActivityMeter > activityThresholdInactivity ? true : false;
+					}
+				} else {
+					// Clean up.
+					//console.log("cleaning up");
+					this.audioActivityHistory = [];
+					this.audioActivityMeter = 0;
 					talking = false;
- 				}
- 				if (talking !== $scope.talking) {
- 					// Apply to scope.
- 					//console.log("talking changed", talking);
- 					safeApply($scope, function() {
+				}
+				if (talking !== $scope.talking) {
+					// Apply to scope.
+					//console.log("talking changed", talking);
+					safeApply($scope, function() {
 						$scope.talking = talking;
- 					});
+					});
 				}
 
 				// Check peer changes and update state for peers and keep history.
@@ -110,7 +110,7 @@ define(['jquery', 'underscore', 'rAF'], function($, _) {
 							if (!talkingStatus[peercall.id]) {
 								send = true;
 							}
-							talkingStatusNew[peercall.id]=talking;
+							talkingStatusNew[peercall.id] = talking;
 						} else if (!talking && talkingStatus[peercall.id]) {
 							send = true;
 						}

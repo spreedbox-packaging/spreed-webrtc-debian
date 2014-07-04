@@ -1,15 +1,15 @@
-# Japanese translations for Spreed Speak Freely.
+# Japanese translations for Spreed WebRTC.
 # Copyright (C) 2014 struktur AG
-# This file is distributed under the same license as the Spreed Speak Freely
+# This file is distributed under the same license as the Spreed WebRTC
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# Curt Frisemo <curt.frisemo@spreed.com>, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Spreed Speak Freely 1.0\n"
+"Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-04-14 16:16+0200\n"
-"PO-Revision-Date: 2014-04-09 14:43+0100\n"
+"POT-Creation-Date: 2014-06-23 12:33+0200\n"
+"PO-Revision-Date: 2014-04-23 22:25+0100\n"
 "Last-Translator: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -36,6 +36,12 @@ msgstr "設定"
 msgid "Your audio level"
 msgstr "あなたの音量"
 
+msgid "Standard view"
+msgstr ""
+
+msgid "Kiosk view"
+msgstr ""
+
 msgid "Start chat"
 msgstr "チャットを始める"
 
@@ -47,6 +53,24 @@ msgstr "音声会議を始める"
 
 msgid "No other users online"
 msgstr "オンラインのユーザーはいません"
+
+msgid "Take"
+msgstr ""
+
+msgid "Retake"
+msgstr ""
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "Set as Profile Picture"
+msgstr ""
+
+msgid "Take picture"
+msgstr "写真を取る"
+
+msgid "Waiting for camera"
+msgstr "カメラ待ち"
 
 msgid "Chat sessions"
 msgstr "チャットのセッション"
@@ -84,9 +108,6 @@ msgstr "ダウンロード"
 msgid "Open"
 msgstr "開く"
 
-msgid "Cancel"
-msgstr "キャンセル"
-
 msgid "Unshare"
 msgstr "共有取り消し"
 
@@ -111,21 +132,17 @@ msgstr "ルームを出る"
 msgid "Current room"
 msgstr "現在のルーム"
 
-#, fuzzy
 msgid "Screen sharing options"
-msgstr "メディアスクリーン共有"
+msgstr "画面共有オプション"
 
 msgid "Fit screen."
+msgstr "画面に合わせる"
+
+msgid "Profile"
 msgstr ""
 
 msgid "Your picture"
 msgstr "あなたの写真"
-
-msgid "Take picture"
-msgstr "写真を取る"
-
-msgid "Waiting for camera"
-msgstr "カメラ待ち"
 
 msgid "Your name"
 msgstr "あなたの名前"
@@ -133,8 +150,44 @@ msgstr "あなたの名前"
 msgid "Name"
 msgstr "名前"
 
-msgid "Your picture and name are visible to others."
-msgstr "あなたの写真と名前は公開されています."
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+#, fuzzy
+msgid "Profile information is public."
+msgstr "さらなる情報が必要です"
+
+msgid "Account"
+msgstr ""
+
+msgid "Your ID"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid ""
+"Authenticated by certificate. To log out you have to remove your "
+"certificate from the browser."
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Register account"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Manage account"
+msgstr ""
+
+msgid "Media"
+msgstr ""
 
 msgid "Microphone"
 msgstr "マイク"
@@ -152,7 +205,7 @@ msgid "High"
 msgstr "高い"
 
 msgid "HD"
-msgstr ""
+msgstr "HD"
 
 msgid "Language"
 msgstr "言語"
@@ -202,8 +255,13 @@ msgstr "詳細設定を隠す"
 msgid "Remember settings"
 msgstr "設定を保存"
 
-msgid "Apply"
-msgstr "適用"
+msgid ""
+"Your ID will still be kept - press the log out button above to delete the"
+" ID."
+msgstr ""
+
+msgid "Close"
+msgstr "閉じる"
 
 msgid "Share by Email"
 msgstr "Eメールでシェア"
@@ -289,7 +347,7 @@ msgid "Click here for help (Google Chrome)."
 msgstr "ここをクリックしてヘルプ表示(Google Chrome)"
 
 msgid "Please set your user details and settings."
-msgstr "あなたのユーザー情報とセッティングを設定してください."
+msgstr "あなたのプロフィールとアプリの動作を設定してください."
 
 msgid ""
 "Please note that some settings require you to reload or to make a new "
@@ -335,8 +393,26 @@ msgstr "あなたの共有ファイル:"
 msgid "Incoming file:"
 msgstr "受信中ファイル:"
 
-msgid "Quit from Spreed Speak Freely?"
-msgstr "Spreed Speak Freelyを終了しますか?"
+msgid "You accepted the contact request."
+msgstr ""
+
+msgid "You rejected the contact request."
+msgstr ""
+
+msgid "You sent a contact request."
+msgstr ""
+
+msgid "Your contact request was accepted."
+msgstr ""
+
+msgid "Incoming contact request."
+msgstr ""
+
+msgid "Your contact request was rejected."
+msgstr ""
+
+msgid "Close this window and disconnect?"
+msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
 msgstr "アップデート適用のため再起動してください.ここをクリックして再起動する."
@@ -369,7 +445,7 @@ msgid " does not pick up."
 msgstr "は電話にでません."
 
 msgid " tried to call you."
-msgstr ""
+msgstr "は電話しようとしました."
 
 msgid " called you."
 msgstr "から電話がありました."
@@ -396,6 +472,9 @@ msgid ""
 "usermedia-screen-capture and open it with your browser and enable the "
 "flag on top. Then restart the browser and you are ready to go."
 msgstr ""
+"画面共有は拒否されました.ブラウザの画面共有の設定を確認して下さい. Chromeのアドレスバーに chrome://flags/#enable-"
+"usermedia-screen-capture "
+"を入力して開き、スクリーンキャプチャのサポートを有効にしてください。その後ブラウザを再起動してください。"
 
 msgid "Use browser language"
 msgstr "ブラウザの言語を使用"
@@ -418,9 +497,6 @@ msgstr "さらなる情報が必要です"
 msgid "Ok"
 msgstr "OK"
 
-msgid "Close"
-msgstr "閉じる"
-
 msgid "Access code required"
 msgstr "アクセスコードが必要です"
 
@@ -437,19 +513,18 @@ msgstr "アクセスコードの確認に失敗しました.インターネッ�
 
 #, fuzzy, python-format
 msgid "and %s"
-msgstr ""
+msgstr "と %2"
 
 #, python-format
 msgid "and %d others"
 msgstr ""
 
 msgid "User"
-msgstr ""
+msgstr "ユーザー"
 
 msgid "Someone"
-msgstr ""
+msgstr "誰か"
 
-#, fuzzy
 msgid "Me"
-msgstr "名前"
+msgstr "私"
 

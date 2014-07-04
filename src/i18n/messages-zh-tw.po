@@ -1,15 +1,15 @@
-# Chinese (Taiwan) translations for Spreed Speak Freely.
+# Chinese (Taiwan) translations for Spreed WebRTC.
 # Copyright (C) 2014 struktur AG
-# This file is distributed under the same license as the Spreed Speak Freely
+# This file is distributed under the same license as the Spreed WebRTC
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# Curt Frisemo <curt.frisemo@spreed.com>, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Spreed Speak Freely 1.0\n"
+"Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-04-14 16:16+0200\n"
-"PO-Revision-Date: 2014-04-07 18:09+0800\n"
+"POT-Creation-Date: 2014-06-23 12:33+0200\n"
+"PO-Revision-Date: 2014-05-21 09:55+0800\n"
 "Last-Translator: Michael P.\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -36,6 +36,12 @@ msgstr "系統設置"
 msgid "Your audio level"
 msgstr "您的通話音量"
 
+msgid "Standard view"
+msgstr ""
+
+msgid "Kiosk view"
+msgstr ""
+
 msgid "Start chat"
 msgstr "開始聊天"
 
@@ -47,6 +53,24 @@ msgstr "開始語音會議"
 
 msgid "No other users online"
 msgstr "無其他聯繫人在線"
+
+msgid "Take"
+msgstr ""
+
+msgid "Retake"
+msgstr ""
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Set as Profile Picture"
+msgstr ""
+
+msgid "Take picture"
+msgstr "拍照"
+
+msgid "Waiting for camera"
+msgstr "等待啟動攝像頭"
 
 msgid "Chat sessions"
 msgstr "會話"
@@ -84,9 +108,6 @@ msgstr "下載"
 msgid "Open"
 msgstr "打開"
 
-msgid "Cancel"
-msgstr "取消"
-
 msgid "Unshare"
 msgstr "停止分享"
 
@@ -111,21 +132,17 @@ msgstr "離開房間"
 msgid "Current room"
 msgstr "當前房間"
 
-#, fuzzy
 msgid "Screen sharing options"
-msgstr "媒體屏幕共享"
+msgstr "屏幕共享設置"
 
 msgid "Fit screen."
+msgstr "適合屏幕"
+
+msgid "Profile"
 msgstr ""
 
 msgid "Your picture"
 msgstr "您的圖片"
-
-msgid "Take picture"
-msgstr "拍照"
-
-msgid "Waiting for camera"
-msgstr "等待啟動攝像頭"
 
 msgid "Your name"
 msgstr "您的名字"
@@ -133,8 +150,44 @@ msgstr "您的名字"
 msgid "Name"
 msgstr "名字"
 
-msgid "Your picture and name are visible to others."
-msgstr "別人能看到您的圖片及名字"
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+#, fuzzy
+msgid "Profile information is public."
+msgstr "需要更多信息"
+
+msgid "Account"
+msgstr ""
+
+msgid "Your ID"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid ""
+"Authenticated by certificate. To log out you have to remove your "
+"certificate from the browser."
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Register account"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Manage account"
+msgstr ""
+
+msgid "Media"
+msgstr ""
 
 msgid "Microphone"
 msgstr "麥克風"
@@ -152,7 +205,7 @@ msgid "High"
 msgstr "高"
 
 msgid "HD"
-msgstr ""
+msgstr "高清"
 
 msgid "Language"
 msgstr "語言"
@@ -202,8 +255,13 @@ msgstr "隐藏高级设置"
 msgid "Remember settings"
 msgstr "記住設置"
 
-msgid "Apply"
-msgstr "適用"
+msgid ""
+"Your ID will still be kept - press the log out button above to delete the"
+" ID."
+msgstr ""
+
+msgid "Close"
+msgstr "關閉"
 
 msgid "Share by Email"
 msgstr "電子郵件共享"
@@ -335,8 +393,26 @@ msgstr "分享文件："
 msgid "Incoming file:"
 msgstr "發來文件："
 
-msgid "Quit from Spreed Speak Freely?"
-msgstr "退出 Spreed Speak Freely？"
+msgid "You accepted the contact request."
+msgstr ""
+
+msgid "You rejected the contact request."
+msgstr ""
+
+msgid "You sent a contact request."
+msgstr ""
+
+msgid "Your contact request was accepted."
+msgstr ""
+
+msgid "Incoming contact request."
+msgstr ""
+
+msgid "Your contact request was rejected."
+msgstr ""
+
+msgid "Close this window and disconnect?"
+msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
 msgstr "適用更新需重啟，現在點擊Ok重新啟動。"
@@ -366,7 +442,7 @@ msgid " rejected your call."
 msgstr " 拒絕了您的呼叫"
 
 msgid " does not pick up."
-msgstr " 不接聽呼叫"
+msgstr " 無人接聽。"
 
 msgid " tried to call you."
 msgstr " 曾呼叫您"
@@ -396,6 +472,8 @@ msgid ""
 "usermedia-screen-capture and open it with your browser and enable the "
 "flag on top. Then restart the browser and you are ready to go."
 msgstr ""
+"啟動屏幕共享許可被拒絕。請確認您已開啟瀏覽器屏幕共享連接。請復制chrome://flags/#enable-usermedia-screen-"
+"capture並用您的瀏覽器打開，啟用最上端的功能。然後重啟瀏覽器，操作完成。"
 
 msgid "Use browser language"
 msgstr "使用瀏覽器語言"
@@ -418,9 +496,6 @@ msgstr "需要更多信息"
 msgid "Ok"
 msgstr "Ok"
 
-msgid "Close"
-msgstr "關閉"
-
 msgid "Access code required"
 msgstr "需要接入碼"
 
@@ -435,7 +510,7 @@ msgid ""
 "again."
 msgstr "接入碼認證錯誤。請檢查您的網絡連接并重試。"
 
-#, fuzzy, python-format
+#, python-format
 msgid "and %s"
 msgstr ""
 
@@ -444,12 +519,11 @@ msgid "and %d others"
 msgstr ""
 
 msgid "User"
-msgstr ""
+msgstr "用戶"
 
 msgid "Someone"
-msgstr ""
+msgstr "某人"
 
-#, fuzzy
 msgid "Me"
-msgstr "名字"
+msgstr "我"
 

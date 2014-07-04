@@ -1,8 +1,8 @@
 /*
- * Spreed Speak Freely.
+ * Spreed WebRTC.
  * Copyright (C) 2013-2014 struktur AG
  *
- * This file is part of Spreed Speak Freely.
+ * This file is part of Spreed WebRTC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,140 +18,339 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 #audiovideo {
-position:absolute;
-left:0px;
-top:44px;
-bottom:0px;
-right:0px;
-boder-top:1px solid $bordercolor;
--webkit-user-select: none;
--khtml-user-select: none;
--moz-user-select: none;
--o-user-select: none;
-user-select: none;
+  border-top: 1px solid $bordercolor;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 44px;
+  user-select: none;
 }
-#audiovideo.fullscreen {
-top:0px !important;
-right:0px !important;
-bottom:0px !important;
-left:0px !important;
-background:black !important;
+
+#audiovideo {
+  &.fullscreen {
+    background: black !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    .remoteVideo .peerActions {
+      display: none;
+    }
+  }
+  @include breakpt($breakpoint-video-small, max-width, only screen) {
+    right: 0;
+  }
 }
-#audiovideo.fullscreen .remoteVideo .peeractions {
-display:none;
+
+.mainScreenshare #audiovideo {
+  @include breakpt($breakpoint-video-medium, max-width, only screen) {
+    display: none;
+  }
 }
-.withChat #audiovideo, .withBuddylist #audiovideo {
-right:260px;
+
+.withChat #audiovideo,
+.withBuddylist #audiovideo {
+  right: 260px;
 }
+
 .withBuddylist.withChat #audiovideo {
-right:520px;
-}
-.mainScreenshare {
-	#audiovideo {
-		width:150px;
-		.remoteVideo .peerlabel {
-			font-size:12px;
-			font-weight:bold;
-		}
-		.remoteVideo .peeractions i {
-			font-size:1em;
-		}
-	}
+  right: 520px;
 }
 
-.remoteVideo .peerlabel {
-	-webkit-transition: color 500ms ease-out;
-	-moz-transition: color 500ms ease-out;
-	-o-transition: color 500ms ease-out;
-	transition: color 500ms ease-out;
+.audiovideo {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  &.active {
+    perspective: 1000;
+    &:hover .overlayActions {
+      opacity: .3;
+    }
+    .overlayActions:hover {
+      opacity: .6;
+    }
+    .audiovideoBase {
+      transform: rotateY(180deg);
+    }
+  }
+  .audiovideoBase {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition-property: transform;
+    transition-duration: 2s;
+    transform: rotateY(0deg);
+    z-index: 2;
+  }
+  .localContainer {
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: scale(-1, 1);
+    z-index: 2;
+  }
+  video {
+    object-fit: contain;
+  }
 }
 
-.remoteVideo.talking .peerlabel {
-	color: #9dd53a;
+.audiovideo {
+  .remoteContainer {
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: rotateY(180deg);
+    z-index: 2;
+  }
+  .miniContainer {
+    bottom: 2px;
+    max-height: 18%;
+    opacity: 0;
+    position: absolute;
+    right: 2px;
+    transform: scale(-1, 1);
+    transition-property: opacity;
+    transition-duration: .5s;
+    &.visible {
+      opacity: 1;
+    }
+  }
+  .miniVideo {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+  }
+  .localVideo {
+    background: $video-background;
+    display: block;
+    max-height: 100%;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 2s;
+    width: 100%;
+  }
 }
 
-.remoteVideo .overlaylogo {
-	position:absolute;
-	right:4%;
-	top:4%;
-	width:20%;
-	height:20%;
-	max-height:40px;
-	max-width:111px;
-	background-image: url(../img/logo-overlay.png);
-	background-size:100%;
-	background-repeat:no-repeat;
-	background-position:center;
-	opacity:0.5;
-	z-index:2;
-	pointer-events: none;
+.audiovideo .remoteVideos {
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition-property: opacity;
+  transition-duration: 2s;
+  video {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
 }
 
-.localVideo video {
-	border:1px solid transparent;
+.audiovideo .remoteVideo{
+  background: $video-background;
+  display: inline-block;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  vertical-align: bottom;
+  visibility: hidden;
+  width: 100%;
+  &.withvideo {
+    visibility: visible;
+  }
+  &.onlyaudio {
+    background: $video-onlyaudio-background;
+    visibility: visible;
+  }
+  .onlyaudio {
+    color: $video-onlyaudio;
+    display: none;
+    font-size: 80px;
+    left: 0;
+    margin-top: -40px;
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 45%;
+  }
+  &.onlyaudio video {
+    display: none;
+  }
+  &.onlyaudio .onlyaudio {
+    display: block;
+  }
+  .peerActions {
+    bottom: 5%;
+    left: 0;
+    opacity: 0;
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    transition-property: opacity;
+    transition-duration: .2s;
+    z-index: 10;
+    &:hover {
+      opacity: .5;
+    }
+    i {
+      font-size: 3vw;
+    }
+  }
+  .peerLabel {
+    bottom: 4%;
+    color: white;
+    left: 4%;
+    font-size: 2.5vw;
+    max-width: 30%;
+    opacity: .7;
+    overflow: hidden;
+    padding: 4px;
+    position: absolute;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 4px black;
+    white-space: nowrap;
+    z-index: 8;
+  }
 }
 
-.localVideo.talking video {
-	border:1px solid #9dd53a;
+.audiovideo .overlayActions {
+  background: $video-overlayactions;
+  bottom: 0;
+  height: 70px;
+  left: 0;
+  margin:auto 0;
+  opacity: 0;
+  padding: 3px 0;
+  position: absolute;
+  top: 0;
+  width: 40px;
+  z-index: 5;
+  button {
+    color: #ccc;
+    cursor: pointer;
+    display: block;
+    outline: 0;
+    text-shadow: 0 0 5px black;
+    width: 40px;
+  }
+}
+
+.remoteVideo {
+  &.talking .peerLabel {
+    color: $audiovideolevel;
+  }
+  .peerLabel {
+    transition: color 500ms ease-out;
+  }
+  .overlayLogo {
+    background: url(../img/logo-overlay.png) no-repeat center;
+    background-size: 100%;
+    height: 20%;
+    max-height: 40px;
+    max-width: 111px;
+    opacity: .5;
+    pointer-events: none;
+    position: absolute;
+    right: 4%;
+    top: 4%;
+    width: 20%;
+    z-index: 2;
+  }
+}
+
+.miniContainer {
+  &.talking video {
+    border: 1px solid $audiovideolevel;
+  }
+  video {
+    border: 1px solid transparent;
+  }
+}
+
+.renderer-smally {
+  width: 150px;
+  .remoteVideos {
+    padding-bottom: 85px;
+  }
+  .remoteVideo {
+    .peerLabel {
+      font-size: .9em;
+      font-weight: bold;
+    }
+    .peerActions i {
+      font-size: 1em;
+    }
+  }
+  .miniContainer {
+    bottom: 0;
+    height: 85px;
+    left: 0;
+    max-height: none;
+    right: 0;
+  }
+}
+
+.renderer-onepeople {
 }
 
 .renderer-conferencekiosk {
-	#remoteVideos {
-		top:auto;
-		bottom:2px;
-		text-align:center;
-		background:rgba(0,0,0,0.4);
-		padding-right:192px;
-		>div {
-			height:108px;
-			width:192px;
-			cursor:pointer;
-		}
-		.overlaylogo {
-			display:none;
-		}
-		.peerlabel, .peeractions i {
-			font-size:1.1em;
-		}
-		.peerlabel {
-			background: rgba(0,0,0,0.9);
-		}
-	}
-	#mini {
-		max-height: none;
-		height:108px;
-		width:192px;
-	}
-	.bigVideo {
-		position:absolute;
-		left:0px;
-		right:0px;
-		bottom:112px;
-		top:2px;
-		margin: auto;
-		opacity: 0;
-		transition-property: opacity;
-		-webkit-transition-property: opacity;
-		transition-duration: 2s;
-		-webkit-transition-duration: 2s;
-	}
-
-}
-
-.bigVideo video {
-	width:100%;
-	height:100%;
-}
-
-@media only screen and (max-width: 630px) {
-	.mainScreenshare #audiovideo {
-		display:none;
-	}
-}
-@media only screen and (max-width:590px) {
-	#audiovideo {
-		right:0px;
-		z-index:12;
-	}
+  .remoteVideos {
+    background: $video-background;
+    bottom: 2px;
+    min-height: 108px;
+    pointer-events: auto;
+    text-align: center;
+    top: auto;
+    white-space: nowrap;
+    > div {
+      cursor: pointer;
+      height: 108px;
+      width: 192px;
+    }
+    .overlayLogo {
+      display: none;
+    }
+    .peerLabel,
+    .peerActions i {
+      font-size: 1.1em;
+    }
+    .peerLabel {
+      background: $video-overlayactions;
+    }
+  }
+  .miniContainer {
+    height: 108px;
+    max-height: none;
+    width: 192px;
+  }
+  .bigVideo {
+    bottom: 112px;
+    left: 0;
+    margin: auto;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    transition-property: opacity;
+    transition-duration: 2s;
+    video {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }

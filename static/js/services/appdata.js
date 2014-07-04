@@ -1,8 +1,8 @@
 /*
- * Spreed Speak Freely.
+ * Spreed WebRTC.
  * Copyright (C) 2013-2014 struktur AG
  *
- * This file is part of Spreed Speak Freely.
+ * This file is part of Spreed WebRTC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,25 +18,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define([], function() {
+define(["jquery"], function($) {
 
-    // appData
-    return [function() {
+	// appData.e events:
+	// subscribe these events with appData.e.on(eventname, function() {}).
+	//
+	// - authenticationChanged(event, userid)
+	//     userid (string) : Public user id of the authenitcated user.
+	//
+	// - selfReceived(event, self)
+	//     self (object) : Self document as received from API.
+	//
+	// - uiNotification(event, type, details)
+	//     type (string)    : Notification type (busy, reject, pickuptimeout,
+	//                        incomingbusy, incomingpickuptimeout, chatmessage)
+	//     details (object) : Depends on event type.
+	//
+	// - mainStatus(event, status)
+	//     status (string)  : Status id (connected, waiting, ...)
 
-        var data = {
-            data: null
-        }
-        var appData = {
-            get: function() {
-                return data.data;
-            },
-            set: function(d) {
-                data.data = d;
-                return d;
-            }
-        }
-        return appData;
+	// appData
+	return [function() {
 
-    }];
+		var data = {
+			data: null,
+			e: $({})
+		}
+		var appData = {
+			get: function() {
+				return data.data;
+			},
+			set: function(d) {
+				data.data = d;
+				return d;
+			},
+			e: data.e
+		}
+		return appData;
+
+	}];
 
 });
