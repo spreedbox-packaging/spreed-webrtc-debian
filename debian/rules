@@ -3,6 +3,9 @@
 #export DH_VERBOSE=1
 export DH_OPTIONS
 
+export CONFIG_PATH=/etc/spreed
+export CONFIG_FILE=webrtc.conf
+
 PACKAGE = $(firstword $(shell dh_listpackages))
 TMP     = $(CURDIR)/debian/$(PACKAGE)
 
@@ -33,6 +36,10 @@ $(PKG)_$(VERSION)$(DTYPE).orig.tar.xz:
 		| XZ_OPT="-6v" tar -caf "$(PKG)_$(VERSION)$(DTYPE).orig.tar.xz" -T- --owner=root --group=root --mode=a+rX \
 		&& $(RM) -r "$(PKG)-$(VERSION)"
 
+override_dh_auto_configure:
+		autoreconf --install
+		dh_auto_configure
+
 override_dh_auto_test:
 		dh_auto_build -- releasetest
 
@@ -41,15 +48,18 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 		DESTDIR='$(TMP)' dh_auto_build -- install
-		install -d $(TMP)/etc/spreed
-		mv $(TMP)/etc/spreed-webrtc-server.conf $(TMP)/etc/spreed/webrtc.conf
-		sed -i 's|#root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/etc/spreed/webrtc.conf
+		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/etc/spreed/webrtc.conf
 		install -d $(TMP)/usr/share/doc/spreed-webrtc
 		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-webrtc/AGPL-3
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
 
 override_dh_auto_clean:
 		dh_auto_build -- distclean
+		rm -rf .sass-cache INSTALL aclocal.m4 \
+				config.h config.h.in config.log \
+				config.status configure install-sh \
+				missing stamp-h1
+		find . \( -name Makefile -o -name Makefile.in \) -delete
 
 %:
 	dh $@ 

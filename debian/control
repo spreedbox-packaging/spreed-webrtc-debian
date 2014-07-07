@@ -3,6 +3,9 @@ Section: web
 Priority: extra
 Maintainer: Lance Cooper <lance@struktur.de>
 Build-Depends: debhelper (>= 8.0.0),
+               autoconf,
+               libtool,
+               automake,
                golang (>= 1.1),
                nodejs,
                ruby-sass (>= 3.2),
@@ -13,7 +16,9 @@ Build-Depends: debhelper (>= 8.0.0),
                golang-securecookie-dev,
                golang-websocket-dev,
                golang-goacceptlanguageparser-dev,
-               golang-httputils-dev
+               golang-httputils-dev,
+               golang-pkac-dev,
+               golang-uuid-dev
 Standards-Version: 3.9.3
 Homepage: http://spreedspeakfreely.org
 
