@@ -65,6 +65,10 @@ Files: static/js/libs/modernizr.js
 Copyright: 2009-2013 Faruk Ates, Paul Irish, Alex Sexton
 License: Expat
 
+Files: static/js/libs/pdf/*
+Copyright: 2012 Mozilla Foundation
+License: Apache-2.0
+
 Files: static/js/libs/require/*
 Copyright: 2010-2012 The Dojo Foundation
 License: BSD-3-clause or Expat
