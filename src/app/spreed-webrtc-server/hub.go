@@ -74,6 +74,7 @@ type Hub struct {
 	sessionTable          map[string]*Session
 	roomTable             map[string]*RoomWorker
 	userTable             map[string]*User
+	fakesessionTable      map[string]*Session
 	version               string
 	config                *Config
 	sessionSecret         []byte
@@ -93,18 +94,19 @@ type Hub struct {
 	contacts              *securecookie.SecureCookie
 }
 
-func NewHub(version string, config *Config, sessionSecret, encryptionSecret, turnSecret, realm string) *Hub {
+func NewHub(version string, config *Config, sessionSecret, encryptionSecret, turnSecret []byte, realm string) *Hub {
 
 	h := &Hub{
 		connectionTable:  make(map[string]*Connection),
 		sessionTable:     make(map[string]*Session),
 		roomTable:        make(map[string]*RoomWorker),
 		userTable:        make(map[string]*User),
+		fakesessionTable: make(map[string]*Session),
 		version:          version,
 		config:           config,
-		sessionSecret:    []byte(sessionSecret),
-		encryptionSecret: []byte(encryptionSecret),
-		turnSecret:       []byte(turnSecret),
+		sessionSecret:    sessionSecret,
+		encryptionSecret: encryptionSecret,
+		turnSecret:       turnSecret,
 		realm:            realm,
 	}
 
@@ -204,10 +206,6 @@ func (h *Hub) CreateSuserid(session *Session) (suserid string) {
 
 func (h *Hub) CreateSession(request *http.Request, st *SessionToken) *Session {
 
-	// NOTE(longsleep): Is it required to make this a secure cookie,
-	// random data in itself should be sufficent if we do not validate
-	// session ids somewhere?
-
 	var session *Session
 	var userid string
 	usersEnabled := h.config.UsersEnabled
@@ -220,7 +218,7 @@ func (h *Hub) CreateSession(request *http.Request, st *SessionToken) *Session {
 		sid := NewRandomString(32)
 		id, _ := h.tickets.Encode("id", sid)
 		session = NewSession(h, id, sid)
-		log.Println("Created new session id", len(id), id, sid)
+		log.Println("Created new session id", id)
 	} else {
 		if userid == "" {
 			userid = st.Userid
@@ -235,6 +233,23 @@ func (h *Hub) CreateSession(request *http.Request, st *SessionToken) *Session {
 		h.authenticateHandler(session, st, userid)
 	}
 
+	return session
+
+}
+
+func (h *Hub) CreateFakeSession(userid string) *Session {
+
+	h.mutex.Lock()
+	session, ok := h.fakesessionTable[userid]
+	if !ok {
+		sid := fmt.Sprintf("fake-%s", NewRandomString(27))
+		id, _ := h.tickets.Encode("id", sid)
+		log.Println("Created new fake session id", id)
+		session = NewSession(h, id, sid)
+		session.SetUseridFake(userid)
+		h.fakesessionTable[userid] = session
+	}
+	h.mutex.Unlock()
 	return session
 
 }
@@ -376,23 +391,20 @@ func (h *Hub) unregisterHandler(c *Connection) {
 		h.mutex.Unlock()
 		return
 	}
-	session := c.Session
-	suserid := session.Userid()
+	suserid := c.Session.Userid()
 	delete(h.connectionTable, c.Id)
 	delete(h.sessionTable, c.Id)
-	if session != nil && suserid != "" {
+	if suserid != "" {
 		user, ok := h.userTable[suserid]
 		if ok {
-			empty := user.RemoveSession(session)
+			empty := user.RemoveSession(c.Session)
 			if empty {
 				delete(h.userTable, suserid)
 			}
 		}
 	}
 	h.mutex.Unlock()
-	if session != nil {
-		h.buddyImages.Delete(session.Id)
-	}
+	h.buddyImages.Delete(c.Id)
 	//log.Printf("Unregister (%d) from %s: %s\n", c.Idx, c.RemoteAddr, c.Id)
 	h.server.OnUnregister(c)
 	c.close()
@@ -456,10 +468,13 @@ func (h *Hub) sessionsHandler(c *Connection, srq *DataSessionsRequest, iid strin
 		user, ok := h.userTable[userid]
 		h.mutex.RUnlock()
 		if !ok {
-			return
+			// No user. Create fake session.
+			users = make([]*DataSession, 1, 1)
+			users[0] = h.CreateFakeSession(userid).Data()
+		} else {
+			// Add sessions for forein user.
+			users = user.SubscribeSessions(c.Session)
 		}
-		// Add sessions for forein user.
-		users = user.SessionsData()
 	case "session":
 		id, err := c.Session.attestation.Decode(srq.Token)
 		if err != nil {

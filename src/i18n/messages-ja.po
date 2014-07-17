@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-06-23 12:33+0200\n"
+"POT-Creation-Date: 2014-07-11 17:30+0200\n"
 "PO-Revision-Date: 2014-04-23 22:25+0100\n"
 "Last-Translator: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
@@ -17,6 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+msgid "Present a file"
+msgstr ""
 
 msgid "Share your screen"
 msgstr "画面を共有する."
@@ -44,9 +47,6 @@ msgstr ""
 
 msgid "Start chat"
 msgstr "チャットを始める"
-
-msgid "Start video call"
-msgstr "テレビ電話を始める"
 
 msgid "Start audio conference"
 msgstr "音声会議を始める"
@@ -84,6 +84,20 @@ msgstr "ピア・ツー・ピア"
 msgid "Close chat"
 msgstr "チャットを終える"
 
+msgid "Start video call"
+msgstr "テレビ電話を始める"
+
+#, fuzzy
+msgid "Upload files"
+msgstr "ダウンロード失敗."
+
+msgid "Share my location"
+msgstr ""
+
+#, fuzzy
+msgid "Clear chat"
+msgstr "チャットを始める"
+
 msgid "is typing..."
 msgstr "は入力中です..."
 
@@ -95,6 +109,12 @@ msgstr "ここに入力してチャット開始します..."
 
 msgid "Send"
 msgstr "送信"
+
+msgid "You have no contacts."
+msgstr ""
+
+msgid "Close"
+msgstr "閉じる"
 
 msgid "File sharing"
 msgstr "ファイル共有"
@@ -116,6 +136,30 @@ msgstr "リトライ"
 
 msgid "Download failed."
 msgstr "ダウンロード失敗."
+
+msgid "Loading presentation ..."
+msgstr ""
+
+msgid "Please upload a PDF document"
+msgstr ""
+
+msgid "Documents are shared with everyone in this call."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "You can drag files here too."
+msgstr ""
+
+msgid "Presentation controls"
+msgstr ""
+
+msgid "Prev"
+msgstr ""
+
+msgid "Next"
+msgstr ""
 
 msgid "Change room"
 msgstr "ルームチェンジ"
@@ -174,16 +218,22 @@ msgid ""
 "certificate from the browser."
 msgstr ""
 
-msgid "Login"
+msgid "Sign in"
 msgstr ""
 
-msgid "Register account"
+msgid "Create an account"
 msgstr ""
 
-msgid "Log out"
+msgid "Sign out"
 msgstr ""
 
 msgid "Manage account"
+msgstr ""
+
+msgid "Contacts"
+msgstr ""
+
+msgid "Manage contacts"
 msgstr ""
 
 msgid "Media"
@@ -259,9 +309,6 @@ msgid ""
 "Your ID will still be kept - press the log out button above to delete the"
 " ID."
 msgstr ""
-
-msgid "Close"
-msgstr "閉じる"
 
 msgid "Share by Email"
 msgstr "Eメールでシェア"
@@ -349,31 +396,15 @@ msgstr "ここをクリックしてヘルプ表示(Google Chrome)"
 msgid "Please set your user details and settings."
 msgstr "あなたのプロフィールとアプリの動作を設定してください."
 
-msgid ""
-"Please note that some settings require you to reload or to make a new "
-"call to become effective."
-msgstr "いくつかの設定は、再読み込みもしくは次回の発信から有効です."
+msgid "Create a room and talk together"
+msgstr ""
 
-msgid "Create your room"
-msgstr "自分のルームを作成する"
-
-msgid "This is your room link:"
-msgstr "あなたのルームへのリンク:"
-
-msgid "Creating room link ..."
+#, fuzzy
+msgid "Creating room ..."
 msgstr "ルームへのリンクを作る..."
 
-msgid "Start"
-msgstr "開始"
-
-msgid "Just click start"
-msgstr "クリックして開始"
-
-msgid "Share this URL with the people you want to meet."
-msgstr "会いたい人とURLをシェアする."
-
-msgid "You can use and re-use this room as many times as you want."
-msgstr "ルームは何回でも好きなだけ使えます."
+msgid "Create"
+msgstr ""
 
 msgid "Peer to peer chat active."
 msgstr "ピア・ツー・ピア・チャットがアクティブです."
@@ -392,6 +423,12 @@ msgstr "あなたの共有ファイル:"
 
 msgid "Incoming file:"
 msgstr "受信中ファイル:"
+
+msgid "You shared your location:"
+msgstr ""
+
+msgid "Location received:"
+msgstr ""
 
 msgid "You accepted the contact request."
 msgstr ""
@@ -450,6 +487,10 @@ msgstr "は電話しようとしました."
 msgid " called you."
 msgstr "から電話がありました."
 
+#, fuzzy
+msgid "Your browser is not supported. Please upgrade to a current version."
+msgstr "ブラウザがファイル転送をサポートしていません."
+
 msgid "Your browser does not support WebRTC. No calls possible."
 msgstr "ブラウザがWebRTCをサポートしていない為通話はできません."
 
@@ -466,6 +507,39 @@ msgstr "あなたは%sのルームにいます..."
 msgid "Your browser does not support file transfer."
 msgstr "ブラウザがファイル転送をサポートしていません."
 
+msgid "Could not load PDF: Please make sure to select a PDF document."
+msgstr ""
+
+msgid "Could not load PDF: Missing PDF file."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while loading the PDF (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while loading the PDF."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while loading the PDF page (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while loading the PDF page."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while rendering the PDF page (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while rendering the PDF page."
+msgstr ""
+
+msgid "Only single PDF documents can be shared at this time."
+msgstr ""
+
+msgid "Only PDF documents can be shared at this time."
+msgstr ""
+
 msgid ""
 "Permission to start screen sharing was denied. Make sure to have enabled "
 "screen sharing access for your browser. Copy chrome://flags/#enable-"
@@ -478,6 +552,9 @@ msgstr ""
 
 msgid "Use browser language"
 msgstr "ブラウザの言語を使用"
+
+msgid "Contacts Manager"
+msgstr ""
 
 msgid "Meet with me here:"
 msgstr "ここで私と会う:"

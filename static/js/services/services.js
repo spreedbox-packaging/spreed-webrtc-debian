@@ -28,6 +28,7 @@ define([
 	'services/appdata',
 	'services/buddydata',
 	'services/buddylist',
+	'services/buddypicture',
 	'services/enrichmessage',
 	'services/safemessage',
 	'services/alertify',
@@ -48,7 +49,9 @@ define([
 	'services/contacts',
 	'services/buddysession',
 	'services/localstorage',
-	'services/animationframe'], function(_,
+	'services/animationframe',
+	'services/dialogs',
+	'services/geolocation'], function(_,
 desktopNotify,
 playSound,
 safeApply,
@@ -56,6 +59,7 @@ mediaStream,
 appData,
 buddyData,
 buddyList,
+buddyPicture,
 enrichMessage,
 safeMessage,
 alertify,
@@ -76,7 +80,9 @@ contactData,
 contacts,
 buddySession,
 localStorage,
-animationFrame) {
+animationFrame,
+dialogs,
+geolocation) {
 
 	var services = {
 		desktopNotify: desktopNotify,
@@ -86,6 +92,7 @@ animationFrame) {
 		appData: appData,
 		buddyData: buddyData,
 		buddyList: buddyList,
+		buddyPicture: buddyPicture,
 		enrichMessage: enrichMessage,
 		safeMessage: safeMessage,
 		alertify: alertify,
@@ -106,7 +113,9 @@ animationFrame) {
 		contacts: contacts,
 		buddySession: buddySession,
 		localStorage: localStorage,
-		animationFrame: animationFrame
+		animationFrame: animationFrame,
+		dialogs: dialogs,
+		geolocation: geolocation
 	};
 
 	var initialize = function(angModule) {

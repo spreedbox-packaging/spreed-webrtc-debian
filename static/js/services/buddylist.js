@@ -129,7 +129,7 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 	};
 
 	// buddyList
-	return ["$window", "$compile", "playSound", "buddyData", "buddySession", "fastScroll", "mediaStream", "animationFrame", "$q", function($window, $compile, playSound, buddyData, buddySession, fastScroll, mediaStream, animationFrame, $q) {
+	return ["$window", "$compile", "playSound", "buddyData", "buddySession", "buddyPicture", "fastScroll", "mediaStream", "animationFrame", "$q", function($window, $compile, playSound, buddyData, buddySession, buddyPicture, fastScroll, mediaStream, animationFrame, $q) {
 
 		var buddyTemplate = $compile(templateBuddy);
 		var buddyActions = $compile(templateBuddyActions);
@@ -378,55 +378,6 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 
 		};
 
-		Buddylist.prototype.updateBuddyPicture = function(status) {
-
-			url = status.buddyPicture;
-			if (!url) {
-				return;
-			}
-
-			if (url.indexOf("img:") === 0) {
-				status.buddyPicture = status.buddyPictureLocalUrl = mediaStream.url.buddy(url.substr(4));
-			}
-
-		};
-
-		Buddylist.prototype.dumpBuddyPictureToBlob = function(scope, data) {
-
-			if (!data) {
-				data = this.dumpBuddyPictureToString(scope);
-				if (!data) {
-					return null;
-				}
-			}
-			// NOTE(longsleep): toBlob is not widely supported narf ..
-			// see: https://code.google.com/p/chromium/issues/detail?id=67587
-			var parts = data.match(/data:([^;]*)(;base64)?,([0-9A-Za-z+\/]+)/);
-			var binStr = atob(parts[3]);
-			var buf = new ArrayBuffer(binStr.length);
-			var view = new Uint8Array(buf);
-			for (var i = 0; i < view.length; i++) {
-				view[i] = binStr.charCodeAt(i);
-			}
-			return new Blob([view], {'type': parts[1]});
-
-		};
-
-		Buddylist.prototype.dumpBuddyPictureToString = function(scope) {
-
-			var img = scope.element.find(".buddyPicture img").get(0);
-			if (img) {
-				var canvas = $window.document.createElement("canvas");
-				canvas.width = img.width;
-				canvas.height = img.height;
-				var ctx = canvas.getContext("2d");
-				ctx.drawImage(img, 0, 0);
-				return canvas.toDataURL("image/jpeg");
-			}
-			return null;
-
-		};
-
 		Buddylist.prototype.setDisplay = function(id, scope, data, queueName) {
 
 			var status = data.Status;
@@ -434,8 +385,7 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 			// Set display.name.
 			display.displayName = status.displayName;
 			// Set display.picture.
-			display.buddyPicture = status.buddyPicture;
-			this.updateBuddyPicture(display);
+			buddyPicture.update(display, status.buddyPicture);
 			// Set display subline.
 			this.updateSubline(display, status.message);
 			// Add to render queue when no element exists.
@@ -473,11 +423,9 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 			}
 			// Update display picture.
 			if (contact) {
-				display.buddyPicture = contact.buddyPicture || status.buddyPicture || null;
-				this.updateBuddyPicture(display);
+				buddyPicture.update(display, contact.buddyPicture || status.buddyPicture || null);
 			} else if (status.buddyPicture) {
-				display.buddyPicture = status.buddyPicture || null;
-				this.updateBuddyPicture(display);
+				buddyPicture.update(display, status.buddyPicture || null);
 			}
 
 		};
@@ -557,9 +505,6 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 				//console.warn("Trying to remove buddy with no registered scope", session);
 				return;
 			}
-			if (buddyCount > 0) {
-				buddyCount--;
-			}
 			// Remove current id from tree.
 			this.tree.remove(id);
 			buddyData.del(id);
@@ -576,6 +521,9 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 				}
 				delete this.actionElements[id];
 				scope.$destroy();
+				if (buddyCount > 0) {
+					buddyCount--;
+				}
 			} else {
 				// Update display stuff if a session is left. This can
 				// return no session in case when we got this as contact.
@@ -640,7 +588,7 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 						delete status.message;
 						// Convert buddy image.
 						if (status.buddyPicture) {
-							var img = this.dumpBuddyPictureToString(scope);
+							var img = buddyPicture.toString(scope.element.find(".buddyPicture img").get(0));
 							if (img) {
 								status.buddyPicture = img;
 							} else {
@@ -684,11 +632,17 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 
 		Buddylist.prototype.click = function(buddyElement, target) {
 
-			//console.log("click handler", buddyElement, target);
-			var action = $(target).data("action");
+			var be = buddyElement.get(0);
+			// Traverse up to find click action.
+			var action;
+			do {
+				action = $(target).data("action");
+				target = $(target).parent().get(0);
+			} while (!action && target && target !== be);
+
+			// Make call the default action.
 			if (!action) {
-				// Make call the default action.
-				action = "call";
+				action = "chat";
 			}
 
 			var scope = buddyElement.scope();
@@ -703,10 +657,29 @@ define(['underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!
 					if (contact && contact.Token) {
 						mediaStream.api.sendSessions(contact.Token, "contact", function(event, type, data) {
 							//console.log("oooooooooooooooo", type, data);
+							var tmpSessionData = null;
 							if (data.Users && data.Users.length > 0) {
-								var s = data.Users[0];
-								buddyData.set(s.Id, scope);
-								deferred.resolve(s.Id);
+								/*
+								_.each(data.Users, function(s) {
+									buddyData.set(s.Id, scope);
+									// NOTE(longsleep): Not sure if its a good idea to add the retrieved sessions here.
+									session.add(s.Id, s);
+								});
+								sessionData = session.get();
+								deferred.resolve(sessionData.Id);
+								*/
+								tmpSessionData = data.Users[0];
+							}
+							// Check if we got a session in the meantime.
+							sessionData = session.get();
+							if (!sessionData && tmpSessionData) {
+								// Use temporary session as received.
+								buddyData.set(tmpSessionData.Id, scope);
+								sessionData = tmpSessionData;
+							}
+							if (sessionData) {
+								// Resolve with whatever we found.
+								deferred.resolve(sessionData.Id);
 							}
 						});
 					}
