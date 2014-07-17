@@ -124,7 +124,7 @@ releasetest: dist_gopath test
 install:
 	echo $(BIN)
 	echo $(SHARE)
-	$(INSTALL) -d $(BIN) $(CONF)
+	$(INSTALL) -d $(BIN) $(CONFIG_DIR)
 	$(INSTALL) -d $(SHARE)/www/html
 	$(INSTALL) -d $(SHARE)/www/static
 	$(INSTALL) -d $(SHARE)/www/static/img
@@ -132,8 +132,9 @@ install:
 	$(INSTALL) -d $(SHARE)/www/static/fonts
 	$(INSTALL) -d $(SHARE)/www/static/translation
 	$(INSTALL) -d $(SHARE)/www/static/css
+	$(INSTALL) -d $(SHARE)/www/static/js/libs/pdf
 	$(INSTALL) $(DIST_BIN)/* $(BIN)
-	$(INSTALL) -m 644 server.conf.in $(CONF)/$(CONFIG_FILE)
+	$(INSTALL) -m 644 server.conf.in $(CONFIG_DIR)/$(CONFIG_FILE)
 	$(INSTALL) html/* $(SHARE)/www/html
 	$(INSTALL) static/img/* $(SHARE)/www/static/img
 	$(INSTALL) static/sounds/* $(SHARE)/www/static/sounds
@@ -142,6 +143,7 @@ install:
 	$(INSTALL) static/css/* $(SHARE)/www/static/css
 	$(INSTALL) -D static/js/libs/require/require.js $(SHARE)/www/static/js/libs/require/require.js
 	$(INSTALL) $(OUTPUT_JS)/*.js $(SHARE)/www/static/js
+	$(INSTALL) $(OUTPUT_JS)/libs/pdf/*.js $(SHARE)/www/static/js/libs/pdf
 
 clean:
 	GOPATH=$(GOPATH) $(GO) clean -i $(PKG)
@@ -168,8 +170,8 @@ dist_gopath: $(DIST_SRC)
 
 tarball: TARPATH = $(DIST)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)
 tarball: BIN = $(TARPATH)/loader
-tarball: CONF = $(TARPATH)/loader
-tarball: DOCS = $(CONF)/docs
+tarball: CONFIG_DIR = $(TARPATH)/loader
+tarball: DOCS = $(CONFIG_DIR)/docs
 tarball: SHARE = $(TARPATH)/
 tarball: distclean release install
 		echo -n $(PACKAGE_VERSION) > $(TARPATH)/version.txt

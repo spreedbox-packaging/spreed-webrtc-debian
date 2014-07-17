@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-06-23 12:33+0200\n"
-"PO-Revision-Date: 2014-06-23 12:37+0100\n"
+"POT-Creation-Date: 2014-07-11 17:30+0200\n"
+"PO-Revision-Date: 2014-07-11 17:31+0100\n"
 "Last-Translator: Simon Eisenmann <simon@struktur.de>\n"
 "Language-Team: struktur AG <opensource@struktur.de>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -17,6 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+msgid "Present a file"
+msgstr "Präsentation starten"
 
 msgid "Share your screen"
 msgstr "Bildschirm freigeben"
@@ -44,9 +47,6 @@ msgstr "Kiosk-Ansicht"
 
 msgid "Start chat"
 msgstr "Chat starten"
-
-msgid "Start video call"
-msgstr "Video-Anruf starten"
 
 msgid "Start audio conference"
 msgstr "Audio-Konferenz starten"
@@ -84,6 +84,18 @@ msgstr "Peer-to-peer"
 msgid "Close chat"
 msgstr "Chat schließen"
 
+msgid "Start video call"
+msgstr "Video-Anruf starten"
+
+msgid "Upload files"
+msgstr "Dateien hochladen"
+
+msgid "Share my location"
+msgstr "Meinen Standort teilen"
+
+msgid "Clear chat"
+msgstr "Chat löschen"
+
 msgid "is typing..."
 msgstr " schreibt gerade..."
 
@@ -95,6 +107,12 @@ msgstr "Nachricht hier eingeben..."
 
 msgid "Send"
 msgstr "Senden"
+
+msgid "You have no contacts."
+msgstr "Sie haben keine Kontakte."
+
+msgid "Close"
+msgstr "Schließen"
 
 msgid "File sharing"
 msgstr "Datei-Austausch"
@@ -116,6 +134,30 @@ msgstr "Nochmal versuchen"
 
 msgid "Download failed."
 msgstr "Fehler beim Download."
+
+msgid "Loading presentation ..."
+msgstr "Präsentation wird geladen..."
+
+msgid "Please upload a PDF document"
+msgstr "PDF-Dokument hochladen"
+
+msgid "Documents are shared with everyone in this call."
+msgstr "Das Dokument wird mit allen Gesprächsteilnehmern geteilt."
+
+msgid "Upload"
+msgstr "Hochladen"
+
+msgid "You can drag files here too."
+msgstr "Sie können Dateien auch hier hin ziehen."
+
+msgid "Presentation controls"
+msgstr "Präsentations-Steuerung"
+
+msgid "Prev"
+msgstr "Zurück"
+
+msgid "Next"
+msgstr "Vor"
 
 msgid "Change room"
 msgstr "Raum wechseln"
@@ -175,17 +217,23 @@ msgstr ""
 "Mit Zertifikat angemeldet. Melden Sie sich ab indem Sie das Zertifikat "
 "aus dem Browser entfernen."
 
-msgid "Login"
+msgid "Sign in"
 msgstr "Anmelden"
 
-msgid "Register account"
+msgid "Create an account"
 msgstr "Registrieren"
 
-msgid "Log out"
+msgid "Sign out"
 msgstr "Abmelden"
 
 msgid "Manage account"
 msgstr "Konto verwalten"
+
+msgid "Contacts"
+msgstr "Kontakte"
+
+msgid "Manage contacts"
+msgstr "Kontakte verwalten"
 
 msgid "Media"
 msgstr "Kamera / Mikrofon"
@@ -262,9 +310,6 @@ msgid ""
 msgstr ""
 "Ihre ID bleibt dennoch gespeichert. Klicken Sie Ausloggen weiter oben um "
 "die ID zu löschen."
-
-msgid "Close"
-msgstr "Schließen"
 
 msgid "Share by Email"
 msgstr "Per E-Mail teilen"
@@ -354,33 +399,14 @@ msgstr "Hier klicken für weitere Infos (Google Chrome)."
 msgid "Please set your user details and settings."
 msgstr "Bitte vervollständigen Sie Ihre Daten und Einstellungen."
 
-msgid ""
-"Please note that some settings require you to reload or to make a new "
-"call to become effective."
-msgstr ""
-"Bitte beachten Sie, dass einige Einstellungen erst nach einem Reload oder"
-" einem neuen Anruf aktiv werden."
-
-msgid "Create your room"
+msgid "Create a room and talk together"
 msgstr "Erstellen Sie Ihren Raum"
 
-msgid "This is your room link:"
-msgstr "Ihre Raum-Addresse:"
+msgid "Creating room ..."
+msgstr "Raum wird erstellt ..."
 
-msgid "Creating room link ..."
-msgstr "Raum-Link wird erstellt ..."
-
-msgid "Start"
-msgstr "Start"
-
-msgid "Just click start"
-msgstr "Klicken Sie auf Start"
-
-msgid "Share this URL with the people you want to meet."
-msgstr "Teilen Sie die Raum-Adresse mit anderen Kontakten."
-
-msgid "You can use and re-use this room as many times as you want."
-msgstr "Sie können diesen Raum so oft wieder benutzen wie Sie möchten."
+msgid "Create"
+msgstr "Erstellen"
 
 msgid "Peer to peer chat active."
 msgstr "Peer-to-peer Chat ist aktiv."
@@ -399,6 +425,12 @@ msgstr "Sie geben eine Datei frei:"
 
 msgid "Incoming file:"
 msgstr "Eingehende Datei:"
+
+msgid "You shared your location:"
+msgstr "Sie haben Ihren Standort geteilt:"
+
+msgid "Location received:"
+msgstr "Standort erhalten:"
 
 msgid "You accepted the contact request."
 msgstr "Sie haben die Kontaktanfrage angenommen."
@@ -459,6 +491,11 @@ msgstr " hat versucht Sie anzurufen."
 msgid " called you."
 msgstr " hat Sie angerufen."
 
+msgid "Your browser is not supported. Please upgrade to a current version."
+msgstr ""
+"Ihr Browser wird nicht unterstützt. Bitte aktualisieren Sie auf eine "
+"aktuelle Version."
+
 msgid "Your browser does not support WebRTC. No calls possible."
 msgstr "Ihr Browser unterstützt kein WebRTC. Keine Anrufe möglich."
 
@@ -475,6 +512,41 @@ msgstr "Sie sind nun im Raum %s ..."
 msgid "Your browser does not support file transfer."
 msgstr "Mit Ihrem Browser können keine Dateien übertragen werden."
 
+msgid "Could not load PDF: Please make sure to select a PDF document."
+msgstr ""
+"PDF konnte nicht geladen werden - Bitte stellen Sie sicher das Sie ein "
+"PDF ausgewählt haben."
+
+msgid "Could not load PDF: Missing PDF file."
+msgstr "Das PDF konnte nicht geladen werden: Datei fehlt."
+
+#, python-format
+msgid "An error occurred while loading the PDF (%s)."
+msgstr "Beim Laden des PDF's ist ein Fehler aufgetreten (%s)."
+
+msgid "An unknown error occurred while loading the PDF."
+msgstr "Beim Laden des PDF ist ein unbekannter Fehler aufgetreten."
+
+#, python-format
+msgid "An error occurred while loading the PDF page (%s)."
+msgstr "Beim Laden der PDF-Seite ist ein Fehler aufgetreten (%s)."
+
+msgid "An unknown error occurred while loading the PDF page."
+msgstr "Beim Laden der PDF-Seite ist ein unbekannter Fehler aufgetreten (%s)."
+
+#, python-format
+msgid "An error occurred while rendering the PDF page (%s)."
+msgstr "Beim Anzeigen der PDF-Seite ist ein Fehler aufgetreten (%s)."
+
+msgid "An unknown error occurred while rendering the PDF page."
+msgstr "Beim Anzeigen der PDF-Seite ist ein ubekannter Fehler aufgetreten."
+
+msgid "Only single PDF documents can be shared at this time."
+msgstr "Bitte laden Sie nur eine Datei gleichzeitig."
+
+msgid "Only PDF documents can be shared at this time."
+msgstr "Es können nur PDF-Dokumente als Präsentation verwendet werden."
+
 msgid ""
 "Permission to start screen sharing was denied. Make sure to have enabled "
 "screen sharing access for your browser. Copy chrome://flags/#enable-"
@@ -490,6 +562,9 @@ msgstr ""
 
 msgid "Use browser language"
 msgstr "Browsereinstellung"
+
+msgid "Contacts Manager"
+msgstr "Kontakte"
 
 msgid "Meet with me here:"
 msgstr "Meeting:"

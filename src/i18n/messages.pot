@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-06-23 12:33+0200\n"
+"POT-Creation-Date: 2014-07-11 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,9 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
+
+msgid "Present a file"
+msgstr ""
 
 msgid "Share your screen"
 msgstr ""
@@ -43,9 +46,6 @@ msgid "Kiosk view"
 msgstr ""
 
 msgid "Start chat"
-msgstr ""
-
-msgid "Start video call"
 msgstr ""
 
 msgid "Start audio conference"
@@ -84,6 +84,18 @@ msgstr ""
 msgid "Close chat"
 msgstr ""
 
+msgid "Start video call"
+msgstr ""
+
+msgid "Upload files"
+msgstr ""
+
+msgid "Share my location"
+msgstr ""
+
+msgid "Clear chat"
+msgstr ""
+
 msgid "is typing..."
 msgstr ""
 
@@ -94,6 +106,12 @@ msgid "Type here to chat..."
 msgstr ""
 
 msgid "Send"
+msgstr ""
+
+msgid "You have no contacts."
+msgstr ""
+
+msgid "Close"
 msgstr ""
 
 msgid "File sharing"
@@ -115,6 +133,30 @@ msgid "Retry"
 msgstr ""
 
 msgid "Download failed."
+msgstr ""
+
+msgid "Loading presentation ..."
+msgstr ""
+
+msgid "Please upload a PDF document"
+msgstr ""
+
+msgid "Documents are shared with everyone in this call."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "You can drag files here too."
+msgstr ""
+
+msgid "Presentation controls"
+msgstr ""
+
+msgid "Prev"
+msgstr ""
+
+msgid "Next"
 msgstr ""
 
 msgid "Change room"
@@ -173,16 +215,22 @@ msgid ""
 "certificate from the browser."
 msgstr ""
 
-msgid "Login"
+msgid "Sign in"
 msgstr ""
 
-msgid "Register account"
+msgid "Create an account"
 msgstr ""
 
-msgid "Log out"
+msgid "Sign out"
 msgstr ""
 
 msgid "Manage account"
+msgstr ""
+
+msgid "Contacts"
+msgstr ""
+
+msgid "Manage contacts"
 msgstr ""
 
 msgid "Media"
@@ -257,9 +305,6 @@ msgstr ""
 msgid ""
 "Your ID will still be kept - press the log out button above to delete the"
 " ID."
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Share by Email"
@@ -348,30 +393,13 @@ msgstr ""
 msgid "Please set your user details and settings."
 msgstr ""
 
-msgid ""
-"Please note that some settings require you to reload or to make a new "
-"call to become effective."
+msgid "Create a room and talk together"
 msgstr ""
 
-msgid "Create your room"
+msgid "Creating room ..."
 msgstr ""
 
-msgid "This is your room link:"
-msgstr ""
-
-msgid "Creating room link ..."
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "Just click start"
-msgstr ""
-
-msgid "Share this URL with the people you want to meet."
-msgstr ""
-
-msgid "You can use and re-use this room as many times as you want."
+msgid "Create"
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -390,6 +418,12 @@ msgid "You share file:"
 msgstr ""
 
 msgid "Incoming file:"
+msgstr ""
+
+msgid "You shared your location:"
+msgstr ""
+
+msgid "Location received:"
 msgstr ""
 
 msgid "You accepted the contact request."
@@ -449,6 +483,9 @@ msgstr ""
 msgid " called you."
 msgstr ""
 
+msgid "Your browser is not supported. Please upgrade to a current version."
+msgstr ""
+
 msgid "Your browser does not support WebRTC. No calls possible."
 msgstr ""
 
@@ -465,6 +502,39 @@ msgstr ""
 msgid "Your browser does not support file transfer."
 msgstr ""
 
+msgid "Could not load PDF: Please make sure to select a PDF document."
+msgstr ""
+
+msgid "Could not load PDF: Missing PDF file."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while loading the PDF (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while loading the PDF."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while loading the PDF page (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while loading the PDF page."
+msgstr ""
+
+#, python-format
+msgid "An error occurred while rendering the PDF page (%s)."
+msgstr ""
+
+msgid "An unknown error occurred while rendering the PDF page."
+msgstr ""
+
+msgid "Only single PDF documents can be shared at this time."
+msgstr ""
+
+msgid "Only PDF documents can be shared at this time."
+msgstr ""
+
 msgid ""
 "Permission to start screen sharing was denied. Make sure to have enabled "
 "screen sharing access for your browser. Copy chrome://flags/#enable-"
@@ -473,6 +543,9 @@ msgid ""
 msgstr ""
 
 msgid "Use browser language"
+msgstr ""
+
+msgid "Contacts Manager"
 msgstr ""
 
 msgid "Meet with me here:"

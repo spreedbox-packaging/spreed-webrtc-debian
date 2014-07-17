@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/contactrequest.html'], function(_, moment, templateFileInfo, templateContactRequest) {
+define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/contactrequest.html', 'text!partials/geolocation.html'], function(_, moment, templateFileInfo, templateContactRequest, templateGeolocation) {
 
 	// ChatroomController
 	return ["$scope", "$element", "$window", "safeMessage", "safeDisplayName", "$compile", "$filter", "translation", function($scope, $element, $window, safeMessage, safeDisplayName, $compile, $filter, translation) {
@@ -26,6 +26,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/co
 		$scope.outputElement = $(".output", $element);
 		$scope.inputElement = $(".input", $element);
 		$scope.bodyElement = $(".chatbody", $element);
+		$scope.menuElement = $(".chatmenu", $element);
 		var lastSender = null;
 		var lastDate = null;
 		var lastMessageContainer = null;
@@ -46,6 +47,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/co
 		var buddyImageSrc = $filter("buddyImageSrc");
 		var fileInfo = $compile(templateFileInfo);
 		var contactRequest = $compile(templateContactRequest);
+		var geoLocation = $compile(templateGeolocation);
 
 		var knowMessage = {
 			r: {},
@@ -350,9 +352,15 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/co
 		};
 
 		$scope.$on("seen", function() {
-
 			knowMessage.seen();
+		});
 
+		$scope.$on("clear", function() {
+			knowMessage.seen();
+			lastSender = null;
+			lastDate = null;
+			lastMessageContainer = null;
+			$scope.outputElement.empty();
 		});
 
 		$scope.$on("p2p", function(event, state) {
@@ -367,9 +375,7 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/co
 		});
 
 		$scope.$on("focus", function() {
-
 			$scope.focus();
-
 		});
 
 		$scope.$on("received", function(event, from, data) {
@@ -448,6 +454,18 @@ define(['underscore', 'moment', 'text!partials/fileinfo.html', 'text!partials/co
 							subscope.from = from;
 							fileInfo(subscope, function(clonedElement, scope) {
 								var text = fromself ? translation._("You share file:") : translation._("Incoming file:");
+								element = $scope.showmessage(from, timestamp, text, clonedElement);
+							});
+							noop = true;
+						}
+
+						// Geolocation sharing.
+						if (data.Status.Geolocation) {
+							subscope = $scope.$new();
+							subscope.info = data.Status.Geolocation;
+							subscope.from = from;
+							geoLocation(subscope, function(clonedElement, scope) {
+								var text = fromself ? translation._("You shared your location:") : translation._("Location received:");
 								element = $scope.showmessage(from, timestamp, text, clonedElement);
 							});
 							noop = true;

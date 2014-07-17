@@ -20,7 +20,7 @@
  */
 define(['underscore', 'text!partials/chat.html', 'text!partials/chatroom.html'], function(_, templateChat, templateChatroom) {
 
-	return ["$compile", "safeDisplayName", "mediaStream", "safeApply", "desktopNotify", "translation", "playSound", "fileUpload", "randomGen", "buddyData", "appData", "$timeout", function($compile, safeDisplayName, mediaStream, safeApply, desktopNotify, translation, playSound, fileUpload, randomGen, buddyData, appData, $timeout) {
+	return ["$compile", "safeDisplayName", "mediaStream", "safeApply", "desktopNotify", "translation", "playSound", "fileUpload", "randomGen", "buddyData", "appData", "$timeout", "geolocation", function($compile, safeDisplayName, mediaStream, safeApply, desktopNotify, translation, playSound, fileUpload, randomGen, buddyData, appData, $timeout, geolocation) {
 
 		var displayName = safeDisplayName;
 		var group_chat_id = "";
@@ -293,6 +293,29 @@ define(['underscore', 'text!partials/chat.html', 'text!partials/chatroom.html'],
 								subscope.$broadcast("p2p", state);
 							}
 						};
+						subscope.doCall = function() {
+							mediaStream.webrtc.doCall(subscope.id);
+						};
+						subscope.shareGeolocation = function() {
+							geolocation.getCurrentPosition(function(pos) {
+								var info = {
+									accuracy: pos.coords.accuracy || null,
+									latitude: pos.coords.latitude || null,
+									longitude: pos.coords.longitude || null,
+									altitude: pos.coords.altitude || null,
+									altitudeAccuracy: pos.coords.altitudeAccuracy || null
+								}
+								console.log("Sending geo location", info, pos);
+								subscope.sendChat(subscope.id, "Geolocation", {
+										Geolocation: info
+								});
+							}, function(err) {
+								console.error("Failed to receive geolocation", err);
+							});
+						};
+						subscope.doClear = function() {
+							subscope.$broadcast("clear");
+						};
 						//console.log("Creating new chat room", controller, subscope, index);
 						subscope.$on("submit", function(event, input) {
 							subscope.seen();
@@ -366,11 +389,8 @@ define(['underscore', 'text!partials/chat.html', 'text!partials/chatroom.html'],
 								});
 							}
 
-							// Support drag and drop file uploads in Chat.
-							var namespace = "file_" + scope.id;
-							var binder = fileUpload.bindDrop(namespace, clonedElement, _.bind(function(files) {
-								console.log("File dragged", files);
-								_.each(files, _.bind(function(f) {
+							var sendFiles = function(files) {
+								_.each(files, function(f) {
 									var info = $.extend({
 										id: f.id
 									}, f.info);
@@ -378,9 +398,20 @@ define(['underscore', 'text!partials/chat.html', 'text!partials/chatroom.html'],
 									$scope.sendChat(subscope.id, "File", {
 										FileInfo: info
 									});
-								}, this));
+								});
+							};
+
+							// Support drag and drop file uploads in Chat.
+							var namespace = "file_" + scope.id;
+							var binderDrop = fileUpload.bindDrop(namespace, clonedElement, _.bind(function(files) {
+								console.log("File dragged", files);
+								sendFiles(files);
 							}, this));
-							binder.namespace = function() {
+							var binderClick = fileUpload.bindClick(namespace, $(".btn-fileupload", clonedElement), _.bind(function(files) {
+								console.log("Click found files", files);
+								sendFiles(files);
+							}, this));
+							binderDrop.namespace = binderClick.namespace = function() {
 								// Inject own id into namespace.
 								return namespace + "_" + scope.myid;
 							};
