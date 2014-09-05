@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-07-11 17:30+0200\n"
+"POT-Creation-Date: 2014-09-05 16:08+0200\n"
 "PO-Revision-Date: 2014-05-21 09:55+0800\n"
 "Last-Translator: Michael P.\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-msgid "Present a file"
+msgid "Share a YouTube video"
+msgstr ""
+
+msgid "Share a file as presentation"
 msgstr ""
 
 msgid "Share your screen"
@@ -26,6 +29,9 @@ msgstr "共享您的屏幕"
 
 msgid "Chat"
 msgstr "聊天"
+
+msgid "Contacts"
+msgstr ""
 
 msgid "Mute microphone"
 msgstr "關閉麥克風"
@@ -48,6 +54,9 @@ msgstr ""
 msgid "Start chat"
 msgstr "開始聊天"
 
+msgid "Start video call"
+msgstr "開始視頻通話"
+
 msgid "Start audio conference"
 msgstr "開始語音會議"
 
@@ -69,8 +78,29 @@ msgstr ""
 msgid "Take picture"
 msgstr "拍照"
 
+#, fuzzy
+msgid "Upload picture"
+msgstr "您的圖片"
+
 msgid "Waiting for camera"
 msgstr "等待啟動攝像頭"
+
+#, fuzzy
+msgid "Picture"
+msgstr "您的圖片"
+
+msgid "The file couldn't be read."
+msgstr ""
+
+msgid "The file is not an image."
+msgstr ""
+
+#, python-format
+msgid "The file is too large. Max. %d MB."
+msgstr ""
+
+msgid "Select file"
+msgstr ""
 
 msgid "Chat sessions"
 msgstr "會話"
@@ -83,9 +113,6 @@ msgstr "P2P"
 
 msgid "Close chat"
 msgstr "關閉聊天"
-
-msgid "Start video call"
-msgstr "開始視頻通話"
 
 #, fuzzy
 msgid "Upload files"
@@ -110,7 +137,33 @@ msgstr "在此輸入開始聊天..."
 msgid "Send"
 msgstr "發送"
 
+msgid "Accept"
+msgstr ""
+
+msgid "Reject"
+msgstr "拒絕"
+
 msgid "You have no contacts."
+msgstr ""
+
+msgid ""
+"To add new contacts, join a room and create a contact add request by "
+"clicking on the star icon next to a user entry."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Name"
+msgstr "名字"
+
+msgid "Remove"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Close"
@@ -140,10 +193,12 @@ msgstr "下載失敗"
 msgid "Loading presentation ..."
 msgstr ""
 
-msgid "Please upload a PDF document"
+msgid "Please upload a document"
 msgstr ""
 
-msgid "Documents are shared with everyone in this call."
+msgid ""
+"Documents are shared with everyone in this call. The supported file types"
+" are PDF and OpenDocument files."
 msgstr ""
 
 msgid "Upload"
@@ -185,28 +240,6 @@ msgstr "適合屏幕"
 msgid "Profile"
 msgstr ""
 
-msgid "Your picture"
-msgstr "您的圖片"
-
-msgid "Your name"
-msgstr "您的名字"
-
-msgid "Name"
-msgstr "名字"
-
-msgid "Status message"
-msgstr ""
-
-msgid "What's on your mind?"
-msgstr ""
-
-#, fuzzy
-msgid "Profile information is public."
-msgstr "需要更多信息"
-
-msgid "Account"
-msgstr ""
-
 msgid "Your ID"
 msgstr ""
 
@@ -230,7 +263,21 @@ msgstr ""
 msgid "Manage account"
 msgstr ""
 
-msgid "Contacts"
+msgid "Your picture"
+msgstr "您的圖片"
+
+msgid "Your name"
+msgstr "您的名字"
+
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
 msgstr ""
 
 msgid "Manage contacts"
@@ -256,6 +303,9 @@ msgstr "高"
 
 msgid "HD"
 msgstr "高清"
+
+msgid "General"
+msgstr ""
 
 msgid "Language"
 msgstr "語言"
@@ -292,9 +342,6 @@ msgstr "最大視頻幀速率"
 
 msgid "auto"
 msgstr "自動"
-
-msgid "Experimental settings"
-msgstr "試驗設置"
 
 msgid "Show advanced settings"
 msgstr "展開高級設置"
@@ -364,14 +411,8 @@ msgstr "來自"
 msgid "Accept call"
 msgstr "接受通話"
 
-msgid "Reject"
-msgstr "拒絕"
-
 msgid "Waiting for camera/microphone access"
 msgstr "等待攝像頭/麥克風連接"
-
-msgid "Please wait"
-msgstr "請等候"
 
 msgid "Checking camera and microphone access."
 msgstr "正在檢查攝像頭及麥克風連接"
@@ -404,6 +445,30 @@ msgid "Creating room ..."
 msgstr "創建房間連接 ..."
 
 msgid "Create"
+msgstr ""
+
+msgid "Videos are shared with everyone in this call."
+msgstr ""
+
+msgid "YouTube URL"
+msgstr ""
+
+#, fuzzy
+msgid "Share"
+msgstr "停止分享"
+
+msgid ""
+"Could not load YouTube player API, please check your network / firewall "
+"settings."
+msgstr ""
+
+msgid "Currently playing"
+msgstr ""
+
+msgid "YouTube controls"
+msgstr ""
+
+msgid "YouTube video to share"
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -448,7 +513,13 @@ msgstr ""
 msgid "Your contact request was rejected."
 msgstr ""
 
+msgid "Edit Contact"
+msgstr ""
+
 msgid "Close this window and disconnect?"
+msgstr ""
+
+msgid "Contacts Manager"
 msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
@@ -534,10 +605,11 @@ msgstr ""
 msgid "An unknown error occurred while rendering the PDF page."
 msgstr ""
 
-msgid "Only single PDF documents can be shared at this time."
+msgid "Only PDF documents and OpenDocument files can be shared at this time."
 msgstr ""
 
-msgid "Only PDF documents can be shared at this time."
+#, python-format
+msgid "Failed to start screen sharing (%s)."
 msgstr ""
 
 msgid ""
@@ -549,14 +621,17 @@ msgstr ""
 "啟動屏幕共享許可被拒絕。請確認您已開啟瀏覽器屏幕共享連接。請復制chrome://flags/#enable-usermedia-screen-"
 "capture並用您的瀏覽器打開，啟用最上端的功能。然後重啟瀏覽器，操作完成。"
 
+msgid "Permission to start screen sharing was denied."
+msgstr ""
+
 msgid "Use browser language"
 msgstr "使用瀏覽器語言"
 
-msgid "Contacts Manager"
-msgstr ""
-
 msgid "Meet with me here:"
 msgstr "我們這裡見："
+
+msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
+msgstr ""
 
 msgid "Error"
 msgstr "錯誤"
@@ -572,6 +647,11 @@ msgstr "需要更多信息"
 
 msgid "Ok"
 msgstr "Ok"
+
+msgid ""
+"Screen sharing requires a browser extension. Please add the Spreed WebRTC"
+" screen sharing extension to Chrome and try again."
+msgstr ""
 
 msgid "Access code required"
 msgstr "需要接入碼"

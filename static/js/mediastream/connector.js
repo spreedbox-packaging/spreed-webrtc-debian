@@ -29,9 +29,9 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 		this.e = $({});
 		this.error = false;
 		this.connected = false;
-		this.disabled = false;
 		this.connecting = null;
 		this.connecting_timeout = timeout;
+		this.disabled = false;
 
 		this.token = null;
 		this.queue = [];
@@ -120,7 +120,7 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 
 	};
 
-	Connector.prototype.room = function(roomid, cb) {
+	Connector.prototype.room = function(roomid) {
 
 		var was_connected = this.connected;
 
@@ -136,10 +136,6 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 		this.roomid = roomid;
 		roomid = this.roomid ? this.roomid : "";
 
-		if (cb) {
-			cb();
-		}
-
 		this.send({
 			Type: "Hello",
 			Hello: {
@@ -147,7 +143,8 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 				Ua: this.userAgent,
 				Id: roomid
 			}
-		});
+		}, true);
+		this.e.triggerHandler("helloed", [roomid]);
 
 		if (was_connected) {
 			this.e.triggerHandler("open", [{
@@ -162,12 +159,10 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 		window.clearTimeout(this.connecting);
 		this.connecting_timeout = timeout;
 
-		//console.log("onopen", event);
+		// Connection successfully established.
 		console.info("Connector on connection open.");
-		this.room(this.roomid, _.bind(function() {
-			this.connected = true;
-		}, this));
-		this.e.triggerHandler("open", [event]);
+		this.connected = true;
+		this.e.triggerHandler("open", [null, event]);
 
 		// Send out stuff which was previously queued.
 		var data;
@@ -175,6 +170,8 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 			data = this.queue.shift();
 			this.send(data);
 		}
+
+		this.e.triggerHandler("opened");
 
 	};
 
@@ -187,7 +184,7 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 		console.warn("Connector on connection error.");
 		this.error = true;
 		this.close();
-		this.e.triggerHandler("error", [event]);
+		this.e.triggerHandler("error", [null, event]);
 
 	};
 
@@ -200,9 +197,9 @@ define(['jquery', 'underscore', 'ua-parser'], function($, _, uaparser) {
 		console.info("Connector on connection close.", event, this.error);
 		this.close();
 		if (!this.error) {
-			this.e.triggerHandler("close", [event]);
+			this.e.triggerHandler("close", [null, event]);
 		}
-		this.e.triggerHandler("closed", [event]);
+		this.e.triggerHandler("closed", [null, event]);
 
 	};
 

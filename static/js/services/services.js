@@ -51,7 +51,12 @@ define([
 	'services/localstorage',
 	'services/animationframe',
 	'services/dialogs',
-	'services/geolocation'], function(_,
+	'services/geolocation',
+	'services/screensharing',
+	'services/continueconnector',
+	'services/chromeextension',
+	'services/usersettingsdata',
+	'services/localstatus'], function(_,
 desktopNotify,
 playSound,
 safeApply,
@@ -82,7 +87,12 @@ buddySession,
 localStorage,
 animationFrame,
 dialogs,
-geolocation) {
+geolocation,
+screensharing,
+continueConnector,
+chromeExtension,
+userSettingsData,
+localStatus) {
 
 	var services = {
 		desktopNotify: desktopNotify,
@@ -115,14 +125,19 @@ geolocation) {
 		localStorage: localStorage,
 		animationFrame: animationFrame,
 		dialogs: dialogs,
-		geolocation: geolocation
+		geolocation: geolocation,
+		screensharing: screensharing,
+		continueConnector: continueConnector,
+		chromeExtension: chromeExtension,
+		userSettingsData: userSettingsData,
+		localStatus: localStatus
 	};
 
 	var initialize = function(angModule) {
 		_.each(services, function(service, name) {
 			angModule.factory(name, service);
 		})
-	}
+	};
 
 	return {
 		initialize: initialize

@@ -21,7 +21,7 @@
 define([], function() {
 
 	// RoomchangeController
-	return ["$scope", "$element", "$window", "$location", "mediaStream", "$http", "$timeout", function($scope, $element, $window, $location, mediaStream, $http, $timeout) {
+	return ["$scope", "$element", "$window", "mediaStream", "$http", "$timeout", function($scope, $element, $window, mediaStream, $http, $timeout) {
 
 		//console.log("Room change controller", $element, $scope.roomdata);
 
@@ -49,9 +49,7 @@ define([], function() {
 		};
 
 		$scope.changeRoomToId = function(id) {
-			var roomid = $window.encodeURIComponent(id);
-			$location.path("/" + roomid);
-			return roomid;
+			return mediaStream.changeRoom(id);
 		};
 
 		$scope.refreshRoom = function() {
@@ -59,6 +57,7 @@ define([], function() {
 				ctrl.getRoom(function(roomdata) {
 					console.info("Retrieved room data", roomdata);
 					$scope.roomdata = roomdata;
+					$element.find(".btn-roomcreate").get(0).focus();
 				});
 			}
 		};
@@ -70,7 +69,10 @@ define([], function() {
 
 		$scope.roomdata = {};
 		$scope.$watch("roomdata.name", function(n) {
-			console.log("roomdata.name changed", n);
+			//console.log("roomdata.name changed", n);
+			if (!n) {
+				n = "";
+			}
 			var u = encodeURIComponent(n);
 			$scope.roomdata.url = "/" + u;
 			$scope.roomdata.link = mediaStream.url.room(n);

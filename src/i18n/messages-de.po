@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-07-11 17:30+0200\n"
-"PO-Revision-Date: 2014-07-11 17:31+0100\n"
+"POT-Creation-Date: 2014-09-05 16:08+0200\n"
+"PO-Revision-Date: 2014-09-05 16:10+0100\n"
 "Last-Translator: Simon Eisenmann <simon@struktur.de>\n"
 "Language-Team: struktur AG <opensource@struktur.de>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -18,14 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-msgid "Present a file"
-msgstr "Präsentation starten"
+msgid "Share a YouTube video"
+msgstr "Ein YouTube Video teilen"
+
+msgid "Share a file as presentation"
+msgstr "Datei als Präsentation teilen."
 
 msgid "Share your screen"
 msgstr "Bildschirm freigeben"
 
 msgid "Chat"
 msgstr "Chat"
+
+msgid "Contacts"
+msgstr "Kontakte"
 
 msgid "Mute microphone"
 msgstr "Mikrofon abschalten"
@@ -48,6 +54,9 @@ msgstr "Kiosk-Ansicht"
 msgid "Start chat"
 msgstr "Chat starten"
 
+msgid "Start video call"
+msgstr "Video-Anruf starten"
+
 msgid "Start audio conference"
 msgstr "Audio-Konferenz starten"
 
@@ -69,8 +78,27 @@ msgstr "Als Bild setzen"
 msgid "Take picture"
 msgstr "Bild machen"
 
+msgid "Upload picture"
+msgstr "Bild hochladen"
+
 msgid "Waiting for camera"
 msgstr "Warte auf die Kamera"
+
+msgid "Picture"
+msgstr "Bild"
+
+msgid "The file couldn't be read."
+msgstr "Die Datei konnte nicht geöffnet werden."
+
+msgid "The file is not an image."
+msgstr "Diese Datei ist kein Bild."
+
+#, python-format
+msgid "The file is too large. Max. %d MB."
+msgstr "Diese Datei ist zu groß. Max. %d MB."
+
+msgid "Select file"
+msgstr "Datei wählen"
 
 msgid "Chat sessions"
 msgstr "Chat-Sitzungen"
@@ -83,9 +111,6 @@ msgstr "Peer-to-peer"
 
 msgid "Close chat"
 msgstr "Chat schließen"
-
-msgid "Start video call"
-msgstr "Video-Anruf starten"
 
 msgid "Upload files"
 msgstr "Dateien hochladen"
@@ -108,8 +133,36 @@ msgstr "Nachricht hier eingeben..."
 msgid "Send"
 msgstr "Senden"
 
+msgid "Accept"
+msgstr "Akzeptieren"
+
+msgid "Reject"
+msgstr "Abweisen"
+
 msgid "You have no contacts."
 msgstr "Sie haben keine Kontakte."
+
+msgid ""
+"To add new contacts, join a room and create a contact add request by "
+"clicking on the star icon next to a user entry."
+msgstr ""
+"Betreten Sie einen Raum und klicken dann auf das Stern-Symbol eines "
+"anderen Nutzers um eine Kontaktanfrage zu starten."
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Remove"
+msgstr "Entfernen"
+
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+msgid "Save"
+msgstr "Speichern"
 
 msgid "Close"
 msgstr "Schließen"
@@ -138,17 +191,21 @@ msgstr "Fehler beim Download."
 msgid "Loading presentation ..."
 msgstr "Präsentation wird geladen..."
 
-msgid "Please upload a PDF document"
-msgstr "PDF-Dokument hochladen"
+msgid "Please upload a document"
+msgstr "Bitte Dokument hochladen"
 
-msgid "Documents are shared with everyone in this call."
-msgstr "Das Dokument wird mit allen Gesprächsteilnehmern geteilt."
+msgid ""
+"Documents are shared with everyone in this call. The supported file types"
+" are PDF and OpenDocument files."
+msgstr ""
+"Das Dokument wird mit allen Gesprächsteilnehmern geteilt. Unterstützt "
+"werden PDF und OpenDocument Dateien."
 
 msgid "Upload"
 msgstr "Hochladen"
 
 msgid "You can drag files here too."
-msgstr "Sie können Dateien auch hier hin ziehen."
+msgstr "Sie können Dateien auch hierhin ziehen."
 
 msgid "Presentation controls"
 msgstr "Präsentations-Steuerung"
@@ -183,27 +240,6 @@ msgstr "Bildschirm einpassen."
 msgid "Profile"
 msgstr "Profil"
 
-msgid "Your picture"
-msgstr "Ihr Bild"
-
-msgid "Your name"
-msgstr "Ihr Name"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Status message"
-msgstr "Status Nachricht"
-
-msgid "What's on your mind?"
-msgstr "Was machen Sie gerade?"
-
-msgid "Profile information is public."
-msgstr "Das Profil ist öffentlich."
-
-msgid "Account"
-msgstr "Konto"
-
 msgid "Your ID"
 msgstr "Ihre ID"
 
@@ -229,8 +265,24 @@ msgstr "Abmelden"
 msgid "Manage account"
 msgstr "Konto verwalten"
 
-msgid "Contacts"
-msgstr "Kontakte"
+msgid "Your picture"
+msgstr "Ihr Bild"
+
+msgid "Your name"
+msgstr "Ihr Name"
+
+msgid "Status message"
+msgstr "Status Nachricht"
+
+msgid "What's on your mind?"
+msgstr "Was machen Sie gerade?"
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
+msgstr ""
+"Ihr Bild, Name und Status Nachricht repräsentiert Sie in Anrufen, Chats "
+"und Räumen."
 
 msgid "Manage contacts"
 msgstr "Kontakte verwalten"
@@ -255,6 +307,9 @@ msgstr "Hoch"
 
 msgid "HD"
 msgstr "HD"
+
+msgid "General"
+msgstr "Allgemein"
 
 msgid "Language"
 msgstr "Sprache"
@@ -291,9 +346,6 @@ msgstr "Max. Bildwiederholrate"
 
 msgid "auto"
 msgstr "auto"
-
-msgid "Experimental settings"
-msgstr "Experimentelle Einstellungen"
 
 msgid "Show advanced settings"
 msgstr "Erweiterte Einstellungen anzeigen"
@@ -365,14 +417,8 @@ msgstr "von"
 msgid "Accept call"
 msgstr "Anruf annehmen"
 
-msgid "Reject"
-msgstr "Abweisen"
-
 msgid "Waiting for camera/microphone access"
 msgstr "Warte auf Kamera/Mikrofon Freigabe"
-
-msgid "Please wait"
-msgstr "Bitte warten"
 
 msgid "Checking camera and microphone access."
 msgstr "Prüfe Zugriff auf Kamera und Mikrofon."
@@ -408,6 +454,31 @@ msgstr "Raum wird erstellt ..."
 msgid "Create"
 msgstr "Erstellen"
 
+msgid "Videos are shared with everyone in this call."
+msgstr "Das Video wird bei allen Gesprächsteilnehmern angezeigt."
+
+msgid "YouTube URL"
+msgstr "YouTube URL"
+
+msgid "Share"
+msgstr "Teilen"
+
+msgid ""
+"Could not load YouTube player API, please check your network / firewall "
+"settings."
+msgstr ""
+"Es konnte keine Verbindung zu YouTube aufgebaut werden. Bitte prüfen Sie "
+"Ihre Internetverbindung / Firewall."
+
+msgid "Currently playing"
+msgstr "Aktuelles Video"
+
+msgid "YouTube controls"
+msgstr "YouTube Steuerung"
+
+msgid "YouTube video to share"
+msgstr "YouTube Video teilen"
+
 msgid "Peer to peer chat active."
 msgstr "Peer-to-peer Chat ist aktiv."
 
@@ -439,7 +510,7 @@ msgid "You rejected the contact request."
 msgstr "Sie haben die Kontaktanfrage abgelehnt."
 
 msgid "You sent a contact request."
-msgstr "Sie haben eine Kontatanfrage gesendet."
+msgstr "Sie haben eine Kontaktanfrage gesendet."
 
 msgid "Your contact request was accepted."
 msgstr "Ihre Kontaktanfrage wurde angenommen."
@@ -450,8 +521,14 @@ msgstr "Kontaktanfrage erhalten."
 msgid "Your contact request was rejected."
 msgstr "Ihre Kontaktanfrage wurde abgelehnt."
 
+msgid "Edit Contact"
+msgstr "Kontakt bearbeiten"
+
 msgid "Close this window and disconnect?"
 msgstr "Fenster schließen und die Verbindung trennen?"
+
+msgid "Contacts Manager"
+msgstr "Kontakte"
 
 msgid "Restart required to apply updates. Click ok to restart now."
 msgstr ""
@@ -541,11 +618,14 @@ msgstr "Beim Anzeigen der PDF-Seite ist ein Fehler aufgetreten (%s)."
 msgid "An unknown error occurred while rendering the PDF page."
 msgstr "Beim Anzeigen der PDF-Seite ist ein ubekannter Fehler aufgetreten."
 
-msgid "Only single PDF documents can be shared at this time."
-msgstr "Bitte laden Sie nur eine Datei gleichzeitig."
+msgid "Only PDF documents and OpenDocument files can be shared at this time."
+msgstr ""
+"Es können nur Dokumente im PDF oder OpenDocument-Format als Präsentation "
+"verwendet werden."
 
-msgid "Only PDF documents can be shared at this time."
-msgstr "Es können nur PDF-Dokumente als Präsentation verwendet werden."
+#, python-format
+msgid "Failed to start screen sharing (%s)."
+msgstr "Die Bildschirmfreigabe konnte nicht gestartet werden (%s)."
 
 msgid ""
 "Permission to start screen sharing was denied. Make sure to have enabled "
@@ -560,14 +640,17 @@ msgstr ""
 "Aktivieren Sie die oberste Einstellung und starten dann den Browser neu. "
 "Anschließend können Sie die Bildschirmfreigabe benutzen."
 
+msgid "Permission to start screen sharing was denied."
+msgstr "Die Berechtigung den Bildschirm freizugeben wurde verweigert."
+
 msgid "Use browser language"
 msgstr "Browsereinstellung"
 
-msgid "Contacts Manager"
-msgstr "Kontakte"
-
 msgid "Meet with me here:"
 msgstr "Meeting:"
+
+msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
+msgstr "Unbekanntes URL-Format. Bitte geben Sie eine gültige YouTube URL ein."
 
 msgid "Error"
 msgstr "Fehler"
@@ -583,6 +666,13 @@ msgstr "Weitere Informationen nötig"
 
 msgid "Ok"
 msgstr "Ok"
+
+msgid ""
+"Screen sharing requires a browser extension. Please add the Spreed WebRTC"
+" screen sharing extension to Chrome and try again."
+msgstr ""
+"Die Bildschrimfreigabe benötigt eine Browser-Erweiterung. Bitte fügen Sie"
+" die \"Spreed WebRTC screen sharing\" Erweiterung zu Chrome hinzu."
 
 msgid "Access code required"
 msgstr "Bitte Zugriffscode eingeben"

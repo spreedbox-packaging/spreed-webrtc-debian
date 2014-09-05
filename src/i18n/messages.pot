@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-07-11 17:30+0200\n"
+"POT-Creation-Date: 2014-09-05 16:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,13 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-msgid "Present a file"
+msgid "Share a YouTube video"
+msgstr ""
+
+msgid "Share a file as presentation"
 msgstr ""
 
 msgid "Share your screen"
 msgstr ""
 
 msgid "Chat"
+msgstr ""
+
+msgid "Contacts"
 msgstr ""
 
 msgid "Mute microphone"
@@ -48,6 +54,9 @@ msgstr ""
 msgid "Start chat"
 msgstr ""
 
+msgid "Start video call"
+msgstr ""
+
 msgid "Start audio conference"
 msgstr ""
 
@@ -69,7 +78,26 @@ msgstr ""
 msgid "Take picture"
 msgstr ""
 
+msgid "Upload picture"
+msgstr ""
+
 msgid "Waiting for camera"
+msgstr ""
+
+msgid "Picture"
+msgstr ""
+
+msgid "The file couldn't be read."
+msgstr ""
+
+msgid "The file is not an image."
+msgstr ""
+
+#, python-format
+msgid "The file is too large. Max. %d MB."
+msgstr ""
+
+msgid "Select file"
 msgstr ""
 
 msgid "Chat sessions"
@@ -82,9 +110,6 @@ msgid "Peer to peer"
 msgstr ""
 
 msgid "Close chat"
-msgstr ""
-
-msgid "Start video call"
 msgstr ""
 
 msgid "Upload files"
@@ -108,7 +133,33 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
+msgid "Accept"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
 msgid "You have no contacts."
+msgstr ""
+
+msgid ""
+"To add new contacts, join a room and create a contact add request by "
+"clicking on the star icon next to a user entry."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Close"
@@ -138,10 +189,12 @@ msgstr ""
 msgid "Loading presentation ..."
 msgstr ""
 
-msgid "Please upload a PDF document"
+msgid "Please upload a document"
 msgstr ""
 
-msgid "Documents are shared with everyone in this call."
+msgid ""
+"Documents are shared with everyone in this call. The supported file types"
+" are PDF and OpenDocument files."
 msgstr ""
 
 msgid "Upload"
@@ -183,27 +236,6 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-msgid "Your picture"
-msgstr ""
-
-msgid "Your name"
-msgstr ""
-
-msgid "Name"
-msgstr ""
-
-msgid "Status message"
-msgstr ""
-
-msgid "What's on your mind?"
-msgstr ""
-
-msgid "Profile information is public."
-msgstr ""
-
-msgid "Account"
-msgstr ""
-
 msgid "Your ID"
 msgstr ""
 
@@ -227,7 +259,21 @@ msgstr ""
 msgid "Manage account"
 msgstr ""
 
-msgid "Contacts"
+msgid "Your picture"
+msgstr ""
+
+msgid "Your name"
+msgstr ""
+
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
 msgstr ""
 
 msgid "Manage contacts"
@@ -252,6 +298,9 @@ msgid "High"
 msgstr ""
 
 msgid "HD"
+msgstr ""
+
+msgid "General"
 msgstr ""
 
 msgid "Language"
@@ -288,9 +337,6 @@ msgid "Max video frame rate"
 msgstr ""
 
 msgid "auto"
-msgstr ""
-
-msgid "Experimental settings"
 msgstr ""
 
 msgid "Show advanced settings"
@@ -361,13 +407,7 @@ msgstr ""
 msgid "Accept call"
 msgstr ""
 
-msgid "Reject"
-msgstr ""
-
 msgid "Waiting for camera/microphone access"
-msgstr ""
-
-msgid "Please wait"
 msgstr ""
 
 msgid "Checking camera and microphone access."
@@ -400,6 +440,29 @@ msgid "Creating room ..."
 msgstr ""
 
 msgid "Create"
+msgstr ""
+
+msgid "Videos are shared with everyone in this call."
+msgstr ""
+
+msgid "YouTube URL"
+msgstr ""
+
+msgid "Share"
+msgstr ""
+
+msgid ""
+"Could not load YouTube player API, please check your network / firewall "
+"settings."
+msgstr ""
+
+msgid "Currently playing"
+msgstr ""
+
+msgid "YouTube controls"
+msgstr ""
+
+msgid "YouTube video to share"
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -444,7 +507,13 @@ msgstr ""
 msgid "Your contact request was rejected."
 msgstr ""
 
+msgid "Edit Contact"
+msgstr ""
+
 msgid "Close this window and disconnect?"
+msgstr ""
+
+msgid "Contacts Manager"
 msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
@@ -529,10 +598,11 @@ msgstr ""
 msgid "An unknown error occurred while rendering the PDF page."
 msgstr ""
 
-msgid "Only single PDF documents can be shared at this time."
+msgid "Only PDF documents and OpenDocument files can be shared at this time."
 msgstr ""
 
-msgid "Only PDF documents can be shared at this time."
+#, python-format
+msgid "Failed to start screen sharing (%s)."
 msgstr ""
 
 msgid ""
@@ -542,13 +612,16 @@ msgid ""
 "flag on top. Then restart the browser and you are ready to go."
 msgstr ""
 
+msgid "Permission to start screen sharing was denied."
+msgstr ""
+
 msgid "Use browser language"
 msgstr ""
 
-msgid "Contacts Manager"
+msgid "Meet with me here:"
 msgstr ""
 
-msgid "Meet with me here:"
+msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
 msgstr ""
 
 msgid "Error"
@@ -564,6 +637,11 @@ msgid "More information required"
 msgstr ""
 
 msgid "Ok"
+msgstr ""
+
+msgid ""
+"Screen sharing requires a browser extension. Please add the Spreed WebRTC"
+" screen sharing extension to Chrome and try again."
 msgstr ""
 
 msgid "Access code required"

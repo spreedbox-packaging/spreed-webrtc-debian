@@ -19,50 +19,27 @@
  *
  */
 
-#bar {
-  left: 0;
-  min-height: $minbarheight;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 5;
-}
-
 .bar {
   background: $bar-background;
-  box-shadow: 0 2px 10px 0 $componentfg3;
   color: $componentfg1;
-  font: bold 1em/40px $font-sans-serif;
-  // without height bar jumps and disappears on reload, use em to scale with text.
-  height: #{$minbarheight/$base-font-size}em;
+  font: bold 1em/50px $font-sans-serif;
   text-align: center;
   touch-callout: none;
   user-select: none;
-  // @include debug-vertical-alignment();
-  @include breakpt($breakpoint-medium) {
-    z-index: 40;
-    box-shadow: none;
-  }
-  .btn {
-    position: relative;
-  }
+  z-index: 60;
 }
 
 .bar .left {
-  bottom: 0;
-  left: 0;
-  top: 0;
-  padding-left: 12px;
-  position: absolute;
+  padding: 5px 5px 5px 15px;
   .logo {
     background: $logo no-repeat;
     background-size: 100%;
     display: inline-block;
     color: black;
     height: 32px;
+    width: 90px;
     font: normal 11px/11px $font-sans-serif;
     text-align: left;
-    width: 90px;
     vertical-align: middle;
     span {
       font-style: italic;
@@ -73,38 +50,53 @@
     span a {
       color: $bar-logo-text-desc;
     }
+    @include breakpt($breakpoint-medium) {
+      background: $scalable-logo no-repeat center;
+      width: 46px;
+      height: 46px;
+      span {
+        display: none;
+      }
+    }
+  }
+  @include breakpt($breakpoint-medium) {
+    padding: 2px 5px 0px 11px;
   }
 }
 
 .bar .middle {
-  background-color: $componentbg;
-  display: inline-block;
-  font-weight: bold;
-  min-height: 44px;
-  padding: 0 1em;
-  position: relative;
-  margin-left: -70px;
-  z-index: 5;
-  @include breakpt($breakpoint-medium) {
-    display: block;
-    margin-left: 0px;
-    max-width: 40%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  position: absolute;
+  left: 0px;
+  right: 60px;
+  top: 0px;
+  pointer-events: none;
+  text-align: center;
+
+  > span {
+    display: inline-block;
+    background: $bar-background;
+    min-height: 50px;
+    pointer-events: auto;
   }
+
   .userpicture {
     border-radius: 2px;
     display: inline-block;
-    height: 46px;
-    margin: -5px .5em 0 .5em;
     width: 46px;
+    height: 46px;
+    margin: -1px .5em 0 .5em;
     @include breakpt($breakpoint-medium) {
       display: none;
     }
   }
-  &.status-connected,
-  &.status-conference {
+
+  .status-connected,
+  .status-conference,
+  .status-connecting,
+  .status-closed,
+  .status-reconnecting,
+  .status-error,
+  .status-ringing {
     @include breakpt($breakpoint-medium) {
       max-width: 100%;
       left: 0;
@@ -112,36 +104,17 @@
       right: 0;
     }
   }
-  &.status-connecting,
-  &.status-closed,
-  &.status-reconnecting,
-  &.status-error,
-  &.status-ringing  {
-    @include breakpt($breakpoint-medium) {
-      border-bottom: 1px solid $bordercolor;
-      max-width: 100%;
-      min-height: 45px;
-    }
-  }
-  // TODO(theurere): cleanup
-  &.status-connecting .actions,
-  &.status-closed .actions,
-  &.status-reconnecting .actions,
-  &.status-error .actions,
-  &.status-ringing .actions {
-    @include breakpt($breakpoint-medium) {
-      display: block;
-      padding: .2em 0 .8em 0;
-    }
+  .status-connecting .actions,
+  .status-closed .actions,
+  .status-reconnecting .actions,
+  .status-error .actions,
+  .status-ringing .actions {
   }
 }
 
 .bar .right {
-  bottom: 1px;
-  padding-right: 8px;
-  position: absolute;
-  right: 0;
-  top: 1px;
+  padding-right: 4px;
+  margin-top: -1px;
   .badge {
     background-color: $actioncolor1;
     border: 1px solid white;
@@ -151,28 +124,28 @@
     top: 2px;
   }
   .btn {
-    background: transparent;
-    border-color: transparent;
+    background: $bar-btn-action-normal;
+    border-color: $bar-btn-action-normal-border;
     color: $bar-btn-action-color;
-    display: inline-block;
     height: 42px;
     font: 24px/40px $font-sans-serif;
-    margin-left: -4px;
+    margin-left: -2px;
     padding: 0;
     text-align: center;
     width: 42px;
+    position: relative;
     &:focus {
       border: none;
       outline: none;
       box-shadow: 0;
     }
     &:hover {
-      background-color: none;
+      background-color: transparent;
       border-color: $bar-btn-action-border;
       color: $bar-btn-action-hover;
     }
     &.active {
-      background-color: none;
+      background-color: transparent;
       border-color: $bordercolor;
       color: $bar-btn-action-hover;
     }

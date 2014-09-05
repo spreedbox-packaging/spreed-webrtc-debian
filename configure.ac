@@ -36,7 +36,7 @@ AC_SUBST(I18N_BUG_ADDRESS)
 GO_VERSION_MIN=1.1
 NODEJS_VERSION_MIN=0.6.0
 NODEJS_VERSION_STYLES_MIN=0.10.0
-SASS_VERSION_MIN=3.2.0
+SASS_VERSION_MIN=3.3.0
 
 AC_CONFIG_SRCDIR([src/app/spreed-webrtc-server/main.go])
 AC_CONFIG_HEADERS([config.h])
@@ -70,9 +70,6 @@ if test x"${JSHINT}" != x"" ; then
     AC_MSG_RESULT([$JSHINT_VERSION])
 fi
 AC_SUBST(JSHINT)
-
-AC_PATH_PROGS([JS_BEAUTIFY],[js-beautify])
-AC_SUBST(JS_BEAUTIFY)
 
 AC_PATH_PROGS([PYTHON],[python2 python])
 if test x"${PYTHON}" != x"" ; then
@@ -110,19 +107,6 @@ fi
 AC_SUBST(NODEJS)
 AC_SUBST(NODEJS_SUPPORT_STYLES)
 
-AC_PATH_PROGS([SASS],[sass])
-if test x"${SASS}" == x"" ; then
-    AC_MSG_WARN([Please install sass before trying to build styles.])
-else
-    AC_MSG_CHECKING([for version of sass])
-    SASS_VERSION=`$SASS --version | $SED 's/^Sass //' | $SED 's/ .*//'`
-    AC_MSG_RESULT([$SASS_VERSION])
-    AX_COMPARE_VERSION([$SASS_VERSION], [lt], [$SASS_VERSION_MIN],
-        [AC_MSG_WARN([Please install sass $SASS_VERSION_MIN or newer before trying to build styles (found sass $SASS_VERSION).])
-        SASS_SUPPORT_STYLES=no],[SASS_SUPPORT_STYLES=yes])
-fi
-AC_SUBST(SASS)
-
 AC_PATH_PROGS([COMPASS],[compass])
 if test x"${COMPASS}" == x"" ; then
     AC_MSG_WARN([Please install compass before trying to build styles.])
@@ -133,12 +117,27 @@ else
 fi
 AC_SUBST(COMPASS)
 
+AC_PATH_PROGS([SASS],[sass])
+if test x"${SASS}" == x"" ; then
+    AC_MSG_WARN([Please install sass before trying to build styles.])
+else
+    AC_MSG_CHECKING([for version of sass])
+    SASS_VERSION=`$SASS --version | $SED 's/^Sass //' | $SED 's/ .*//'`
+    AC_MSG_RESULT([$SASS_VERSION])
+    AX_COMPARE_VERSION([$SASS_VERSION], [lt], [$SASS_VERSION_MIN],
+        [AC_MSG_WARN([Please install compass with sass $SASS_VERSION_MIN or newer before trying to build styles (found sass $SASS_VERSION).])
+        SASS_SUPPORT_STYLES=no],[SASS_SUPPORT_STYLES=yes])
+fi
+AC_SUBST(SASS)
+
 if test x"${SASS}" != x"" ; then
     AC_MSG_CHECKING([for compass support in sass])
-    tempfile=`mktemp`
+    tempfile=`mktemp -t XXXXXXblah`
+    cd src/styles
     $SASS --compass $tempfile > /dev/null 2> /dev/null
     sass_compass=$?
     rm $tempfile
+    cd ../../
     if test x"${sass_compass}" != x"0" ; then
         AC_MSG_RESULT([not available])
         AC_MSG_WARN([Please install compass so it can be used using "sass --compass ...".])

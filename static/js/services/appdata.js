@@ -23,8 +23,9 @@ define(["jquery"], function($) {
 	// appData.e events:
 	// subscribe these events with appData.e.on(eventname, function() {}).
 	//
-	// - authenticationChanged(event, userid)
-	//     userid (string) : Public user id of the authenitcated user.
+	// - authenticationChanged(event, userid, suserid)
+	//     userid (string)  : Public user id of the authenticated user.
+	//     suserid (string) : Private user id of the authenticated user.
 	//
 	// - selfReceived(event, self)
 	//     self (object) : Self document as received from API.
@@ -37,14 +38,20 @@ define(["jquery"], function($) {
 	// - mainStatus(event, status)
 	//     status (string)  : Status id (connected, waiting, ...)
 
+	// appData properties:
+	//
+	// - language (string): ISO language code of active language
+
 	// appData
-	return [function() {
+	return ["randomGen", function(randomGen) {
 
 		var data = {
 			data: null,
 			e: $({})
 		}
+		var html = document.getElementsByTagName("html")[0];
 		var appData = {
+			id: randomGen.id(),
 			get: function() {
 				return data.data;
 			},
@@ -52,8 +59,10 @@ define(["jquery"], function($) {
 				data.data = d;
 				return d;
 			},
-			e: data.e
+			e: data.e,
+			language: html.getAttribute("lang")
 		}
+		console.info("App runtime id: "+appData.id);
 		return appData;
 
 	}];

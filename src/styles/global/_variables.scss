@@ -25,13 +25,13 @@
 
 // general
 $background: #e5e5e5 !default;
-$componentbg: #f5f5f5 !default;
+$componentbg: #f8f8f8 !default;
 $componentfg1: #262626 !default;
 $componentfg2: rgba(0,0,0,.5) !default;
 $componentfg3: rgba(0,0,0,.2) !default;
 $componentfg4: #737373 !default;
 $sidepanebg: white !default;
-$bordercolor: #ccc !default;
+$bordercolor: #e7e7e7 !default;
 $actioncolor1: rgb(132,184,25) !default;
 $actioncolor2: rgb(0,149,52) !default;
 
@@ -40,10 +40,11 @@ $logo: url("../img/logo-small.png") !default;
 $scalable-logo: url("../img/logo.svg") !default;
 $load-logo: $scalable-logo !default;
 
-
 // background
-$main-background: url("../img/bg-tiles.jpg") !default;
-$main-background-retina: url("../img/bg-tiles_x2.jpg") !default;
+$main-background-image: "../img/bg-tiles.jpg" !default;
+$main-background-image-retina: "../img/bg-tiles_x2.jpg" !default;
+$main-background: url($main-background-image) !default;
+$main-background-retina: url($main-background-image-retina) !default;
 
 // general action based colors
 $action-hover: rgba(0,0,0,.4) !default;
@@ -54,25 +55,33 @@ $action-enable: $actioncolor1 !default;
 $welcome: #aaa !default;
 $loading: #ddd !default;
 
+// panes
+$pane-width: 260px !default;
+
 // font
 $font-sans-serif: "Helvetica Neue",Helvetica,Arial,sans-serif !default;
 $base-font-size: 13px; // compass vertical_rhythm mixin
-$base-line-height: 1.53846156; // compass vertical_rhythm mixin
+$base-line-height: 20px; // compass vertical_rhythm mixin
 $font-color: lighten(#000, 20%) !default;
 $font-color-accent: lighten($font-color, 50%) !default;
 
 // audio video
 $audiovideolevel: $action-enable !default;
 
+//audiolevel
+$audiolevel-top: 43px !default;
+
 // main navigation bar
-$minbarheight: 44px !default;
+$minbarheight: 51px !default;
 $bar-background: $componentbg;
 $bar-logo-text-desc: rgb(34,34,34) !default;
 $bar-btn-action-border: $bordercolor !default;
-$bar-btn-action-color: rgba(0,0,0,.3) !default;
-$bar-btn-action-hover: $action-hover !default;
+$bar-btn-action-color: #333 !default;
+$bar-btn-action-hover: #666 !default;
 $bar-btn-action-mute: $action-mute !default;
 $bar-btn-action-enable: $action-enable !default;
+$bar-btn-action-normal: #e9e9e9 !default;
+$bar-btn-action-normal-border: #e2e2e2 !default;
 
 // overlaybar
 $overlaybar-background: $componentfg3;
@@ -85,8 +94,12 @@ $video-onlyaudio-background: #666 !default;
 $video-onlyaudio: rgba(255,255,255,.3) !default;
 $video-overlayactions: rgba(0,0,0,.9) !default;
 
+// settings
+$settings-background: white !default;
+
 // buddylist
-$buddylist-background: $componentbg;
+$buddylist-width: $pane-width !default;
+$buddylist-background: $componentbg !default;
 $buddylist-tab-color: rgba(0,0,0,.3) !default;
 $buddylist-tab-background: $componentbg !default;
 $buddylist-action-background: rgba(255,255,255,0.5) !default;
@@ -94,8 +107,9 @@ $buddylist-buddy1: $componentfg1 !default;
 $buddylist-buddy2: $componentfg2 !default;
 
 // chat
+$chat-width: $pane-width !default;
 $chat-background: #e7e7e7 !default;
-$chat-header: $componentbg !default;
+$chat-header: rgba(255,255,255,0.9) !default;
 $chat-disabled: #aaa !default;
 $chat-badge: #84b819 !default;
 $chat-ctrl: rgba(0,0,0,.3) !default;
@@ -172,7 +186,7 @@ $body-bg: $background !default;
 $font-family-sans-serif: $font-sans-serif !default;
 $font-family-base: $font-family-sans-serif !default;
 $font-size-base: $base-font-size !default;
-$font-size-base: $base-font-size !default;
-$line-height-base: $base-line-height !default;
 $text-color: $font-color !default;
 $dialog-header-neutral: #eee !default;
+
+$line-height-base: $base-line-height / $font-size-base;

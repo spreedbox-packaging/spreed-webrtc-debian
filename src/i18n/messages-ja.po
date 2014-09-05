@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-07-11 17:30+0200\n"
+"POT-Creation-Date: 2014-09-05 16:08+0200\n"
 "PO-Revision-Date: 2014-04-23 22:25+0100\n"
 "Last-Translator: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-msgid "Present a file"
+msgid "Share a YouTube video"
+msgstr ""
+
+msgid "Share a file as presentation"
 msgstr ""
 
 msgid "Share your screen"
@@ -26,6 +29,9 @@ msgstr "画面を共有する."
 
 msgid "Chat"
 msgstr "チャット"
+
+msgid "Contacts"
+msgstr ""
 
 msgid "Mute microphone"
 msgstr "消音"
@@ -48,6 +54,9 @@ msgstr ""
 msgid "Start chat"
 msgstr "チャットを始める"
 
+msgid "Start video call"
+msgstr "テレビ電話を始める"
+
 msgid "Start audio conference"
 msgstr "音声会議を始める"
 
@@ -69,8 +78,29 @@ msgstr ""
 msgid "Take picture"
 msgstr "写真を取る"
 
+#, fuzzy
+msgid "Upload picture"
+msgstr "あなたの写真"
+
 msgid "Waiting for camera"
 msgstr "カメラ待ち"
+
+#, fuzzy
+msgid "Picture"
+msgstr "あなたの写真"
+
+msgid "The file couldn't be read."
+msgstr ""
+
+msgid "The file is not an image."
+msgstr ""
+
+#, python-format
+msgid "The file is too large. Max. %d MB."
+msgstr ""
+
+msgid "Select file"
+msgstr ""
 
 msgid "Chat sessions"
 msgstr "チャットのセッション"
@@ -83,9 +113,6 @@ msgstr "ピア・ツー・ピア"
 
 msgid "Close chat"
 msgstr "チャットを終える"
-
-msgid "Start video call"
-msgstr "テレビ電話を始める"
 
 #, fuzzy
 msgid "Upload files"
@@ -110,7 +137,33 @@ msgstr "ここに入力してチャット開始します..."
 msgid "Send"
 msgstr "送信"
 
+msgid "Accept"
+msgstr ""
+
+msgid "Reject"
+msgstr "拒否"
+
 msgid "You have no contacts."
+msgstr ""
+
+msgid ""
+"To add new contacts, join a room and create a contact add request by "
+"clicking on the star icon next to a user entry."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Remove"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Close"
@@ -140,10 +193,12 @@ msgstr "ダウンロード失敗."
 msgid "Loading presentation ..."
 msgstr ""
 
-msgid "Please upload a PDF document"
+msgid "Please upload a document"
 msgstr ""
 
-msgid "Documents are shared with everyone in this call."
+msgid ""
+"Documents are shared with everyone in this call. The supported file types"
+" are PDF and OpenDocument files."
 msgstr ""
 
 msgid "Upload"
@@ -185,28 +240,6 @@ msgstr "画面に合わせる"
 msgid "Profile"
 msgstr ""
 
-msgid "Your picture"
-msgstr "あなたの写真"
-
-msgid "Your name"
-msgstr "あなたの名前"
-
-msgid "Name"
-msgstr "名前"
-
-msgid "Status message"
-msgstr ""
-
-msgid "What's on your mind?"
-msgstr ""
-
-#, fuzzy
-msgid "Profile information is public."
-msgstr "さらなる情報が必要です"
-
-msgid "Account"
-msgstr ""
-
 msgid "Your ID"
 msgstr ""
 
@@ -230,7 +263,21 @@ msgstr ""
 msgid "Manage account"
 msgstr ""
 
-msgid "Contacts"
+msgid "Your picture"
+msgstr "あなたの写真"
+
+msgid "Your name"
+msgstr "あなたの名前"
+
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
 msgstr ""
 
 msgid "Manage contacts"
@@ -256,6 +303,9 @@ msgstr "高い"
 
 msgid "HD"
 msgstr "HD"
+
+msgid "General"
+msgstr ""
 
 msgid "Language"
 msgstr "言語"
@@ -292,9 +342,6 @@ msgstr "ビデオ最高フレームレート"
 
 msgid "auto"
 msgstr "自動"
-
-msgid "Experimental settings"
-msgstr "試験的に設定"
 
 msgid "Show advanced settings"
 msgstr "詳細設定を表示"
@@ -364,14 +411,8 @@ msgstr "から"
 msgid "Accept call"
 msgstr "通話"
 
-msgid "Reject"
-msgstr "拒否"
-
 msgid "Waiting for camera/microphone access"
 msgstr "カメラ・マイクの接続待ち."
-
-msgid "Please wait"
-msgstr "お待ちください"
 
 msgid "Checking camera and microphone access."
 msgstr "カメラ・マイクの接続確認中."
@@ -404,6 +445,30 @@ msgid "Creating room ..."
 msgstr "ルームへのリンクを作る..."
 
 msgid "Create"
+msgstr ""
+
+msgid "Videos are shared with everyone in this call."
+msgstr ""
+
+msgid "YouTube URL"
+msgstr ""
+
+#, fuzzy
+msgid "Share"
+msgstr "共有取り消し"
+
+msgid ""
+"Could not load YouTube player API, please check your network / firewall "
+"settings."
+msgstr ""
+
+msgid "Currently playing"
+msgstr ""
+
+msgid "YouTube controls"
+msgstr ""
+
+msgid "YouTube video to share"
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -448,7 +513,13 @@ msgstr ""
 msgid "Your contact request was rejected."
 msgstr ""
 
+msgid "Edit Contact"
+msgstr ""
+
 msgid "Close this window and disconnect?"
+msgstr ""
+
+msgid "Contacts Manager"
 msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
@@ -534,10 +605,11 @@ msgstr ""
 msgid "An unknown error occurred while rendering the PDF page."
 msgstr ""
 
-msgid "Only single PDF documents can be shared at this time."
+msgid "Only PDF documents and OpenDocument files can be shared at this time."
 msgstr ""
 
-msgid "Only PDF documents can be shared at this time."
+#, python-format
+msgid "Failed to start screen sharing (%s)."
 msgstr ""
 
 msgid ""
@@ -550,14 +622,17 @@ msgstr ""
 "usermedia-screen-capture "
 "を入力して開き、スクリーンキャプチャのサポートを有効にしてください。その後ブラウザを再起動してください。"
 
+msgid "Permission to start screen sharing was denied."
+msgstr ""
+
 msgid "Use browser language"
 msgstr "ブラウザの言語を使用"
 
-msgid "Contacts Manager"
-msgstr ""
-
 msgid "Meet with me here:"
 msgstr "ここで私と会う:"
+
+msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
+msgstr ""
 
 msgid "Error"
 msgstr "エラー"
@@ -573,6 +648,11 @@ msgstr "さらなる情報が必要です"
 
 msgid "Ok"
 msgstr "OK"
+
+msgid ""
+"Screen sharing requires a browser extension. Please add the Spreed WebRTC"
+" screen sharing extension to Chrome and try again."
+msgstr ""
 
 msgid "Access code required"
 msgstr "アクセスコードが必要です"

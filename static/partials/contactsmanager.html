@@ -1,21 +1,26 @@
 <div default-dialog>
   <div class="row head">
-     <div class="col-xs-7" ng-if="contacts.length === 0">
-      <p>{{_('You have no contacts.')}}</p>
+    <div class="col-xs-12">
+      <p ng-if="contacts.length === 0">
+        {{_('You have no contacts.')}}
+      </p>
+      <p>{{_('To add new contacts, join a room and create a contact add request by clicking on the star icon next to a user entry.')}}</p>
     </div>
   </div>
   <div class="row" ng-if="contacts.length > 0">
     <div class="col-xs-12">
-      <div class="editlist nicescroll">
+      <div class="editlist nicescroll row">
         <table class="table table-hover table-condensed">
           <tbody>
             <tr ng-repeat="contact in contacts">
-              <td class="picture">
-                <img ng-show="contact.Status.buddyPicture" ng-src="{{contact.Status.buddyPicture}}">
-                <div ng-show="!contact.Status.buddyPicture" class="buddyPicture"></div>
+              <td class="picture buddy" width="56">
+                <div class="buddyPicture"><i class="fa fa-user"/><img ng-show="contact.Status.buddyPicture" alt ng-src="{{contact.Status.buddyPicture}}"/></div>
               </td>
               <td class="name">
-                <span>{{contact.Status.displayName}}</span>
+                <span>{{contact.Userid|displayName}}</span>
+              </td>
+              <td class="action">
+                <button class="btn btn-primary" ng-click="openContactsManagerEdit(contact)">{{_('Edit')}}</button>
               </td>
             </tr>
           </tbody>

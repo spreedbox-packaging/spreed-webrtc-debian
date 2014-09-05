@@ -52,6 +52,8 @@ require.config({
 		'pdf': 'libs/pdf/pdf',
 		'pdf.worker': 'libs/pdf/pdf.worker',
 		'pdf.compatibility': 'libs/pdf/compatibility',
+		'webodf': 'libs/webodf',
+		'bootstrap-file-input': 'libs/bootstrap.file-input',
 
 		'partials': '../partials',
 		'sounds': '../sounds',
@@ -116,7 +118,21 @@ require.config({
 		'pdf': {
 			deps: ['pdf.compatibility'],
 			exports: 'PDFJS'
-		}
+		},
+		'webodf': {
+			exports: 'odf',
+			init: function() {
+				return {
+					webodf: webodf,
+					odf: odf,
+					runtime: runtime
+				};
+			}
+		},
+		'bootstrap-file-input': {
+			deps: ['jquery'],
+			exports: 'BootstrapFileInput'
+		},
 	}
 });
 
@@ -182,8 +198,17 @@ if (Object.create) {
 				load.push(dataPlugin);
 			}
 		});
+
 		require(load, function(App) {
+
+			// All other arguments are plugins.
 			var args = Array.prototype.slice.call(arguments, 1);
+
+			// Prepare our promised based initialization.
+			var promises = [];
+			var loading = $.Deferred();
+			promises.push(loading.promise());
+
 			// Add Angular modules from plugins.
 			var modules = [];
 			_.each(args, function(plugin) {
@@ -191,26 +216,59 @@ if (Object.create) {
 					plugin.module(modules);
 				}
 			});
+
 			// External plugin support.
-			var externalPlugin
+			var externalPlugin;
 			if (window.externalPlugin) {
 				externalPlugin = window.externalPlugin($, _, angular);
 				if (externalPlugin && externalPlugin.module) {
 					externalPlugin.module(modules);
 				}
 			}
-			// Init Angular app.
-			var app = App.initialize(modules);
-			// Init plugins.
-			_.each(args, function(plugin) {
-				if (plugin && plugin.initialize) {
-					plugin.initialize(app);
+
+			// Create Angular app.
+			var app = App.create(modules);
+
+			// Helper function to initialize with deferreds.
+			var initialize = function(obj) {
+				if (obj && obj.initialize) {
+					var result = obj.initialize(app);
+					if (result && result.done) {
+						// If we got a promise add it to our wait queue.
+						promises.push(result);
+					}
 				}
+			};
+
+			// Wait until dom is ready before we initialize.
+			angular.element(document).ready(function() {
+
+				// Init base application.
+				initialize(App);
+
+				// Init plugins.
+				_.each(args, function(plugin) {
+					initialize(plugin);
+				});
+
+				// Init external plugin.
+				if (externalPlugin) {
+					initialize(externalPlugin);
+				}
+
+				// Resolve the base loader.
+				loading.resolve();
+
+				// Wait for all others to complete and then boostrap the app.
+				$.when.apply($, promises).done(function() {
+					console.log("Bootstrapping ...");
+					angular.bootstrap(document, ['app'], {
+						strictDi: true
+					});
+				});
+
 			});
-			// Init external plugin.
-			if (externalPlugin && externalPlugin.initialize) {
-				externalPlugin.initialize(app);
-			}
+
 		});
 
 	});

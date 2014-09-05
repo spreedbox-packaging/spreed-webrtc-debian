@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmanager.html'], function(underscore, $, Modernizr, sjcl, templateContactsManager) {
+define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmanager.html', 'text!partials/contactsmanageredit.html'], function(_, $, Modernizr, sjcl, templateContactsManager, templateContactsManagerEdit) {
 
 	var Database = function(name) {
 		this.version = 3;
@@ -33,9 +33,10 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 			var transaction = event.target.transaction;
 			transaction.onerror = _.bind(that.onerror, that);
 			that.init(db);
-			console.log("Created contacts database.")
+			console.info("Created contacts database.")
 		};
 		request.onsuccess = _.bind(that.onsuccess, that);
+		request.onerror = _.bind(that.onerror, that);
 	};
 	Database.prototype.init = function(db) {
 		var createOrUpdateStore = function(name, obj) {
@@ -57,7 +58,7 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 	Database.prototype.onsuccess = function(event) {
 		this.db = event.target.result;
 		this.ready = true;
-		console.log("Openend database", this.db);
+		//console.log("Openend database", this.db);
 		this.e.triggerHandler("ready");
 	};
 	Database.prototype.put = function(storename, data, successCallback, errorCallback) {
@@ -124,6 +125,7 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 
 		// Inject our templates.
 		$templateCache.put('/contactsmanager/main.html', templateContactsManager);
+		$templateCache.put('/contactsmanager/edit.html', templateContactsManagerEdit);
 
 		var Contacts = function() {
 
@@ -155,6 +157,13 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 
 		};
 
+		Contacts.prototype.put = function(contact) {
+			this.database.put("contacts", {
+				id: this.id(contact.Userid),
+				contact: this.encrypt(contact)
+			});
+		}
+
 		Contacts.prototype.open = function(userid, suserid) {
 
 			if (this.database && (!userid || this.userid !== userid)) {
@@ -172,7 +181,7 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 				this.key = sjcl.codec.base64.fromBits(sjcl.hash.sha256.hash(suserid+mediaStream.config.Token));
 				// Create database name for user which.
 				var id = "mediastream-" + this.id(userid);
-				console.log("Open of database:", id);
+				//console.log("Open of database:", id);
 				var database = this.database = new Database(id);
 				return database;
 			} else {
@@ -210,13 +219,12 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 
 		Contacts.prototype.load = function() {
 			if (this.database) {
-				console.log("Load contacts from storage", this);
+				//console.log("Load contacts from storage", this);
 				var remove = [];
 				this.database.all("contacts", _.bind(function(data) {
 					var d = this.decrypt(data.contact);
 					if (d) {
 						var contact = contactData.addByData(d);
-						// TODO(longsleep): Convert buddyImage string to Blob.
 						this.e.triggerHandler("contactadded", d);
 					} else {
 						// Remove empty or invalid entries automatically.
@@ -242,16 +250,13 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 			var contact = contactData.addByRequest(request, status);
 			this.e.triggerHandler("contactadded", contact);
 			if (this.database) {
-				this.database.put("contacts", {
-					id: this.id(contact.Userid),
-					contact: this.encrypt(contact)
-				})
+				this.put(contact);
 			}
 		};
 
 		Contacts.prototype.remove = function(userid) {
 			var contact = contactData.get(userid);
-			console.log("contacts remove", userid, contact);
+			//console.log("contacts remove", userid, contact);
 			if (contact) {
 				contactData.remove(userid);
 				if (this.database) {
@@ -259,6 +264,12 @@ define(['underscore', 'jquery', 'modernizr', 'sjcl', 'text!partials/contactsmana
 				}
 				this.e.triggerHandler("contactremoved", contact);
 			}
+		};
+
+		Contacts.prototype.update = function(contact) {
+			this.put(contact);
+			//console.log("contact update", contact);
+			this.e.triggerHandler("contactupdated", contact);
 		};
 
 		return new Contacts();

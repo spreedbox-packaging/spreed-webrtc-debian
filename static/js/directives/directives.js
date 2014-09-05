@@ -25,7 +25,8 @@ define([
 	'directives/onescape',
 	'directives/statusmessage',
 	'directives/buddylist',
-	'directives/buddypicture',
+	'directives/buddypicturecapture',
+	'directives/buddypictureupload',
 	'directives/settings',
 	'directives/chat',
 	'directives/audiovideo',
@@ -39,14 +40,17 @@ define([
 	'directives/contactrequest',
 	'directives/defaultdialog',
 	'directives/pdfcanvas',
-	'directives/presentation'], function(_, onEnter, onEscape, statusMessage, buddyList, buddyPicture, settings, chat, audioVideo, usability, audioLevel, fileInfo, screenshare, roomBar, socialShare, page, contactRequest, defaultDialog, pdfcanvas, presentation) {
+	'directives/odfcanvas',
+	'directives/presentation',
+	'directives/youtubevideo',], function(_, onEnter, onEscape, statusMessage, buddyList, buddyPictureCapture, buddyPictureUpload, settings, chat, audioVideo, usability, audioLevel, fileInfo, screenshare, roomBar, socialShare, page, contactRequest, defaultDialog, pdfcanvas, odfcanvas, presentation, youtubevideo) {
 
 	var directives = {
 		onEnter: onEnter,
 		onEscape: onEscape,
 		statusMessage: statusMessage,
 		buddyList: buddyList,
-		buddyPicture: buddyPicture,
+		buddyPictureCapture: buddyPictureCapture,
+		buddyPictureUpload: buddyPictureUpload,
 		settings: settings,
 		chat: chat,
 		audioVideo: audioVideo,
@@ -60,7 +64,9 @@ define([
 		contactRequest: contactRequest,
 		defaultDialog: defaultDialog,
 		pdfcanvas: pdfcanvas,
-		presentation: presentation
+		odfcanvas: odfcanvas,
+		presentation: presentation,
+		youtubevideo: youtubevideo
 	};
 
 	var initialize = function(angModule) {
