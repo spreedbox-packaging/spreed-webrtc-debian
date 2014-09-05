@@ -23,12 +23,18 @@ define([
 
 	'filters/displayname',
 	'filters/buddyimagesrc',
-	'filters/displayconference'], function(_, displayName, buddyImageSrc, displayConference) {
+	'filters/displayconference',
+	'filters/displayuserid',
+	'filters/displaynameforsession',
+	'filters/formatbase1000'], function(_, displayName, buddyImageSrc, displayConference, displayUserid, displayNameForSession, formatBase1000) {
 
 	var filters = {
 		displayName: displayName,
 		buddyImageSrc: buddyImageSrc,
-		displayConference: displayConference
+		displayConference: displayConference,
+		displayUserid: displayUserid,
+		displayNameForSession: displayNameForSession,
+		formatBase1000: formatBase1000
 	};
 
 	var initialize = function(angModule) {

@@ -20,7 +20,7 @@
  */
 define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapter'], function(_, BigScreen, moment, sjcl, Modernizr) {
 
-	return ["$scope", "$rootScope", "$element", "$window", "$timeout", "safeDisplayName", "safeApply", "mediaStream", "appData", "playSound", "desktopNotify", "alertify", "toastr", "translation", "fileDownload", "localStorage", function($scope, $rootScope, $element, $window, $timeout, safeDisplayName, safeApply, mediaStream, appData, playSound, desktopNotify, alertify, toastr, translation, fileDownload, localStorage) {
+	return ["$scope", "$rootScope", "$element", "$window", "$timeout", "safeDisplayName", "safeApply", "mediaStream", "appData", "playSound", "desktopNotify", "alertify", "toastr", "translation", "fileDownload", "localStorage", "screensharing", "userSettingsData", "localStatus", "dialogs", function($scope, $rootScope, $element, $window, $timeout, safeDisplayName, safeApply, mediaStream, appData, playSound, desktopNotify, alertify, toastr, translation, fileDownload, localStorage, screensharing, userSettingsData, localStatus, dialogs) {
 
 		/*console.log("route", $route, $routeParams, $location);*/
 
@@ -29,10 +29,10 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			event.preventDefault();
 		});
 
-		// Avoid accidential reloads or exits.
+		// Avoid accidential reloads or exits when in a call.
 		var manualUnload = false;
 		$($window).on("beforeunload", function(event) {
-			if (manualUnload && !$scope.peer) {
+			if (manualUnload || !$scope.peer) {
 				return;
 			}
 			return translation._("Close this window and disconnect?");
@@ -119,10 +119,15 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 		$scope.webrtcDetectedBrowser = $window.webrtcDetectedBrowser;
 		$scope.webrtcDetectedVersion = $window.webrtcDetectedVersion;
 
+		// Add support status.
+		$scope.supported = {
+			screensharing: screensharing.supported
+		}
+
 		// Default scope data.
 		$scope.status = "initializing";
-		$scope.id = null;
-		$scope.userid = null;
+		$scope.id = $scope.myid = null;
+		$scope.userid = $scope.myuserid = null;
 		$scope.suserid = null;
 		$scope.peer = null;
 		$scope.dialing = null;
@@ -136,7 +141,8 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 		};
 		$scope.chatMessagesUnseen = 0;
 		$scope.autoAccept = null;
-		$scope.master = {
+		$scope.isCollapsed = true;
+		$scope.defaults = {
 			displayName: null,
 			buddyPicture: null,
 			message: null,
@@ -148,19 +154,26 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 				language: ""
 			}
 		};
+		$scope.master = angular.copy($scope.defaults);
 
 		// Data voids.
-		var cache = {};
 		var resurrect = null;
+		var reconnecting = false;
+		var connected = false;
+		var autoreconnect = true;
 
-		$scope.update = function(user, noRefresh) {
+		$scope.update = function(user) {
 			$scope.master = angular.copy(user);
-			$scope.updateStatus();
-			if (!noRefresh) {
-				$scope.refreshWebrtcSettings();
+			if (connected) {
+				$scope.updateStatus();
 			}
-
+			$scope.refreshWebrtcSettings();
 		};
+
+		$scope.reset = function() {
+			$scope.user = angular.copy($scope.master);
+		};
+		$scope.reset(); // Call once for bootstrap.
 
 		$scope.setStatus = function(status) {
 			// This is the connection status to signaling server.
@@ -171,26 +184,17 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			return $scope.status;
 		};
 
-		$scope.updateStatus = (function() {
-			return function() {
-				// This is the user status.
-				var status = {
-					displayName: $scope.master.displayName || null,
-					buddyPicture: $scope.master.buddyPicture || null,
-					message: $scope.master.message || null
-				}
-				if (_.isEqual(status, cache.status)) {
-					console.log("Status update skipped, as status has not changed.")
-				} else {
-					console.log("Updating own status", status);
-					mediaStream.api.updateStatus(status);
-					cache.status = _.clone(status);
-				}
-			};
-		}());
-
-		$scope.reset = function() {
-			$scope.user = angular.copy($scope.master);
+		$scope.updateStatus = function(clear) {
+			// This is the user status.
+			var status = {
+				displayName: $scope.master.displayName || null,
+				buddyPicture: $scope.master.buddyPicture || null,
+				message: $scope.master.message || null
+			}
+			if (clear) {
+				localStatus.clear();
+			}
+			localStatus.update(status);
 		};
 
 		$scope.refreshWebrtcSettings = function() {
@@ -257,36 +261,26 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			if ($window.webrtcDetectedBrowser === "chrome") {
 				// NOTE(longsleep): We can always enable SCTP data channels, as we have a workaround
 				// using the "active" event for Firefox < 27.
-				if (true) {
-					// SCTP does not work correctly with Chrome 31. Require M32.
-					if ($window.webrtcDetectedVersion >= 32) {
-						// SCTP is supported from Chrome M31.
-						// No need to pass DTLS constraint as it is on by default in Chrome M31.
-						// For SCTP, reliable and ordered is true by default.
-						console.info("Using SCTP based Data Channels.");
-					} else {
-						// Chrome < M31 does not yet do DTLS-SRTP by default whereas Firefox only
-						// does DTLS-SRTP. In order to get interop, you must supply Chrome
-						// with a PC constructor constraint to enable DTLS.
-						optionalPcConstraints.push({
-							DtlsSrtpKeyAgreement: true
-						});
-					}
+				// SCTP does not work correctly with Chrome 31. Require M32.
+				if ($window.webrtcDetectedVersion >= 32) {
+					// SCTP is supported from Chrome M31.
+					// No need to pass DTLS constraint as it is on by default in Chrome M31.
+					// For SCTP, reliable and ordered is true by default.
 				} else {
-					// NOTE(longsleep): This disables SCTP data channels, which hacks Firefox
-					// support by forcing old style Chrome Rtp data channels. SCTP Data Channels
-					// between Firefox and Chrome will not work until FF 27.
-					// See https://code.google.com/p/webrtc/issues/detail?id=2279 and
-					// https://code.google.com/p/chromium/issues/detail?id=295771
+					// Chrome < M32 does not yet do DTLS-SRTP by default whereas Firefox only
+					// does DTLS-SRTP. In order to get interop, you must supply Chrome
+					// with a PC constructor constraint to enable DTLS.
+					console.warn("Turning on SCTP combatibility - please update your Chrome.");
 					optionalPcConstraints.push({
-						RtpDataChannels: true
+						DtlsSrtpKeyAgreement: true
 					});
 				}
 			}
 
-			console.log("WebRTC settings", mediaStream.webrtc.settings);
+			//console.log("WebRTC settings", mediaStream.webrtc.settings);
 
 		};
+		$scope.refreshWebrtcSettings(); // Call once for bootstrap.
 
 		var pickupTimeout = null;
 		var autoAcceptTimeout = null;
@@ -323,7 +317,20 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			} else {
 				$window.location.reload(true);
 			}
+		};
 
+		$scope.loadUserSettings = function() {
+			$scope.master = angular.copy($scope.defaults);
+			var storedUser = userSettingsData.load();
+			if (storedUser) {
+				$scope.user = $.extend(true, {}, $scope.master, storedUser);
+				$scope.user.settings = $.extend(true, {}, $scope.user.settings, $scope.master.settings, $scope.user.settings);
+				$scope.update($scope.user);
+				$scope.loadedUser = storedUser.displayName && true;
+			} else {
+				$scope.loadedUser = false;
+			}
+			$scope.reset();
 		};
 
 		$scope.toggleBuddylist = (function() {
@@ -338,6 +345,28 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			}
 		}());
 
+		$scope.openContactsManager = (function() {
+			var oldDialog = null;
+			return function() {
+				if (oldDialog) {
+					oldDialog.dismiss("open");
+				}
+				oldDialog = dialogs.create(
+					"/contactsmanager/main.html",
+					"ContactsmanagerController",
+					{
+						header: translation._("Contacts Manager")
+					}, {
+						wc: "contactsmanager"
+					}
+				);
+				oldDialog.result.finally(function() {
+					oldDialog = null;
+				});
+				return oldDialog
+			}
+		}());
+
 		$scope.$watch("cameraMute", function(cameraMute) {
 			mediaStream.webrtc.setVideoMute(cameraMute);
 		});
@@ -345,20 +374,6 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 		$scope.$watch("microphoneMute", function(cameraMute) {
 			mediaStream.webrtc.setAudioMute(cameraMute);
 		});
-
-		// Load stuff from localStorage.
-		var storedUser = localStorage.getItem("mediastream-user");
-		console.log("Found stored user data:", storedUser);
-		if (storedUser) {
-			storedUser = JSON.parse(storedUser);
-			$scope.user = $.extend(true, {}, $scope.master, storedUser);
-			$scope.user.settings = $.extend(true, {}, $scope.user.settings, $scope.master.settings, $scope.user.settings);
-			$scope.update($scope.user, true);
-			$scope.loadedUser = storedUser.displayName && true;
-			// Add room definition to root to be availale on initial connect.
-			$rootScope.roomid = $scope.user.settings.defaultRoom || "";
-		}
-		$scope.reset();
 
 		var ringer = playSound.interval("ring", null, 4000);
 		var dialer = playSound.interval("dial", null, 4000);
@@ -372,8 +387,8 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			$timeout.cancel(ttlTimeout);
 			safeApply($scope, function(scope) {
 				scope.id = scope.myid = data.Id;
-				scope.userid = data.Userid;
-				scope.suserid = data.Suserid;
+				scope.userid = scope.myuserid = data.Userid ? data.Userid : null;
+				scope.suserid = data.Suserid ? data.Suserid : null;
 				scope.turn = data.Turn;
 				scope.stun = data.Stun;
 				scope.refreshWebrtcSettings();
@@ -407,6 +422,8 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 						console.error("Failed to authorize session", status, data);
 						mediaStream.users.forget();
 					});
+				} else {
+					$scope.loadedUserlogin = false;
 				}
 			}
 
@@ -431,7 +448,24 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 				}, 0);
 			}
 
+			// Propagate authentication event.
 			appData.e.triggerHandler("selfReceived", [data]);
+
+			if (!$rootScope.roomid && $scope.user.settings.defaultRoom) {
+				console.log("Selecting user based default room:", [$scope.user.settings.defaultRoom]);
+				mediaStream.changeRoom($scope.user.settings.defaultRoom, true);
+			}
+
+			// Unmark authorization process.
+			if (data.Userid) {
+				mediaStream.users.authorizing(false);
+			} else if (!mediaStream.users.authorizing()) {
+				// Trigger user data load when not in authorizing phase.
+				$scope.loadUserSettings();
+			}
+
+			// Always apply room after self received to avoid double stuff.
+			mediaStream.applyRoom();
 
 		});
 
@@ -511,10 +545,6 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			alertify.dialog.alert(translation._("Oops") + "<br/>" + message);
 		});
 
-		var reconnecting = false;
-		var connected = false;
-		var autoreconnect = true;
-
 		var reconnect = function() {
 			if (connected && autoreconnect) {
 				if (resurrect === null) {
@@ -529,7 +559,8 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 				_.delay(function() {
 					if (autoreconnect && !reconnecting) {
 						reconnecting = true;
-						mediaStream.connector.reconnect()
+						console.log("Requesting to reconnect ...");
+						mediaStream.reconnect();
 					}
 				}, 500);
 				$scope.setStatus("reconnecting");
@@ -542,17 +573,19 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			var t = event.type;
 			var opts = $.extend({}, options);
 			$timeout.cancel(ttlTimeout);
+			if (!opts.soft) {
+				// Reset login information for anything not soft.
+				$scope.userid = $scope.suserid = null;
+			}
 			switch (t) {
 				case "open":
 					t = "waiting";
 					connected = true;
 					reconnecting = false;
-					cache = {}; // Start fresh.
-					$scope.updateStatus();
+					$scope.updateStatus(true);
 					if (opts.soft) {
 						return;
 					}
-					$scope.userid = $scope.suserid = null;
 					break;
 				case "error":
 					if (reconnecting || connected) {
@@ -627,13 +660,17 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 			}
 		});
 
-		$scope.$watch("userid", function(userid) {
+		$scope.$watch("userid", function(userid, olduserid) {
 			var suserid;
 			if (userid) {
 				suserid = $scope.suserid;
 				console.info("Session is now authenticated:", userid, suserid);
 			}
-			appData.e.triggerHandler("authenticationChanged", [userid, suserid]);
+			if (userid !== olduserid) {
+				appData.e.triggerHandler("authenticationChanged", [userid, suserid]);
+				// Load user settings after authentication changed.
+				$scope.loadUserSettings();
+			}
 		});
 
 		// Apply all layout stuff as classes to our element.

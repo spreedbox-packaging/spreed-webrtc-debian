@@ -61,7 +61,61 @@ define([
 		})(window.location.search.substr(1).split("&"));
 	}());
 
-	var initialize = function(ms) {
+	// Base application config shared during initialization.
+	var appConfig = {};
+
+	// Implement translation store.
+	var TranslationData = function(default_language) {
+		// Create data structure.
+		this.data = {
+			locale_data: {}
+		};
+		this.lang = this.default_lang = default_language;
+	};
+	TranslationData.prototype.language = function() {
+		// Return language.
+		return this.lang;
+	};
+	TranslationData.prototype.default_language = function() {
+		return this.default_lang;
+	};
+	TranslationData.prototype.add = function(domain, data) {
+		var src;
+		if (data && data.locale_data) {
+			src = data.locale_data[domain];
+		}
+		var dst = this.data.locale_data[domain];
+		if (!dst) {
+			dst = this.data.locale_data[domain] = {
+				"": {
+					"domain": domain,
+					"plural_forms": "nplurals=2; plural=(n != 1);"
+				}
+			}
+		}
+		_.extend(dst, src);
+	};
+	TranslationData.prototype.load = function(domain, url) {
+		var that = this;
+		return $.ajax({
+			dataType: "json",
+			url: url,
+			success: function(data) {
+				//console.log("loaded translation data", data);
+				that.add(domain, data);
+			},
+			error: function(err, textStatus, errorThrown) {
+				console.warn("Failed to load translation data: " + errorThrown);
+				that.add(domain, null);
+			}
+		});
+	};
+	TranslationData.prototype.get = function() {
+		return this.data;
+	};
+	var translationData = new TranslationData("en");
+
+	var create = function(ms) {
 
 		var modules = ['ui.bootstrap', 'ngSanitize', 'ngAnimate', 'ngHumanize', 'ngRoute'];
 		if (ms && ms.length) {
@@ -86,109 +140,126 @@ define([
 			$locationProvider.html5Mode(true);
 		}]);
 
-		app.run(["$rootScope", "mediaStream", "translation", function($rootScope, mediaStream, translation) {
+		app.run(["$rootScope", "$timeout", "mediaStream", "translation", "continueConnector", function($rootScope, $timeout, mediaStream, translation, continueConnector) {
 			translation.inject($rootScope);
 			console.log("Initializing ...");
+			var initialize = continueConnector.defer();
 			mediaStream.initialize($rootScope, translation);
+			$timeout(function() {
+				console.log("Initializing complete.")
+				initialize.resolve();
+			}, 0);
 		}]);
 
 		app.constant("availableLanguages", languages);
 
-		angular.element(document).ready(function() {
+		app.provider("translationData", function translationDataProvider() {
 
-			var globalContext = JSON.parse($("#globalcontext").text());
-			app.constant("globalContext", globalContext);
+			// Make available functions for config phase.
+			this.add = _.bind(translationData.add, translationData);
+			this.load = _.bind(translationData.load, translationData);
+			this.language = _.bind(translationData.language, translationData);
+			this.default_language = _.bind(translationData.default_language, translationData);
 
-			// Configure language.
-			var lang = (function() {
-				var lang = "en";
-				var wanted = [];
-				var html = document.getElementsByTagName("html")[0];
-				// Get from storage.
-				if (modernizr.localstorage) {
-					var lsl = localStorage.getItem("mediastream-language");
-					if (lsl && lsl !== "undefined") {
-						wanted.push(lsl);
-					}
-				}
-				// Get from query.
-				var qsl = urlQuery.lang;
-				if (qsl) {
-					wanted.push(qsl);
-				}
-				// Expand browser languages with combined fallback.
-				_.each(globalContext.Languages, function(l) {
-					wanted.push(l);
-					if (l.indexOf("-") != -1) {
-						wanted.push(l.split("-")[0]);
-					}
-				});
-				// Loop through browser languages and use first one we got.
-				for (var i = 0; i < wanted.length; i++) {
-					if (languages.hasOwnProperty(wanted[i])) {
-						lang = wanted[i];
-						break;
-					}
-				}
-				html.setAttribute("lang", lang);
-				return lang;
-			}());
-
-			// Prepare bootstrap function with injected locale data.
-			var domain = "messages";
-			var catalog = domain + "-" + lang;
-			var bootstrap = function(translationData) {
-				if (!translationData) {
-					// Fallback catalog in case translation could not be loaded.
-					lang = "en";
-					translationData = {};
-					translationData.locale_data = {};
-					translationData.domain = domain;
-					translationData.locale_data[domain] = {
-						"": {
-							"domain": domain,
-							"lang": lang,
-							"plural_forms": "nplurals=2; plural=(n != 1);"
-						}
-					};
-				}
-				// Set date language too.
-				moment.lang([lang, "en"]);
-				// Inject translation data globally.
-				app.constant("translationData", translationData);
-				// Bootstrap AngularJS app.
-				console.log("Bootstrapping ...");
-				angular.bootstrap(document, ['app']);
-			};
-
-			if (lang !== "en") {
-				// Load translation file.
-				//console.log("Loading translation data: " + lang);
-				$.ajax({
-					dataType: "json",
-					url: require.toUrl('translation/' + catalog + '.json'),
-					success: function(data) {
-						//console.log("Loaded translation data.");
-						bootstrap(data);
-					},
-					error: function(err, textStatus, errorThrown) {
-						console.warn("Failed to load translation data " + catalog + ": " + errorThrown);
-						bootstrap(null);
-					}
-				});
-			} else {
-				// No need to load english as this is built in.
-				_.defer(bootstrap);
-			}
+			// Out creater returns raw data.
+			this.$get = [function translationDataFactory() {
+				return translationData.get();
+			}];
 
 		});
+
+		app.directive("spreedWebrtc", [function() {
+			return {
+				restrict: "A",
+				controller: "MediastreamController"
+			}
+		}]);
 
 		return app;
 
 	};
 
+	var initialize = function(app) {
+
+		var deferred = $.Deferred();
+
+		var globalContext = JSON.parse($("#globalcontext").text());
+		app.constant("globalContext", globalContext);
+
+		// Configure language.
+		var lang = (function() {
+
+			var lang = "en";
+			var wanted = [];
+			var addLanguage = function(l) {
+				wanted.push(l);
+				if (l.indexOf("-") != -1) {
+					wanted.push(l.split("-")[0]);
+				}
+			};
+
+			// Get from storage.
+			if (modernizr.localstorage) {
+				var lsl = localStorage.getItem("mediastream-language");
+				if (lsl && lsl !== "undefined") {
+					wanted.push(lsl);
+				}
+			}
+
+			// Get from query.
+			var qsl = urlQuery.lang;
+			if (qsl) {
+				addLanguage(qsl);
+			}
+
+			// Get from server side configuration (As provided by browser).
+			_.each(globalContext.Languages, addLanguage);
+
+			// Loop through requested languages and use first one we have.
+			for (var i = 0; i < wanted.length; i++) {
+				if (languages.hasOwnProperty(wanted[i])) {
+					lang = wanted[i];
+					break;
+				}
+			}
+
+			// Storage at DOM.
+			var html = document.getElementsByTagName("html")[0];
+			html.setAttribute("lang", lang);
+
+			return lang;
+
+		}());
+		console.info("Selected language: "+lang);
+
+		// Set language and load default translations.
+		translationData.lang = lang;
+		var domain = "messages";
+		if (lang === translationData.default_lang) {
+			// No need to load default language as it is built in.
+			translationData.add(domain, null);
+			deferred.resolve();
+		} else {
+			// Load default translation catalog.
+			var url = require.toUrl('translation/' + domain + "-" + lang + '.json');
+			$.when(translationData.load(domain, url)).always(function() {
+				deferred.resolve();
+			});
+		}
+
+		// Set momemt language.
+		moment.lang(lang);
+
+		return deferred.promise();
+
+	};
+
 	return {
-		initialize: initialize
+		create: create,
+		initialize: initialize,
+		query: urlQuery,
+		config: appConfig,
+		translationData: translationData
 	};
 
 });

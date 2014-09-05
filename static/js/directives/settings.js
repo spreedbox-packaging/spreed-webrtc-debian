@@ -22,7 +22,7 @@ define(['jquery', 'underscore', 'text!partials/settings.html'], function($, _, t
 
 	return ["$compile", "mediaStream", function($compile, mediaStream) {
 
-		var controller = ['$scope', 'desktopNotify', 'mediaSources', 'safeApply', 'availableLanguages', 'translation', 'localStorage', 'dialogs', function($scope, desktopNotify, mediaSources, safeApply, availableLanguages, translation, localStorage, dialogs) {
+		var controller = ['$scope', 'desktopNotify', 'mediaSources', 'safeApply', 'availableLanguages', 'translation', 'localStorage', 'userSettingsData', function($scope, desktopNotify, mediaSources, safeApply, availableLanguages, translation, localStorage, userSettingsData) {
 
 			$scope.layout.settings = false;
 			$scope.showAdvancedSettings = true;
@@ -52,37 +52,36 @@ define(['jquery', 'underscore', 'text!partials/settings.html'], function($, _, t
 			});
 
 			$scope.saveSettings = function() {
-				var user = $scope.user;
-				$scope.update(user);
-				$scope.layout.settings = false;
-				if ($scope.rememberSettings) {
-					localStorage.setItem("mediastream-user", JSON.stringify(user));
-					localStorage.setItem("mediastream-language", user.settings.language || "");
-				} else {
-					localStorage.removeItem("mediastream-user");
-					localStorage.removeItem("mediastream-language");
-					localStorage.removeItem("mediastream-access-code");
+				var form = $scope.settingsform;
+				if (form.$valid && form.$dirty) {
+					var user = $scope.user;
+					$scope.update(user);
+					if ($scope.rememberSettings) {
+						userSettingsData.save(user);
+						localStorage.setItem("mediastream-language", user.settings.language || "");
+					} else {
+						userSettingsData.clear();
+						localStorage.removeItem("mediastream-language");
+						localStorage.removeItem("mediastream-access-code");
+					}
+					form.$setPristine();
 				}
-			};
-			$scope.cancelSettings = function() {
-				$scope.reset();
 				$scope.layout.settings = false;
 			};
+
+			$scope.cancelSettings = function() {
+				var form = $scope.settingsform;
+				$scope.reset();
+				if (form.$dirty) {
+					form.$setPristine();
+				}
+				$scope.layout.settings = false;
+			};
+
 			$scope.requestDesktopNotifyPermission = function() {
 				$scope.desktopNotify.requestPermission(function() {
 					safeApply($scope);
 				});
-			};
-			$scope.openContactsManager = function() {
-				dialogs.create(
-					"/contactsmanager/main.html",
-					"ContactsmanagerController",
-					{
-						header: translation._("Contacts Manager")
-					}, {
-						wc: "contactsmanager"
-					}
-				)
 			};
 
 			$scope.checkDefaultMediaSources = function() {
@@ -103,9 +102,11 @@ define(['jquery', 'underscore', 'text!partials/settings.html'], function($, _, t
 				//console.log("master sources updates", $scope.master);
 				$scope.refreshWebrtcSettings();
 			};
+
 			$scope.mediaSources.refresh(function() {
 				safeApply($scope, $scope.checkDefaultMediaSources);
 			});
+
 			$scope.$watch("layout.settings", function(showSettings, oldValue) {
 				if (showSettings) {
 					$scope.desktopNotify.refresh();
@@ -129,6 +130,7 @@ define(['jquery', 'underscore', 'text!partials/settings.html'], function($, _, t
 					$scope.saveSettings();
 				}
 			});
+
 		}];
 
 		var link = function($scope, $element) {};

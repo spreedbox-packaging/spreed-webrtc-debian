@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(["jquery", "underscore", "modernizr"], function($, _, Modernizr) {
+define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modernizr) {
 
 	var dynamicCSSContainer = "audiovideo-dynamic";
 	var renderers = {};
@@ -149,7 +149,8 @@ define(["jquery", "underscore", "modernizr"], function($, _, Modernizr) {
 			}
 			$.injectCSS(extraCSS, {
 				truncateFirst: true,
-				containerName: dynamicCSSContainer
+				containerName: dynamicCSSContainer,
+				useRawValues: true
 			});
 
 		};
@@ -250,7 +251,8 @@ define(["jquery", "underscore", "modernizr"], function($, _, Modernizr) {
 
 			$.injectCSS(extraCSS, {
 				truncateFirst: true,
-				containerName: dynamicCSSContainer
+				containerName: dynamicCSSContainer,
+				useRawValues: true
 			});
 
 		};
@@ -286,7 +288,7 @@ define(["jquery", "underscore", "modernizr"], function($, _, Modernizr) {
 
 				if (!current) {
 					current = new renderers[name](container, scope, controller)
-					console.log("Created new video layout renderer", name, current);
+					//console.log("Created new video layout renderer", name, current);
 					$(layoutparent).addClass("renderer-" + name);
 					return true;
 				} else {
@@ -296,7 +298,7 @@ define(["jquery", "underscore", "modernizr"], function($, _, Modernizr) {
 						$(layoutparent).removeClass("renderer-" + current.name);
 						current = new renderers[name](container, scope, controller)
 						$(layoutparent).addClass("renderer-" + name);
-						console.log("Switched to new video layout renderer", name, current);
+						//console.log("Switched to new video layout renderer", name, current);
 						return true;
 					}
 				}

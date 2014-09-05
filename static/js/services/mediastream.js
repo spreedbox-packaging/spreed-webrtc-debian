@@ -30,7 +30,7 @@ define([
 
 ], function($, _, uaparser, Modernizr, Connector, Api, WebRTC, tokens) {
 
-	return ["globalContext", "$route", "$location", "$window", "visibility", "alertify", "$http", "safeApply", "$timeout", "$sce", "localStorage", function(context, $route, $location, $window, visibility, alertify, $http, safeApply, $timeout, $sce, localStorage) {
+	return ["globalContext", "$rootScope", "$route", "$location", "$window", "visibility", "alertify", "$http", "safeApply", "$timeout", "$sce", "localStorage", "continueConnector", function(context, $rootScope, $route, $location, $window, visibility, alertify, $http, safeApply, $timeout, $sce, localStorage, continueConnector) {
 
 		var url = (context.Ssl ? "wss" : "ws") + "://" + context.Host + (context.Cfg.B || "/") + "ws";
 		var version = context.Cfg.Version || "unknown";
@@ -41,9 +41,11 @@ define([
 		var connector = new Connector(version);
 		var api = new Api(connector);
 		var webrtc = new WebRTC(api);
+		var connectMarker = null;
 
 		// Create encryption key from server token and browser name.
 		var secureKey = sjcl.codec.base64.fromBits(sjcl.hash.sha256.hash(context.Cfg.Token + uaparser().browser.name));
+		var authorizing = false;
 
 		var mediaStream = {
 			version: version,
@@ -133,7 +135,15 @@ define([
 						});
 					}
 				},
+				authorizing: function(value) {
+					// Boolean flag to indicate that an authentication is currently in progress.
+					if (typeof(value) !== "undefined") {
+						authorizing = !!value;
+					}
+					return authorizing;
+				},
 				authorize: function(data, success_cb, error_cb) {
+					mediaStream.users.authorizing(true);
 					var url = mediaStream.url.api("sessions") + "/" + mediaStream.api.id + "/";
 					var login = _.clone(data);
 					login.id = mediaStream.api.id;
@@ -150,12 +160,14 @@ define([
 						if (data.nonce !== "" && data.success) {
 							success_cb(data, status);
 						} else {
+							mediaStream.users.authorizing(false);
 							if (error_cb) {
 								error_cb(data, status);
 							}
 						}
 					}).
 					error(function(data, status) {
+						mediaStream.users.authorizing(false);
 						if (error_cb) {
 							error_cb(data, status)
 						}
@@ -194,6 +206,47 @@ define([
 					localStorage.removeItem("mediastream-login-" + context.Cfg.UsersMode);
 				}
 			},
+			connect: function() {
+				var myMarker = {};
+				connectMarker = myMarker;
+				continueConnector.then(function() {
+					if (connectMarker === myMarker) {
+						console.log("Connecting ...");
+						connector.connect(url);
+					}
+				});
+			},
+			reconnect: function() {
+				var myMarker = {};
+				connectMarker = myMarker;
+				continueConnector.then(function() {
+					if (connectMarker === myMarker) {
+						console.log("Reconnecting ...");
+						connector.reconnect();
+					}
+				});
+			},
+			changeRoom: function(id, replace) {
+				id = $window.encodeURIComponent(id);
+				safeApply($rootScope, function(scope) {
+					$location.path("/" + id);
+					if (replace) {
+						$location.replace();
+					}
+				});
+				return id;
+			},
+			applyRoom: function() {
+				if (authorizing) {
+					// Do nothing while authorizing.
+					return;
+				}
+				var roomid = $rootScope.roomid;
+				if (roomid !== connector.roomid) {
+					console.log("Apply room", roomid);
+					connector.room(roomid);
+				}
+			},
 			initialize: function($rootScope, translation) {
 
 				var cont = false;
@@ -203,6 +256,7 @@ define([
 				$rootScope.roomid = null;
 				$rootScope.roomlink = null;
 				$rootScope.roomstatus = false;
+				$rootScope.connect = false;
 
 				var connect = function() {
 					// We need websocket support to connect.
@@ -212,18 +266,12 @@ define([
 					}
 					if (ready && cont) {
 						// Inject connector function into scope, so that controllers can pick it up.
+						console.log("Ready to connect ...");
+						mediaStream.connect();
 						safeApply($rootScope, function(scope) {
-							scope.connect = function() {
-								connector.connect(url);
-							};
+							scope.connect = true;
 						});
 					}
-				};
-
-				$window.changeRoom = function(room) {
-					$rootScope.$apply(function(scope) {
-						$location.path("/" + room).replace();
-					});
 				};
 
 				var title = (function(e) {
@@ -235,30 +283,26 @@ define([
 
 				// Room selector.
 				$rootScope.$on("$locationChangeSuccess", function(event) {
-					//console.log("location change", $route, $rootScope.roomid);
-					var defaultRoom, room;
-					room = defaultRoom = $rootScope.roomid || "";
+
+					var room;
 					if ($route.current) {
 						room = $route.current.params.room;
+						room = $window.decodeURIComponent(room);
 					} else {
 						room = "";
 					}
-					if (!ready && room !== defaultRoom && !room) {
-						// First start.
-						$location.path("/" + defaultRoom).replace();
-						return;
-					}
-					console.info("Selected room is:", [room]);
+					console.info("Selected room is:", [room], ready, cont);
+					$rootScope.roomid = room;
+
 					if (!ready || !cont) {
 						ready = true;
-						connector.roomid = room;
 						connect();
 					} else {
-						connector.room(room);
+						// Auto apply room when already connected.
+						mediaStream.applyRoom();
 					}
-					$rootScope.roomid = room;
-					$rootScope.roomlink = room ? mediaStream.url.room(room) : null;
 
+					$rootScope.roomlink = room ? mediaStream.url.room(room) : null;
 					if ($rootScope.roomlink) {
 						title.element.text(room + " - " + title.text);
 					} else {
@@ -272,6 +316,7 @@ define([
 				var roomCache = null;
 				var roomCache2 = null;
 				$rootScope.$on("roomStatus", function(event, status) {
+					// roomStatus is triggered by the buddylist when received.users.
 					roomStatusCache = status ? true : false;
 					roomCache = status ? $rootScope.roomid : null;
 					$timeout(function() {
@@ -279,6 +324,7 @@ define([
 							$rootScope.roomstatus = roomStatusCache;
 						}
 						if (roomCache !== roomCache2) {
+							// Let every one know about the new room.
 							$rootScope.$broadcast("room", roomCache);
 							roomCache2 = roomCache;
 						}
@@ -355,6 +401,9 @@ define([
 
 			}
 		};
+
+		// For debugging.
+		$window.changeRoom = mediaStream.changeRoom;
 
 		return mediaStream;
 

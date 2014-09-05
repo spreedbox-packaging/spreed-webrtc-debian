@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-07-11 17:30+0200\n"
+"POT-Creation-Date: 2014-09-05 16:08+0200\n"
 "PO-Revision-Date: 2014-04-13 20:30+0900\n"
 "Last-Translator: Curt Frisemo <curt.frisemo@spreed.com>\n"
 "Language-Team: Curt Frisemo <curt.frisemo@spreed.com>\n"
@@ -18,7 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-msgid "Present a file"
+msgid "Share a YouTube video"
+msgstr ""
+
+msgid "Share a file as presentation"
 msgstr ""
 
 msgid "Share your screen"
@@ -26,6 +29,9 @@ msgstr "화면 공유하기"
 
 msgid "Chat"
 msgstr "대화"
+
+msgid "Contacts"
+msgstr ""
 
 msgid "Mute microphone"
 msgstr "음성제거"
@@ -48,6 +54,9 @@ msgstr ""
 msgid "Start chat"
 msgstr "대화시작"
 
+msgid "Start video call"
+msgstr "화상회의 시작"
+
 msgid "Start audio conference"
 msgstr "음성회의 시작"
 
@@ -69,8 +78,29 @@ msgstr ""
 msgid "Take picture"
 msgstr "사진 찍음"
 
+#, fuzzy
+msgid "Upload picture"
+msgstr "사용자 사진"
+
 msgid "Waiting for camera"
 msgstr "카메라 대기중"
+
+#, fuzzy
+msgid "Picture"
+msgstr "사용자 사진"
+
+msgid "The file couldn't be read."
+msgstr ""
+
+msgid "The file is not an image."
+msgstr ""
+
+#, python-format
+msgid "The file is too large. Max. %d MB."
+msgstr ""
+
+msgid "Select file"
+msgstr ""
 
 msgid "Chat sessions"
 msgstr "대화 세션"
@@ -83,9 +113,6 @@ msgstr "일대일"
 
 msgid "Close chat"
 msgstr "대화 종료"
-
-msgid "Start video call"
-msgstr "화상회의 시작"
 
 #, fuzzy
 msgid "Upload files"
@@ -110,7 +137,33 @@ msgstr "대화 입력"
 msgid "Send"
 msgstr "전송"
 
+msgid "Accept"
+msgstr ""
+
+msgid "Reject"
+msgstr "거부"
+
 msgid "You have no contacts."
+msgstr ""
+
+msgid ""
+"To add new contacts, join a room and create a contact add request by "
+"clicking on the star icon next to a user entry."
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Name"
+msgstr "이름"
+
+msgid "Remove"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Close"
@@ -140,10 +193,12 @@ msgstr "다운로드실패"
 msgid "Loading presentation ..."
 msgstr ""
 
-msgid "Please upload a PDF document"
+msgid "Please upload a document"
 msgstr ""
 
-msgid "Documents are shared with everyone in this call."
+msgid ""
+"Documents are shared with everyone in this call. The supported file types"
+" are PDF and OpenDocument files."
 msgstr ""
 
 msgid "Upload"
@@ -185,28 +240,6 @@ msgstr "화면에 맟춤"
 msgid "Profile"
 msgstr ""
 
-msgid "Your picture"
-msgstr "사용자 사진"
-
-msgid "Your name"
-msgstr "사용자 이름"
-
-msgid "Name"
-msgstr "이름"
-
-msgid "Status message"
-msgstr ""
-
-msgid "What's on your mind?"
-msgstr ""
-
-#, fuzzy
-msgid "Profile information is public."
-msgstr "더 많은 정보가 필요함"
-
-msgid "Account"
-msgstr ""
-
 msgid "Your ID"
 msgstr ""
 
@@ -230,7 +263,21 @@ msgstr ""
 msgid "Manage account"
 msgstr ""
 
-msgid "Contacts"
+msgid "Your picture"
+msgstr "사용자 사진"
+
+msgid "Your name"
+msgstr "사용자 이름"
+
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
 msgstr ""
 
 msgid "Manage contacts"
@@ -256,6 +303,9 @@ msgstr "높음"
 
 msgid "HD"
 msgstr "고화질"
+
+msgid "General"
+msgstr ""
 
 msgid "Language"
 msgstr "언어"
@@ -292,9 +342,6 @@ msgstr "비디오프레임 비율 최대화"
 
 msgid "auto"
 msgstr "자동"
-
-msgid "Experimental settings"
-msgstr "실험 설정"
 
 msgid "Show advanced settings"
 msgstr "고급 설정 보기"
@@ -364,14 +411,8 @@ msgstr "부터"
 msgid "Accept call"
 msgstr "전화 받음"
 
-msgid "Reject"
-msgstr "거부"
-
 msgid "Waiting for camera/microphone access"
 msgstr "카메라/마이크 사용을 기다림"
-
-msgid "Please wait"
-msgstr "기다리세요"
 
 msgid "Checking camera and microphone access."
 msgstr "카메라와 마이크의 사용을 확인 하세요"
@@ -404,6 +445,30 @@ msgid "Creating room ..."
 msgstr "방 링크 만들기..."
 
 msgid "Create"
+msgstr ""
+
+msgid "Videos are shared with everyone in this call."
+msgstr ""
+
+msgid "YouTube URL"
+msgstr ""
+
+#, fuzzy
+msgid "Share"
+msgstr "비공유"
+
+msgid ""
+"Could not load YouTube player API, please check your network / firewall "
+"settings."
+msgstr ""
+
+msgid "Currently playing"
+msgstr ""
+
+msgid "YouTube controls"
+msgstr ""
+
+msgid "YouTube video to share"
 msgstr ""
 
 msgid "Peer to peer chat active."
@@ -448,7 +513,13 @@ msgstr ""
 msgid "Your contact request was rejected."
 msgstr ""
 
+msgid "Edit Contact"
+msgstr ""
+
 msgid "Close this window and disconnect?"
+msgstr ""
+
+msgid "Contacts Manager"
 msgstr ""
 
 msgid "Restart required to apply updates. Click ok to restart now."
@@ -534,10 +605,11 @@ msgstr ""
 msgid "An unknown error occurred while rendering the PDF page."
 msgstr ""
 
-msgid "Only single PDF documents can be shared at this time."
+msgid "Only PDF documents and OpenDocument files can be shared at this time."
 msgstr ""
 
-msgid "Only PDF documents can be shared at this time."
+#, python-format
+msgid "Failed to start screen sharing (%s)."
 msgstr ""
 
 msgid ""
@@ -550,14 +622,17 @@ msgstr ""
 "usermedia-screen-capture를 복사하여 브라우저에서 수행하시고 상단의 프래그를 가능으로 변경 하십시오. 브라우저를 "
 "다시 수행시키면 사용하실수 있습니다."
 
+msgid "Permission to start screen sharing was denied."
+msgstr ""
+
 msgid "Use browser language"
 msgstr "브라우저 언어 사용"
 
-msgid "Contacts Manager"
-msgstr ""
-
 msgid "Meet with me here:"
 msgstr "나를 여기서 만납니다:"
+
+msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
+msgstr ""
 
 msgid "Error"
 msgstr "오류"
@@ -573,6 +648,11 @@ msgstr "더 많은 정보가 필요함"
 
 msgid "Ok"
 msgstr "오케이"
+
+msgid ""
+"Screen sharing requires a browser extension. Please add the Spreed WebRTC"
+" screen sharing extension to Chrome and try again."
+msgstr ""
 
 msgid "Access code required"
 msgstr "접속코드 필요함"

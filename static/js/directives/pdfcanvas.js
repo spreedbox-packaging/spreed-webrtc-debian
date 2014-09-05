@@ -20,7 +20,7 @@
  */
 define(['require', 'underscore', 'jquery'], function(require, _, $) {
 
-	return ["$compile", "translation", function($compile, translation) {
+	return ["$window", "$compile", "translation", "safeApply", function($window, $compile, translation, safeApply) {
 
 		var pdfjs = null;
 
@@ -36,6 +36,7 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				this.currentPageNumber = null;
 				this.pendingPageNumber = null;
 				this.renderTask = null;
+				this.url = null;
 			};
 
 			PDFCanvas.prototype._close = function() {
@@ -49,9 +50,13 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 					this.doc.destroy();
 					this.doc = null;
 				}
+				if (this.url) {
+					URL.revokeObjectURL(this.url);
+					this.url = null;
+				}
 				this.pendingPageNumber = null;
 				this.currentPageNumber = -1;
-				this.scope.maxPageNumber = -1;
+				this.maxPageNumber = -1;
 				// clear visible canvas so it's empty when we show the next document
 				var canvas = this.canvases[this.scope.canvasIndex];
 				canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
@@ -59,40 +64,42 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 
 			PDFCanvas.prototype.close = function() {
 				this._close();
-				this.scope.$emit("pdfClosed");
 			};
 
-			PDFCanvas.prototype.open = function(file) {
-				console.log("Loading PDF from", file);
-				this._close();
-				if (typeof file === "string") {
-					// got a url
-					this._openFile(file);
-					return;
-				}
+			PDFCanvas.prototype.open = function(presentation) {
+				this.scope.$emit("presentationOpening", presentation);
+				presentation.open(_.bind(function(source) {
+					console.log("Loading PDF from", source);
+					this._close();
+					if (typeof source === "string") {
+						// got a url
+						this._openFile(source);
+						return;
+					}
 
-				var fp = file.file || file;
-				if (typeof URL !== "undefined" && URL.createObjectURL) {
-					var url = URL.createObjectURL(fp);
-					this._openFile(url);
-				} else {
-					var fileReader = new FileReader();
-					fileReader.onload = _.bind(function(evt) {
-						var buffer = evt.target.result;
-						var uint8Array = new Uint8Array(buffer);
-						this._openFile(uint8Array);
-					}, this);
-					fileReader.readAsArrayBuffer(fp);
-				}
+					var fp = source.file || source;
+					if (typeof URL !== "undefined" && URL.createObjectURL) {
+						this.url = URL.createObjectURL(fp);
+						this._openFile(this.url);
+					} else {
+						var fileReader = new FileReader();
+						fileReader.onload = _.bind(function(evt) {
+							var buffer = evt.target.result;
+							var uint8Array = new Uint8Array(buffer);
+							this._openFile(uint8Array);
+						}, this);
+						fileReader.readAsArrayBuffer(fp);
+					}
+				}, this));
 			};
 
 			PDFCanvas.prototype._pdfLoaded = function(source, doc) {
 				this.scope.$apply(_.bind(function(scope) {
 					this.doc = doc;
-					scope.maxPageNumber = doc.numPages;
+					this.maxPageNumber = doc.numPages;
 					this.currentPageNumber = -1;
 					console.log("PDF loaded", doc);
-					scope.$emit("pdfLoaded", source, doc);
+					scope.$emit("presentationLoaded", source, doc);
 				}, this));
 			};
 
@@ -114,11 +121,12 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 					break;
 				}
 				this.scope.$apply(_.bind(function(scope) {
-					scope.$emit("pdfLoadError", source, loadErrorMessage);
+					scope.$emit("presentationLoadError", source, loadErrorMessage);
 				}, this));
 			};
 
 			PDFCanvas.prototype._doOpenFile = function(source) {
+				this.scope.$emit("presentationLoading", source);
 				pdfjs.getDocument(source).then(_.bind(function(doc) {
 					this._pdfLoaded(source, doc);
 				}, this), _.bind(function(error, exception) {
@@ -127,7 +135,6 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 			};
 
 			PDFCanvas.prototype._openFile = function(source) {
-				this.scope.$emit("pdfLoading", source);
 				if (pdfjs === null) {
 					// load pdf.js lazily
 					require(['pdf'], _.bind(function(pdf) {
@@ -145,10 +152,12 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 			};
 
 			PDFCanvas.prototype._pageLoaded = function(page, pageObject) {
-				console.log("Got page", pageObject);
-				this.scope.$emit("pdfPageLoaded", page, pageObject);
-				this.currentPage = pageObject;
-				this.drawPage(pageObject);
+				this.scope.$apply(_.bind(function(scope) {
+					console.log("Got page", pageObject);
+					scope.$emit("presentationPageLoaded", page, pageObject);
+					this.currentPage = pageObject;
+					this.drawPage(pageObject);
+				}, this));
 			};
 
 			PDFCanvas.prototype._pageLoadError = function(page, error, exception) {
@@ -159,7 +168,9 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				} else {
 					loadErrorMessage = translation._("An unknown error occurred while loading the PDF page.");
 				}
-				this.scope.$emit("pdfPageLoadError", page, loadErrorMessage);
+				this.scope.$apply(_.bind(function(scope) {
+					scope.$emit("presentationPageLoadError", page, loadErrorMessage);
+				}, this));
 			};
 
 			PDFCanvas.prototype._showPage = function(page) {
@@ -167,13 +178,13 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 					return;
 				}
 
-				console.log("Showing page", page, "/", this.scope.maxPageNumber);
+				console.log("Showing page", page, "/", this.maxPageNumber);
 				if (this.currentPage) {
 					this.currentPage.destroy();
 					this.currentPage = null;
 				}
 				this.currentPageNumber = page;
-				this.scope.$emit("pdfPageLoading", page);
+				this.scope.$emit("presentationPageLoading", page);
 				this.doc.getPage(page).then(_.bind(function(pageObject) {
 					this._pageLoaded(page, pageObject);
 				}, this), _.bind(function(error, exception) {
@@ -185,7 +196,7 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				this.renderTask = null;
 				this.scope.$apply(_.bind(function(scope) {
 					console.log("Rendered page", pageObject.pageNumber);
-					this.scope.$emit("pdfPageRendered", pageObject.pageNumber, scope.maxPageNumber);
+					this.scope.$emit("presentationPageRendered", pageObject.pageNumber, this.maxPageNumber);
 					// ...and flip the buffers...
 					scope.canvasIndex = 1 - scope.canvasIndex;
 					this.showQueuedPage();
@@ -205,7 +216,7 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 					loadErrorMessage = translation._("An unknown error occurred while rendering the PDF page.");
 				}
 				this.scope.$apply(_.bind(function(scope) {
-					this.scope.$emit("pdfPageRenderError", pageObject.pageNumber, scope.maxPageNumber, loadErrorMessage);
+					scope.$emit("presentationPageRenderError", pageObject.pageNumber, this.maxPageNumber, loadErrorMessage);
 				}, this));
 			};
 
@@ -241,7 +252,7 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				};
 
 				console.log("Rendering page", pageObject);
-				this.scope.$emit("pdfPageRendering", pageObject.pageNumber);
+				this.scope.$emit("presentationPageRendering", pageObject.pageNumber);
 
 				// TODO(fancycode): also render images in different resolutions for subscribed peers and send to them when ready
 				this._stopRendering();
@@ -261,21 +272,13 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 			};
 
 			PDFCanvas.prototype.showPage = function(page) {
-				if (page >= 1 && page <= this.scope.maxPageNumber) {
+				if (page >= 1 && page <= this.maxPageNumber) {
 					if (!this.doc) {
 						this.pendingPageNumber = page;
 				   } else {
 						this._showPage(page);
 				   }
 				}
-			};
-
-			PDFCanvas.prototype.prevPage = function() {
-				this.showPage(this.currentPageNumber - 1);
-			};
-
-			PDFCanvas.prototype.nextPage = function() {
-				this.showPage(this.currentPageNumber + 1);
 			};
 
 			PDFCanvas.prototype.showQueuedPage = function() {
@@ -285,18 +288,22 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				}
 			};
 
-			$scope.maxPageNumber = -1;
 			$scope.canvasIndex = 0;
 
 			var canvases = container.find("canvas");
 			var pdfCanvas = new PDFCanvas($scope, canvases);
 
-			$scope.$on("openPdf", function(event, source) {
-				pdfCanvas.open(source);
-			});
-
-			$scope.$on("closePdf", function() {
-				pdfCanvas.close();
+			$scope.$watch("currentPresentation", function(presentation, previousPresentation) {
+				if (presentation) {
+					safeApply($scope, function(scope) {
+						pdfCanvas.open(presentation);
+					});
+				} else {
+					if (previousPresentation) {
+						previousPresentation.close();
+					}
+					pdfCanvas.close();
+				}
 			});
 
 			$scope.$on("$destroy", function() {
@@ -304,33 +311,20 @@ define(['require', 'underscore', 'jquery'], function(require, _, $) {
 				pdfCanvas = null;
 			});
 
-			$scope.$on("showPdfPage", function(event, page) {
+			$scope.$watch("currentPageNumber", function(page, oldValue) {
+				if (page === oldValue) {
+					// no change
+					return;
+				}
+
 				pdfCanvas.showPage(page);
 			});
 
-			$scope.$on("showQueuedPdfPage", function() {
-				pdfCanvas.showQueuedPage();
+			$($window).on("resize", function() {
+				$scope.$apply(function(scope) {
+					pdfCanvas.redrawPage();
+				});
 			});
-
-			$scope.$on("redrawPdf", function() {
-				pdfCanvas.redrawPage();
-			});
-
-			$scope.$on("prevPage", function() {
-				pdfCanvas.prevPage();
-			});
-
-			$scope.$on("nextPage", function() {
-				pdfCanvas.nextPage();
-			});
-
-			$scope.prevPage = function() {
-				$scope.$emit("prevPage");
-			};
-
-			$scope.nextPage = function() {
-				$scope.$emit("nextPage");
-			};
 
 		}];
 

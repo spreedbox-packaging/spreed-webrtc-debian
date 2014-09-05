@@ -20,9 +20,6 @@
  */
 
 .contactsmanager {
-  .head {
-    margin-bottom: 10px;
-  }
   .desc {
     font-size: 20px;
     font-weight: normal;
@@ -45,36 +42,22 @@
   .uploadbtn {
     margin-top: 7px;
   }
-  .buddyPicture {
-    position: relative;
-    width: 46px;
-    height: 46px;
-    background: $actioncolor1;
-    border-radius: 2px;
-    margin: 0 auto;
-    &:after {
-        content: "\f007";
-        color: $actioncolor2;
-        font-family: fontAwesome;
-        font-size: 3em;
-        position: relative;
-        top: -6px;
-    }
-  }
   .editlist {
     max-height: 250px;
     overflow-y: auto;
+  }
+  .picture {
+    border-bottom: 0;
+    cursor: auto;
+    min-height: 46px;
+    .buddyPicture {
+      margin: 0 0 0 10px;
+    }
   }
   .table {
     margin-bottom: 0px;
     tr:first-child td {
       border-top: none;
-    }
-    .picture {
-      width: 15%;
-      min-height: 46px;
-      text-align: center;
-      vertical-align: middle;
     }
     .name {
       width: 70%;
@@ -82,9 +65,16 @@
       vertical-align: middle;
     }
     .action {
-      text-align: center;
+      text-align: right;
       vertical-align: middle;
+      padding-right: 15px;
     }
+  }
+}
+
+.contactsmanageredit {
+  .buddy .buddyPicture {
+    margin: 0;
   }
 }
 
