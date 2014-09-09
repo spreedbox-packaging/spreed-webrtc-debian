@@ -55,11 +55,12 @@ override_dh_auto_install:
 
 override_dh_auto_clean:
 		dh_auto_build -- distclean
-		rm -rf .sass-cache INSTALL aclocal.m4 \
+		rm -rf INSTALL aclocal.m4 \
 				config.h config.h.in config.log \
 				config.status configure install-sh \
 				missing stamp-h1
 		find . \( -name Makefile -o -name Makefile.in \) -delete
+		find . -type d -name .sass-cache -exec rm -rf \{\} \+
 
 %:
 	dh $@ 
