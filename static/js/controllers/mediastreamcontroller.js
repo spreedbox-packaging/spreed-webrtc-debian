@@ -87,6 +87,10 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 		appData.set($scope);
 
 		var videoQualityMap = {
+			tiny: {
+				maxWidth: 80,
+				maxHeight: 45
+			},
 			low: {
 				maxWidth: 320,
 				maxHeight: 180
@@ -621,7 +625,7 @@ define(['underscore', 'bigscreen', 'moment', 'sjcl', 'modernizr', 'webrtc.adapte
 					}
 					break;
 				case "failed":
-					mediaStream.webrtc.doHangup();
+					mediaStream.webrtc.doHangup("failed", currentcall.id);
 					alertify.dialog.alert(translation._("Peer connection failed. Check your settings."));
 					break;
 			}
