@@ -38,10 +38,7 @@ $(PKG)_$(VERSION)$(DTYPE).orig.tar.xz:
 
 override_dh_auto_configure:
 		autoreconf --install
-		dh_auto_configure
-
-override_dh_auto_test:
-		dh_auto_build -- releasetest
+		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode
 
 override_dh_auto_build:
 		dh_auto_build -- release
