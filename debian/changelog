@@ -1,3 +1,10 @@
+spreed-webrtc (0.22.5-1) precise; urgency=medium
+
+  * Fixed an issue where the own video was not showing in democrazy layout.
+  * Own video is no longer delayed in democrazy layout.
+
+ -- Lance Cooper <lance@struktur.de>  Fri, 26 Sep 2014 22:35:07 +0200
+
 spreed-webrtc (0.22.4-1) precise; urgency=medium
 
   * Optimized Makefile and cleaned up building.
