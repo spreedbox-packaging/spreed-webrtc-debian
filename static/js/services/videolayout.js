@@ -87,6 +87,10 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 				videoHeight = 360;
 			}
 
+			if (this.countSelfAsRemote) {
+				videos.unshift(null);
+			}
+
 			var aspectRatio = videoWidth / videoHeight;
 			var innerHeight = size.height;
 			var innerWidth = size.width;
@@ -99,10 +103,9 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 				// Make mini video fit into available space on browsers with no object-fit support.
 				// http://caniuse.com/object-fit
 				var aspectRatioLocal = scope.localVideo.videoWidth / scope.localVideo.videoHeight;
-				extraCSS = {
-					".renderer-onepeople .miniVideo": {
-						width: ($(scope.mini).height() * aspectRatioLocal) + "px"
-					}
+				extraCSS = {};
+				extraCSS[".renderer-"+this.name+" .miniVideo"] = {
+					width: ($(scope.mini).height() * aspectRatioLocal) + "px"
 				};
 			}
 
@@ -138,14 +141,14 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
                 */
 				container.style.width = newContainerWidth + "px";
 				container.style.left = ((innerWidth - newContainerWidth) / 2) + 'px';
-				extraCSS = $.extend(extraCSS, {
-					".renderer-onepeople .remoteVideos": {
-						">div": {
-							width: singleVideoWidth + "px",
-							height: singleVideoHeight + "px"
-						}
+				var extraCSS2 = {};
+				extraCSS2[".renderer-"+this.name+" .remoteVideos"] = {
+					">div": {
+						width: singleVideoWidth + "px",
+						height: singleVideoHeight + "px"
 					}
-				});
+				};
+				extraCSS = $.extend(extraCSS, extraCSS2);
 			}
 			$.injectCSS(extraCSS, {
 				truncateFirst: true,
@@ -172,14 +175,27 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 		Smally.prototype.name = "smally";
 
 
-		// SelfPortrait inherits from OnePeople
-		var SelfPortrait = function(container, scope, controller) {
+		// Democrazy inherits from OnePeople
+		var Democrazy = function(container, scope, controller) {
 			// Call super.
 			OnePeople.call(this, container, scope, controller);
+			// Move mini video into remoteVideos.
+			var $mini = $(scope.mini);
+			this.miniParent = $mini.parent();
+			$mini.prependTo(scope.remoteVideos);
+			$mini.find("video").get(0).play();
+			this.countSelfAsRemote = true;
 		}
-		SelfPortrait.prototype = Object.create(OnePeople.prototype);
-		SelfPortrait.prototype.constructor = SelfPortrait;
-		SelfPortrait.prototype.name = "selfportrait";
+		Democrazy.prototype = Object.create(OnePeople.prototype);
+		Democrazy.prototype.constructor = Democrazy;
+		Democrazy.prototype.name = "democrazy";
+		Democrazy.prototype.close = function(container, scope, controller) {
+			OnePeople.prototype.close.call(this, container, scope, controller);
+			var $mini = $(scope.mini);
+			$mini.appendTo(this.miniParent);
+			$mini.find("video").get(0).play();
+			this.miniParent = null;
+		};
 
 
 		// A view with one selectable large video. The others are small.
@@ -251,12 +267,11 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 
 			// Make space for own video on the right if width goes low.
 			if (((size.width - (videos.length - 1) * 192) / 2) < 192) {
-				extraCSS = {
-					".renderer-conferencekiosk .remoteVideos": {
-						"margin-right": "192px",
-						"overflow-x": "auto",
-						"overflow-y": "hidden"
-					}
+				extraCSS = {};
+				extraCSS[".renderer-"+this.name+" .remoteVideos"] = {
+					"margin-right": "192px",
+					"overflow-x": "auto",
+					"overflow-y": "hidden"
 				};
 			}
 
@@ -281,16 +296,54 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 		};
 
 
+		// Classroom inherits from ConferenceKiosk
+		var Classroom = function(container, scope, controller) {
+			// Call super.
+			ConferenceKiosk.call(this, container, scope, controller);
+		}
+		Classroom.prototype = Object.create(ConferenceKiosk.prototype);
+		Classroom.prototype.constructor = Classroom;
+		Classroom.prototype.name = "classroom";
+		Classroom.prototype.render = function(container, size, scope, videos, peers) {
+			var big = this.big;
+			if (big) {
+				var currentbigpeerid = this.big.data("peerid");
+				if (!peers[currentbigpeerid]) {
+					console.log("Current big peer is no longer there", currentbigpeerid);
+					this.big = big = null;
+				}
+			}
+			if (!big) {
+				if (videos.length) {
+					this.makeBig(peers[videos[0]].element);
+					this.bigVideo.style.opacity = 1;
+				}
+
+			}
+		};
+
 		// Register renderers.
 		renderers[OnePeople.prototype.name] = OnePeople;
 		renderers[Smally.prototype.name] = Smally;
+		renderers[Democrazy.prototype.name] = Democrazy;
 		renderers[ConferenceKiosk.prototype.name] = ConferenceKiosk;
-		renderers[SelfPortrait.prototype.name] = SelfPortrait;
+		renderers[Classroom.prototype.name] = Classroom;
 
 		// Public api.
 		var current = null;
+		var body = $("body");
 		return {
 			update: function(name, size, scope, controller) {
+
+				var makeName = function(prefix, n, camel) {
+					var r = prefix;
+					if (camel) {
+						r = r + n.charAt(0).toUpperCase() + n.slice(1);
+					} else {
+						r = r + "-" + n;
+					}
+					return r;
+				};
 
 				var videos = _.keys(controller.peers);
 				var peers = controller.peers;
@@ -300,15 +353,18 @@ define(["jquery", "underscore", "modernizr", "injectCSS"], function($, _, Modern
 				if (!current) {
 					current = new renderers[name](container, scope, controller)
 					//console.log("Created new video layout renderer", name, current);
-					$(layoutparent).addClass("renderer-" + name);
+					$(layoutparent).addClass(makeName("renderer", name));
+					$(body).addClass(makeName("videolayout", name, true));
 					return true;
 				} else {
 					if (current.name !== name) {
 						current.close(container, scope, controller);
 						$(container).removeAttr("style");
-						$(layoutparent).removeClass("renderer-" + current.name);
+						$(layoutparent).removeClass(makeName("renderer", current.name));
+						$(body).removeClass(makeName("videolayout", current.name, true));
 						current = new renderers[name](container, scope, controller)
-						$(layoutparent).addClass("renderer-" + name);
+						$(layoutparent).addClass(makeName("renderer", name));
+						$(body).addClass(makeName("videolayout", name, true));
 						//console.log("Switched to new video layout renderer", name, current);
 						return true;
 					}
