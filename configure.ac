@@ -173,7 +173,7 @@ if test x"${NPM}" != x"" ; then
     else
         AC_MSG_RESULT([ok])
         AC_MSG_CHECKING([for version of po2json])
-        PO2JSON_VERSION=`{ $NPM list --global & $NPM list; } 2>&1 | $GREP po2json | $SED 's/^.*po2json@//'`
+        PO2JSON_VERSION=`{ $NPM list --global & $NPM list; } 2>&1 | $GREP -v 'required' | $GREP po2json@ | $SED 's/^.*po2json@//'`
         AC_MSG_RESULT([$PO2JSON_VERSION])
         NODEJS_SUPPORT_PO2JSON=yes
     fi
@@ -182,7 +182,7 @@ else
 fi
 AC_SUBST(NODEJS_SUPPORT_PO2JSON)
 
-VERSION=`dpkg-parsechangelog | $SED -n 's/^Version: //p'`
+VERSION=`head -n1 $PWD/debian/changelog | $AWK -F'[[()]]' '{print $2}'`
 PACKAGE_VERSION="$VERSION"
 PACKAGE_STRING="$PACKAGE_NAME $PACKAGE_VERSION"
 AC_DEFINE_UNQUOTED(VERSION, ["$VERSION"], [Version number of package])
