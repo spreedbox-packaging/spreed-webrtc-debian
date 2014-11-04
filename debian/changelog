@@ -1,3 +1,16 @@
+spreed-webrtc (0.22.7-1) precise; urgency=low
+
+  * Fixed a typo in getStreamById api.
+  * Roombar visibility is now controlled by layout.
+  * Removed audio mirror option which does not seem to work anywhere.
+  * Fixed po2json detection when it is installed globally.
+  * Dialog service is now using the ui-bootstrap defaults properly.
+  * Fixed an issue where incoming chat messages failed when getting called
+    from the sender at the same time.
+  * No longer use dpkg-parsechangelog on configure.
+
+ -- Lance Cooper <lance@struktur.de>  Tue, 04 Nov 2014 15:37:52 -0600
+
 spreed-webrtc (0.22.6-1) precise; urgency=medium
 
   * Added missing gear to remove streams from peer connections.
