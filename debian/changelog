@@ -1,3 +1,18 @@
+spreed-webrtc (0.23.4-1) precise; urgency=medium
+
+  * New upstream release with numerous fixes and minor features.
+   + Feature : A new server option was added to require an authorized user to join a room.
+   + Feature : New server options were added to disable screen sharing, youtube and presentation modules.
+   + Change : RequireJS and r.js were updated to 2.1.5.
+   + Change : Lodash was updated to 3.0.0.
+   + Change : Small web client reorganization to allow more fine grained plugin control.
+   + Bugfix : Session cleanup was refactored fixing ghost sessions.
+   + Bugfix : Position of buddy list loading animation is now at the bottom right.
+   + Bugfix : The room name is now correctly reset when the default room is disabled.
+   + Bugfix : The anonymous user data now loads even if a plugin uses the authorization api.
+
+ -- Lance Cooper <lance@struktur.de>  Tue, 03 Feb 2015 00:02:10 +0100
+
 spreed-webrtc (0.22.7-1) precise; urgency=low
 
   * Fixed a typo in getStreamById api.
