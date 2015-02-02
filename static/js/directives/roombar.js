@@ -18,49 +18,68 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['underscore', 'text!partials/roombar.html'], function(_, template) {
+
+"use strict";
+define(['underscore', 'angular', 'text!partials/roombar.html'], function(_, angular, template) {
 
 	// roomBar
-	return ["$window", "$rootScope", "mediaStream", function($window, $rootScope, mediaStream) {
+	return ["$window", "rooms", "$timeout", "safeApply", function($window, rooms, $timeout, safeApply) {
 
-		var link = function($scope) {
+		var link = function($scope, $element) {
 
-			//console.log("roomBar directive link", arguments);
-			$scope.newroomid = $rootScope.roomid;
-			$scope.layout.roombar = false;
-
-			$scope.save = function() {
-				var roomid = mediaStream.changeRoom($scope.newroomid);
-				if (roomid !== $rootScope.roomid) {
-					$scope.roombarform.$setPristine();
-				}
-				$scope.layout.roombar = false;
+			var clearRoomName = function() {
+				$scope.currentRoomName = null;
+				$scope.newRoomName = "";
 			};
 
-			$scope.hitEnter = function(evt) {
-				if (angular.equals(evt.keyCode, 13)) {
-					$scope.save();
+			//console.log("roomBar directive link", arguments);
+			//$scope.layout.roombar = true;
+
+			$scope.save = function() {
+				if ($scope.roombarform.$invalid) {
+					return;
+				}
+				var roomName = rooms.joinByName($scope.newRoomName);
+				if (roomName !== $scope.currentRoomName) {
+					$scope.roombarform.$setPristine();
 				}
 			};
 
 			$scope.exit = function() {
-				$scope.newroomid = "";
+				$scope.newRoomName = "";
 				$scope.save();
 			};
 
-			$rootScope.$watch("roomid", function(newroomid, roomid) {
-				if (!newroomid) {
-					newroomid = "";
-				}
-				$scope.newroomid = newroomid;
+			$scope.$on("room.updated", function(ev, room) {
+				safeApply($scope, function(scope) {
+					scope.currentRoomName = scope.newRoomName = room.Name;
+					if (scope.currentRoomName && !scope.peer) {
+						scope.layout.roombar = true;
+					}
+				});
 			});
 
-			$scope.$watch("newroomid", function(newroomid) {
-				if (newroomid === $rootScope.roomid) {
+			$scope.$on("room.left", function() {
+				safeApply($scope, clearRoomName);
+			});
+
+			$scope.$watch("newRoomName", function(name) {
+				if (name === $scope.currentRoomName) {
 					$scope.roombarform.$setPristine();
 				}
 			});
 
+			$scope.$watch("layout.roombar", function(value) {
+				$timeout(function() {
+					$element.find("input").focus();
+				});
+			});
+
+			$scope.$watch("peer", function(peer) {
+				$scope.layout.roombar = !peer;
+			});
+
+			clearRoomName();
 		};
 
 		return {
@@ -68,7 +87,6 @@ define(['underscore', 'text!partials/roombar.html'], function(_, template) {
 			replace: true,
 			scope: true,
 			template: template,
-			controller: "RoomchangeController",
 			link: link
 		}
 

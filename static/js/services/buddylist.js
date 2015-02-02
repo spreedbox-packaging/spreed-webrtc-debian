@@ -18,7 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-define(['angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!partials/buddyactions.html', 'text!partials/buddyactionsforaudiomixer.html'], function(angular, _, Modernizr, AvlTree, templateBuddy, templateBuddyActions, templateBuddyActionsForAudioMixer) {
+
+"use strict";
+define(['jquery', 'angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.html', 'text!partials/buddyactions.html', 'text!partials/buddyactionsforaudiomixer.html'], function($, angular, _, Modernizr, AvlTree, templateBuddy, templateBuddyActions, templateBuddyActionsForAudioMixer) {
 
 	var BuddyTree = function() {
 
@@ -381,6 +383,10 @@ define(['angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.ht
 		Buddylist.prototype.setDisplay = function(id, scope, data, queueName) {
 
 			var status = data.Status;
+			if (!status) {
+				status = {}; // Make sure to show buddies which never set a status.
+			}
+
 			var display = scope.display;
 			// Set display.name.
 			display.displayName = status.displayName;
@@ -499,7 +505,7 @@ define(['angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.ht
 					scope = newscope;
 				}
 			}, this));
-			if (sessionData && sessionData.Status) {
+			if (sessionData) {
 				this.setDisplay(id, scope, sessionData, "joined");
 			} else if (!noApply) {
 				scope.$apply();
@@ -601,7 +607,7 @@ define(['angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.ht
 						delete status.message;
 						// Convert buddy image.
 						if (status.buddyPicture) {
-							var img = buddyPicture.toString(scope.element.find(".buddyPicture img").get(0));
+							var img = buddyPicture.toString(scope.element.find(".buddyPicture img")[0]);
 							if (img) {
 								status.buddyPicture = img;
 							} else {
@@ -645,12 +651,12 @@ define(['angular', 'underscore', 'modernizr', 'avltree', 'text!partials/buddy.ht
 
 		Buddylist.prototype.click = function(buddyElement, target) {
 
-			var be = buddyElement.get(0);
+			var be = buddyElement[0];
 			// Traverse up to find click action.
 			var action;
 			do {
 				action = $(target).data("action");
-				target = $(target).parent().get(0);
+				target = $(target).parent()[0];
 			} while (!action && target && target !== be);
 
 			// Make call the default action.

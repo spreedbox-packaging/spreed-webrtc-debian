@@ -1,15 +1,15 @@
 # Translations template for Spreed WebRTC.
-# Copyright (C) 2014 struktur AG
+# Copyright (C) 2015 struktur AG
 # This file is distributed under the same license as the Spreed WebRTC
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Spreed WebRTC 1.0\n"
 "Report-Msgid-Bugs-To: simon@struktur.de\n"
-"POT-Creation-Date: 2014-10-24 10:17+0200\n"
+"POT-Creation-Date: 2015-01-28 15:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
-
-msgid "Share a YouTube video"
-msgstr ""
-
-msgid "Share a file as presentation"
-msgstr ""
-
-msgid "Share your screen"
-msgstr ""
-
-msgid "Chat"
-msgstr ""
-
-msgid "Contacts"
-msgstr ""
-
-msgid "Mute microphone"
-msgstr ""
-
-msgid "Turn camera off"
-msgstr ""
-
-msgid "Settings"
-msgstr ""
 
 msgid "Your audio level"
 msgstr ""
@@ -54,7 +30,7 @@ msgstr ""
 msgid "Kiosk view"
 msgstr ""
 
-msgid "Classroom"
+msgid "Auditorium"
 msgstr ""
 
 msgid "Start chat"
@@ -66,7 +42,7 @@ msgstr ""
 msgid "Start audio conference"
 msgstr ""
 
-msgid "No other users online"
+msgid "No one else here"
 msgstr ""
 
 msgid "Take"
@@ -153,6 +129,9 @@ msgid ""
 "clicking on the star icon next to a user entry."
 msgstr ""
 
+msgid "Edit contact"
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -192,6 +171,30 @@ msgstr ""
 msgid "Download failed."
 msgstr ""
 
+msgid "Share a YouTube video"
+msgstr ""
+
+msgid "Share a file as presentation"
+msgstr ""
+
+msgid "Share your screen"
+msgstr ""
+
+msgid "Chat"
+msgstr ""
+
+msgid "Contacts"
+msgstr ""
+
+msgid "Mute microphone"
+msgstr ""
+
+msgid "Turn camera off"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
 msgid "Loading presentation ..."
 msgstr ""
 
@@ -224,10 +227,10 @@ msgstr ""
 msgid "Room"
 msgstr ""
 
-msgid "Main"
+msgid "Leave room"
 msgstr ""
 
-msgid "Leave room"
+msgid "Main"
 msgstr ""
 
 msgid "Current room"
@@ -240,6 +243,23 @@ msgid "Fit screen."
 msgstr ""
 
 msgid "Profile"
+msgstr ""
+
+msgid "Your name"
+msgstr ""
+
+msgid "Your picture"
+msgstr ""
+
+msgid "Status message"
+msgstr ""
+
+msgid "What's on your mind?"
+msgstr ""
+
+msgid ""
+"Your picture, name and status message identify yourself in calls, chats "
+"and rooms."
 msgstr ""
 
 msgid "Your ID"
@@ -263,26 +283,6 @@ msgid "Sign out"
 msgstr ""
 
 msgid "Manage account"
-msgstr ""
-
-msgid "Your picture"
-msgstr ""
-
-msgid "Your name"
-msgstr ""
-
-msgid "Status message"
-msgstr ""
-
-msgid "What's on your mind?"
-msgstr ""
-
-msgid ""
-"Your picture, name and status message identify yourself in calls, chats "
-"and rooms."
-msgstr ""
-
-msgid "Manage contacts"
 msgstr ""
 
 msgid "Media"
@@ -386,19 +386,22 @@ msgid ""
 " ID."
 msgstr ""
 
-msgid "Share by Email"
+msgid "Room link"
 msgstr ""
 
-msgid "Share on Facebook"
+msgid "Invite by Email"
 msgstr ""
 
-msgid "Share on Twitter"
+msgid "Invite with Facebook"
 msgstr ""
 
-msgid "Share on Google Plus"
+msgid "Invite with Twitter"
 msgstr ""
 
-msgid "Share on XING"
+msgid "Invite with Google Plus"
+msgstr ""
+
+msgid "Invite with XING"
 msgstr ""
 
 msgid "Initializing"
@@ -466,13 +469,24 @@ msgstr ""
 msgid "Please set your user details and settings."
 msgstr ""
 
-msgid "Create a room and talk together"
+msgid "Enter a room name"
 msgstr ""
 
-msgid "Creating room ..."
+msgid "Random room name"
 msgstr ""
 
-msgid "Create"
+msgid "Enter room"
+msgstr ""
+
+msgid ""
+"Enter the name of an existing room. You can create new rooms when you are"
+" signed in."
+msgstr ""
+
+msgid "Room history"
+msgstr ""
+
+msgid "Please sign in."
 msgstr ""
 
 msgid "Videos are shared with everyone in this call."
@@ -579,10 +593,10 @@ msgstr ""
 msgid " does not pick up."
 msgstr ""
 
-msgid " tried to call you."
+msgid " tried to call you"
 msgstr ""
 
-msgid " called you."
+msgid " called you"
 msgstr ""
 
 msgid "Your browser is not supported. Please upgrade to a current version."
@@ -654,6 +668,9 @@ msgstr ""
 msgid "Meet with me here:"
 msgstr ""
 
+msgid "Room name"
+msgstr ""
+
 msgid "Unknown URL format. Please make sure to enter a valid YouTube URL."
 msgstr ""
 
@@ -689,6 +706,21 @@ msgstr ""
 msgid ""
 "Failed to verify access code. Check your Internet connection and try "
 "again."
+msgstr ""
+
+#, python-format
+msgid "PIN for room %s is now '%s'."
+msgstr ""
+
+#, python-format
+msgid "PIN lock has been removed from room %s."
+msgstr ""
+
+#, python-format
+msgid "Enter the PIN for room %s"
+msgstr ""
+
+msgid "Please sign in to create rooms."
 msgstr ""
 
 #, python-format
