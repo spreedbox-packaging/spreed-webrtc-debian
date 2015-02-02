@@ -10,6 +10,7 @@ spreed-webrtc (0.23.4-1) precise; urgency=medium
    + Bugfix : Position of buddy list loading animation is now at the bottom right.
    + Bugfix : The room name is now correctly reset when the default room is disabled.
    + Bugfix : The anonymous user data now loads even if a plugin uses the authorization api.
+  * Poll Github directly in the watchfile.
 
  -- Lance Cooper <lance@struktur.de>  Tue, 03 Feb 2015 00:02:10 +0100
 
