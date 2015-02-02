@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+"use strict";
 define(["underscore", "rAF"], function(_) {
 
 	// animationFrame
@@ -29,9 +31,13 @@ define(["underscore", "rAF"], function(_) {
 		var caller = function(f) {
 			f();
 		};
+		var runner = function(c) {
+			registry.forEach(caller);
+			requestAnimationFrame(worker)
+		}
+		var timer = $window.setTimeout;
 		var worker = function() {
-			registry.forEach(caller)
-			requestAnimationFrame(worker);
+			timer(runner, 100);
 		};
 
 		// Public api.

@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-// Helper module to put non dependency base libraries together.
-define([
+
+define([ // Helper module to put non dependency base libraries together.
 	'modernizr',
 	'moment',
 	'Howler',

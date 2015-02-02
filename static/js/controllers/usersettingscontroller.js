@@ -18,14 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+"use strict";
 define([], function() {
 
 	// UsersettingsController
-	return ["$scope", "$element", "mediaStream", "safeApply", function($scope, $element, mediaStream, safeApply) {
+	return ["$scope", "$element", "mediaStream", "safeApply", "$window", function($scope, $element, mediaStream, safeApply, $window) {
 
 		$scope.withUsersForget = true;
 
-		this.registerUserid = function(btn) {
+		this.registerUserid = function(event) {
 
 			var successHandler = function(data) {
 				console.info("Created new userid:", data.userid);
@@ -38,8 +40,13 @@ define([], function() {
 				delete data.nonce;
 			};
 
+			var form = null;
+			if (event && event.target) {
+				form = event.target.form;
+			}
+
 			console.log("No userid - creating one ...");
-			mediaStream.users.register(btn.form, function(data) {
+			mediaStream.users.register(form, function(data) {
 				if (data.nonce) {
 					successHandler(data);
 				} else {
@@ -58,7 +65,10 @@ define([], function() {
 
 		this.forgetUserid = function() {
 			mediaStream.users.forget();
-			mediaStream.connector.forgetAndReconnect();
+			mediaStream.webrtc.doHangup("forgetUserid");
+			$window.setTimeout(function() {
+				mediaStream.connector.forgetAndReconnect();
+			}, 0);
 		};
 
 	}];
