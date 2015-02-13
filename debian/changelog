@@ -1,3 +1,11 @@
+spreed-webrtc (0.23.5-1) precise; urgency=medium
+
+  * New upstream release with an important bugfixes.
+   + Bugfix : Stale connections no longer kill their session if another connection resumed the session.
+   + Change : The server config file is no longer installed by make install.
+
+ -- Lance Cooper <lance@struktur.de>  Fri, 13 Feb 2015 08:51:50 +0100
+
 spreed-webrtc (0.23.4-1) precise; urgency=medium
 
   * New upstream release with numerous fixes and minor features.
