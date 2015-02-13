@@ -38,17 +38,17 @@ $(PKG)_$(VERSION)$(DTYPE).orig.tar.xz:
 
 override_dh_auto_configure:
 		autoreconf --install
-		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode
+		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode --prefix=$(TMP)/usr/
 
 override_dh_auto_build:
 		dh_auto_build -- release
 
 override_dh_auto_install:
-		DESTDIR='$(TMP)' dh_auto_build -- install
+		dh_auto_build -- install
 # See https://github.com/strukturag/spreed-webrtc/issues/161
-		install -d $(TMP)/etc/spreed/
-		mv $(TMP)/usr/etc/spreed/webrtc.conf $(TMP)/etc/spreed/webrtc.conf
-		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/etc/spreed/webrtc.conf
+		install -d $(TMP)/$(CONFIG_PATH)
+		cp $(CURDIR)/server.conf.in $(TMP)/$(CONFIG_PATH)/$(CONFIG_FILE)
+		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/$(CONFIG_PATH)/$(CONFIG_FILE)
 		install -d $(TMP)/usr/share/doc/spreed-webrtc
 		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-webrtc/AGPL-3
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
