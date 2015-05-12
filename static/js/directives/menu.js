@@ -23,15 +23,10 @@
 define(['text!partials/menu.html'], function(template) {
 
 	// menu
-	return ["mediaStream", function(mediaStream) {
+	return ["modules", function(modules) {
 
 		var link = function($scope, $element) {
-
-			$scope.modules = mediaStream.config.Modules || [];
-			$scope.withModule = function(m) {
-				return $scope.modules.indexOf(m) !== -1;
-			};
-
+			$scope.withModule = modules.withModule;
 		};
 
 		return {

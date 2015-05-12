@@ -43,7 +43,7 @@ type Client interface {
 	Session() *Session
 	Index() uint64
 	Close()
-	ReplaceAndClose()
+	ReplaceAndClose(Client)
 }
 
 type client struct {
@@ -71,8 +71,7 @@ func (client *client) OnText(b Buffer) {
 	if incoming, err := client.DecodeIncoming(b); err == nil {
 		client.OnIncoming(client, client.session, incoming)
 	} else {
-		log.Println("OnText error while decoding JSON", err)
-		log.Printf("JSON:\n%s\n", b)
+		log.Println("OnText error while processing incoming message", err)
 	}
 }
 
@@ -88,9 +87,15 @@ func (client *client) Session() *Session {
 	return client.session
 }
 
-func (client *client) ReplaceAndClose() {
-	client.session.Close()
-	if client.Connection != nil {
-		client.Connection.Close()
-	}
+func (client *client) ReplaceAndClose(oldClient Client) {
+	oldSession := oldClient.Session()
+	client.session.Replace(oldSession)
+	go func() {
+		// Close old session and client in another go routine,
+		// to avoid blocking the new client if the old one hangs or
+		// whatever.
+		log.Printf("Closing obsolete client %d (replaced with %d) with id %s\n", oldClient.Index(), client.Index(), oldSession.Id)
+		oldSession.Close()
+		oldClient.Close()
+	}()
 }

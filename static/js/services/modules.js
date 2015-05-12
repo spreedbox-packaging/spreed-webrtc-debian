@@ -19,29 +19,20 @@
  *
  */
 
-.fadetogglecontainer > div {
-  position: absolute;
-  width: 100%;
-}
+"use strict";
+define([], function() {
 
-.animate-show {
-  &.ng-hide-add {
-    display: block !important;
-    opacity: 1;
-    transition: all linear .5s;
+	// modules
+	return ["mediaStream", function(mediaStream) {
 
-    &.ng-hide-add-active {
-      opacity: 0;
-    }
-  }
+		var enabledModules = mediaStream.config.Modules || [];
 
-  &.ng-hide-remove {
-    display: block !important;
-    opacity: 0;
-    transition: all linear .5s;
+		// Public api.
+		return {
+			withModule: function(m) {
+				return enabledModules.indexOf(m) !== -1;
+			}
+		}
 
-    &.ng-hide-remove-active {
-      opacity: 1;
-    }
-  }
-}
+	}];
+});
