@@ -1,3 +1,33 @@
+spreed-webrtc (0.23.8-1) precise; urgency=low
+
+  * New upstream releases with numerous bugfixes, features, and
+    improved platform support.
+   + Feature : CPU overuse detection is no longer experimental and now enabled by default.
+   + Feature : 4:3 videos now get zoomed to 16:9 to get a better look and feel. This is also supported with Firefox 36 or later.
+   + Feature : Send stereo option was added to extended settings (disabled by default).
+   + Feature : Contacts is now a module and can be disabled in server configuration.
+   + Feature : SCSS lint support has been added which should help to improve SCSS coding style.
+   + Change : Chat messages are now limited to 200k characters.
+   + Change : Channeling API now discards all incoming messages larger than 1MB.
+   + Change : SCSS.js was updated to 1.0.2
+   + Change : Receive stereo is now always true and has been removed from extended settings.
+   + Change : Chrome < 34 is no longer supported.
+   + Change : Button styles in settings have been changed to avoid links for account related buttons.
+   + Bugfix : Server now notifies all parties when a subscribed client closed the connection.
+   + Bugfix : Chat rooms now get reenabled when a peer reconnects resuming a existing session.
+   + Bugfix : Replaced sessions can now receive from contacts again.
+   + Bugfix : Fixed a possible reconnect loop.
+   + Bugfix : TURN ttl refresh timer is no longer lost when a room is joined.
+   + Bugfix : Fixed a possible dead lock when a hanging connection was replaced.
+   + Bugfix : Authentication Id is now properly logged.
+   + Bugfix : Avoid broken local video aspect ratio when the camera changes aspect ratio while capturing (Mac OS).
+   + Bugfix : 1080p and 720p now can fall back to lower resolution if the camera fails to provide the requested resolution.
+   + Bugfix : Video component now correctly exits full screen.
+   + Bugfix : YouTube support works again.
+   + Bugfix : Several styles were looking broken and have been modified.
+
+ -- Lance Cooper <lance@struktur.de>  Tue, 12 May 2015 09:44:30 -0500
+
 spreed-webrtc (0.23.5-1) precise; urgency=medium
 
   * New upstream release with an important bugfixes.
