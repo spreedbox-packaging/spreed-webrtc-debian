@@ -19,29 +19,26 @@
  *
  */
 
-.fadetogglecontainer > div {
-  position: absolute;
-  width: 100%;
+.visible-with-contacts,
+.visible-with-contacts-inline {
+  display: none;
 }
 
-.animate-show {
-  &.ng-hide-add {
-    display: block !important;
-    opacity: 1;
-    transition: all linear .5s;
+.hidden-with-contacts {
+}
 
-    &.ng-hide-add-active {
-      opacity: 0;
-    }
+.with-contacts {
+
+  .visible-with-contacts {
+    display: block;
   }
 
-  &.ng-hide-remove {
-    display: block !important;
-    opacity: 0;
-    transition: all linear .5s;
-
-    &.ng-hide-remove-active {
-      opacity: 1;
-    }
+  .visible-with-contacts-inline {
+    display: inline-block;
   }
+
+  .hidden-with-contacts {
+    display: none;
+  }
+
 }
