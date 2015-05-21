@@ -1,3 +1,9 @@
+spreed-webrtc (0.23.8-1struktur1~trusty1) trusty; urgency=low
+
+  * Packaged for trusty. No changes.
+
+ -- Simon Eisenmann <simon@struktur.de>  Thu, 21 May 2015 10:48:33 +0000
+
 spreed-webrtc (0.23.8-1) precise; urgency=low
 
   * New upstream releases with numerous bugfixes, features, and
