@@ -1,6 +1,6 @@
 /*
  * Spreed WebRTC.
- * Copyright (C) 2013-2014 struktur AG
+ * Copyright (C) 2013-2015 struktur AG
  *
  * This file is part of Spreed WebRTC.
  *
@@ -30,4 +30,5 @@ type Context struct {
 	Languages []string
 	Room      string `json:"-"`
 	Scheme    string `json:"-"`
+	Origin    string `json:",omitempty"`
 }

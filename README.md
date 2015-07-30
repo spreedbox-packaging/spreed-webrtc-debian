@@ -4,8 +4,7 @@ Spreed WebRTC
 Spreed WebRTC implements a WebRTC audio/video call and conferencing server
 and web client.
 
-The latest version of Spreed WebRTC can be found on GitHub:
-https://github.com/strukturag/spreed-webrtc
+The latest source of Spreed WebRTC can be found on [GitHub](https://github.com/strukturag/spreed-webrtc). If you are a user, just wanting a secure and private alternative for online communication make sure to check out the [Spreedbox](http://spreedbox.com), providing a ready to use hardware with Spreed WebRTC included.
 
 
 ## Build prerequisites
@@ -95,7 +94,7 @@ locally by running `npm install` from the project root. Consult the
 `package.json` file for more details.
 
   - [autoprefixer](https://www.npmjs.org/package/autoprefixer) >= 1.1
-  - [po2json](https://github.com/mikeedwards/po2json)
+  - [po2json](https://github.com/mikeedwards/po2json) >= 0.4.1
   - [JSHint](http://www.jshint.com/) >= 2.0.0
   - [scss-lint](https://github.com/causes/scss-lint) >= 0.33.0
 

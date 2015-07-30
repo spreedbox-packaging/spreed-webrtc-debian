@@ -1,6 +1,6 @@
 /*
  * Spreed WebRTC.
- * Copyright (C) 2013-2014 struktur AG
+ * Copyright (C) 2013-2015 struktur AG
  *
  * This file is part of Spreed WebRTC.
  *
@@ -246,7 +246,6 @@ define(['jquery', 'underscore', 'text!partials/chat.html', 'text!partials/chatro
 						subscope.sendChat = function(to, message, status, mid, noloop) {
 							//console.log("send chat", to, scope.peer);
 							if (message && message.length > maxMessageSize) {
-								console.log("XXXXXXX", message.length);
 								return mid;
 							}
 							var peercall = mediaStream.webrtc.findTargetCall(to);
@@ -384,7 +383,7 @@ define(['jquery', 'underscore', 'text!partials/chat.html', 'text!partials/chatro
 								// Make sure we are not in group chat or the message is from ourselves
 								// before we beep and shout.
 								if (!subscope.isgroupchat && from !== sessionid) {
-									playSound.play("message1");
+									playSound.play("chatmessage");
 									desktopNotify.notify(translation._("Message from ") + displayName(from), message);
 									appData.e.triggerHandler("uiNotification", ["chatmessage", {from: from, message: message, first: subscope.firstmessage}]);
 								}

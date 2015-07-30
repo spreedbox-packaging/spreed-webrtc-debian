@@ -38,6 +38,7 @@ NODEJS_VERSION_MIN=0.6.0
 NODEJS_VERSION_STYLES_MIN=0.10.0
 SASS_VERSION_MIN=3.3.0
 SCSS_LINT_VERSION_MIN=0.33.0
+PO2JSON_VERSION_MIN=0.4.1
 
 AC_CONFIG_SRCDIR([src/app/spreed-webrtc-server/main.go])
 AC_CONFIG_MACRO_DIR([m4])
@@ -55,6 +56,13 @@ AC_PROG_SED
 AC_PROG_AWK
 
 AC_PATH_PROGS([FIND],[find])
+
+AC_PATH_PROGS([GPM],[gpm])
+if test x"${GPM}" != x"" ; then
+    AC_MSG_CHECKING([for version of gpm])
+    GPM_VERSION=`$GPM version 2>&1 | $SED 's/^>> gpm v//'`
+    AC_MSG_RESULT([$GPM_VERSION])
+fi
 
 AC_PATH_PROG([JSHINT],jshint, [], [$PWD/node_modules/.bin$PATH_SEPARATOR$PATH])
 if test x"${JSHINT}" != x"" ; then
@@ -183,9 +191,11 @@ if test x"${NPM}" != x"" ; then
     else
         AC_MSG_RESULT([ok])
         AC_MSG_CHECKING([for version of po2json])
-        PO2JSON_VERSION=`{ $NPM list --global & $NPM list; } 2>&1 | $GREP -v 'required' | $GREP po2json@ | $SED 's/^.*po2json@//'`
+        PO2JSON_VERSION=`{ $NPM list --global & $NPM list; } 2>&1 | $GREP -v 'required' | $GREP po2json@ | tail -n1 | $SED 's/^.*po2json@//'`
         AC_MSG_RESULT([$PO2JSON_VERSION])
-        NODEJS_SUPPORT_PO2JSON=yes
+        AX_COMPARE_VERSION([$PO2JSON_VERSION], [lt], [$PO2JSON_VERSION_MIN],
+            [AC_MSG_WARN([Please install po2json version $PO2JSON_VERSION_MIN or newer before trying to build translations (found po2json $PO2JSON_VERSION).])
+            NODEJS_SUPPORT_PO2JSON=no],[NODEJS_SUPPORT_PO2JSON=yes])
     fi
 else
     AC_MSG_WARN([Please install npm and the the node.js module po2json to build i18n.])
