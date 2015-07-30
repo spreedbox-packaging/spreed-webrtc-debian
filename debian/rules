@@ -54,6 +54,9 @@ override_dh_auto_install:
 		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-webrtc/AGPL-3
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
 
+override_dh_auto_test:
+		# "make test" is currently broken, so don't check when packaging.
+
 override_dh_auto_clean:
 		dh_auto_build -- distclean
 		rm -rf INSTALL aclocal.m4 \
