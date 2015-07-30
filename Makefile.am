@@ -42,7 +42,7 @@ DIST_BIN := $(DIST)/bin
 
 all: build
 
-build: binary assets
+build: get binary assets
 
 gopath:
 	@echo GOPATH=$(GOPATH)
@@ -59,7 +59,11 @@ endif
 
 getupdate: vendorclean get
 
-binary: get
+gpm:
+	@if [ "$(GPM)" = "" ]; then echo "Command 'gpm' not found"; exit 1; fi
+	$(GPM) install
+
+binary:
 	$(GO) build $(GOBUILDFLAGS) -o bin/$(EXENAME) -ldflags '$(LDFLAGS)' app/$(EXENAME)
 
 binaryrace: GOBUILDFLAGS := $(GOBUILDFLAGS) -race
@@ -124,6 +128,7 @@ install:
 	@echo "Installing static resources to: $(SHARE)"
 	$(INSTALL) -d $(BIN)
 	$(INSTALL) -d $(SHARE)/www/html
+	$(INSTALL) -d $(SHARE)/www/html/sandboxes
 	$(INSTALL) -d $(SHARE)/www/static
 	$(INSTALL) -d $(SHARE)/www/static/img
 	$(INSTALL) -d $(SHARE)/www/static/sounds
@@ -131,8 +136,10 @@ install:
 	$(INSTALL) -d $(SHARE)/www/static/translation
 	$(INSTALL) -d $(SHARE)/www/static/css
 	$(INSTALL) -d $(SHARE)/www/static/js/libs/pdf
+	$(INSTALL) -d $(SHARE)/www/static/js/sandboxes
 	$(INSTALL) bin/$(EXENAME) $(BIN)
-	$(INSTALL) html/* $(SHARE)/www/html
+	$(INSTALL) html/*.html $(SHARE)/www/html
+	$(INSTALL) html/sandboxes/*.html $(SHARE)/www/html/sandboxes
 	$(INSTALL) static/img/* $(SHARE)/www/static/img
 	$(INSTALL) static/sounds/* $(SHARE)/www/static/sounds
 	$(INSTALL) static/fonts/* $(SHARE)/www/static/fonts
@@ -142,6 +149,7 @@ install:
 	$(INSTALL) $(OUTPUT_JS)/*.js $(SHARE)/www/static/js
 	$(INSTALL) $(OUTPUT_JS)/libs/pdf/*.js $(SHARE)/www/static/js/libs/pdf
 	$(INSTALL) -D static/js/libs/webodf.js $(SHARE)/www/static/js/libs/webodf.js
+	$(INSTALL) $(OUTPUT_JS)/sandboxes/*.js $(SHARE)/www/static/js/sandboxes
 
 clean:
 	$(GO) clean -i -r app/... 2>/dev/null || true

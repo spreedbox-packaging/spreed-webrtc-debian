@@ -1,6 +1,6 @@
 /*
  * Spreed WebRTC.
- * Copyright (C) 2013-2014 struktur AG
+ * Copyright (C) 2013-2015 struktur AG
  *
  * This file is part of Spreed WebRTC.
  *
@@ -29,16 +29,27 @@ body {
 body {
   margin: 0;
   max-height: 100%;
-  max-width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   padding: 0;
+
+  @include breakpt($breakpoint-medium, max-width) {
+    overflow-x: auto;
+  }
+
+  > .ui {
+    height: 100%;
+    min-width: $buddylist-width;
+    position: absolute;
+    width: 100%;
+  }
 }
 
 a {
   cursor: pointer;
 }
 
-#background {
+#background { // scss-lint:disable IdSelector
   background: $main-background;
   bottom: 0;
   left: 0;
