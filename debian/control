@@ -1,7 +1,9 @@
 Source: spreed-webrtc
 Section: web
 Priority: extra
-Maintainer: Lance Cooper <lance@struktur.de>
+Maintainer: struktur AG <opensource@struktur.de>
+Uploaders:
+ Joachim Bauch <bauch@struktur.de>
 Build-Depends: debhelper (>= 8.0.0),
                autoconf,
                libtool,
