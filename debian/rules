@@ -41,6 +41,7 @@ override_dh_auto_configure:
 		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode --prefix=$(TMP)/usr/
 
 override_dh_auto_build:
+		make get
 		dh_auto_build -- release
 
 override_dh_auto_install:
