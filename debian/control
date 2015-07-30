@@ -20,7 +20,8 @@ Build-Depends: debhelper (>= 8.0.0),
                golang-goacceptlanguageparser-dev,
                golang-httputils-dev,
                golang-pkac-dev,
-               golang-uuid-dev
+               golang-uuid-dev,
+               golang-sloth-dev
 Standards-Version: 3.9.3
 Homepage: http://spreedspeakfreely.org
 
