@@ -24,7 +24,7 @@ Build-Depends:
  ruby-compass,
  ruby-sass (>= 3.2)
 Standards-Version: 3.9.3
-Homepage: http://spreedspeakfreely.org
+Homepage: https://github.com/strukturag/spreed-webrtc
 
 Package: spreed-webrtc
 Architecture: any
