@@ -1,4 +1,4 @@
-spreed-webrtc (0.24.5-1~trusty1) trusty; urgency=low
+spreed-webrtc (0.24.5-1~precise1) precise; urgency=low
 
   * Imported Upstream version 0.24.5
   * Changes in 0.24.5
@@ -12,7 +12,7 @@ spreed-webrtc (0.24.5-1~trusty1) trusty; urgency=low
    + Fixed a problem where streams could not be started when they were disabled when call was started and server has renegotiation disabled.
    + Fixed a problem where the renegotiation shrine was ignored.
 
- -- Joachim Bauch <bauch@struktur.de>  Fri, 07 Aug 2015 16:47:30 +0200
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 07 Aug 2015 16:51:39 +0200
 
 spreed-webrtc (0.24.4-1~precise1) precise; urgency=low
 
