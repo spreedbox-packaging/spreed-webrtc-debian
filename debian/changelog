@@ -1,3 +1,16 @@
+spreed-webrtc (0.24.8-1~trusty1) trusty; urgency=low
+
+  * Fixed name of upstream tag.
+  * Imported Upstream version 0.24.8
+  * Changes in 0.24.8
+   + Avoid to scale up screen sharing when sharing not full screen.
+  * Changes in 0.24.7
+   + Fixed a problem where Chrome did not apply screen sharing constraints correctly and screen sharing was using a low resolution.
+   + Fixed a problem where sounds used as interval could not be disabled.
+   + Added window.showCiphers helper for testing WebRTC stats API.
+
+ -- Joachim Bauch <bauch@struktur.de>  Thu, 13 Aug 2015 16:36:17 +0200
+
 spreed-webrtc (0.24.6-1~trusty1) trusty; urgency=low
 
   * Imported Upstream version 0.24.6
