@@ -1,3 +1,20 @@
+spreed-webrtc (0.24.9-1~trusty1) trusty; urgency=low
+
+  * Imported Upstream version 0.24.9
+  * Changes in 0.24.9
+   + Added support for Firefox 43 API changes.
+   + Use mediaDevices API to enumarate input devices to avoid deprecation warning in Chrome.
+   + Linking from the chat no longer sends the referrer to targets by using a referrer policy.
+   + Chat input is now auto focused to increase usability and to reduce number of clicks required.
+   + The room chat is now automatically activated when no other chat session is available and a room is joined.
+   + The Makefile now supports $(DESTDIR).
+   + Limit autoprefixer version to avoid build problems with newer version.
+   + Code style changes to fix latedef jshint warnings. Make jshint now runs without error with latest jshint.
+   + Added travis to test Go 1.5 compatibility.
+   + ODF and PDF presentations now have a white background to avoid issues with files with have no background on their own.
+
+ -- Joachim Bauch <bauch@struktur.de>  Wed, 13 Jan 2016 10:19:38 +0100
+
 spreed-webrtc (0.24.8-1~trusty1) trusty; urgency=low
 
   * Fixed name of upstream tag.
