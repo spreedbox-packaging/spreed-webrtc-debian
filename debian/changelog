@@ -1,4 +1,4 @@
-spreed-webrtc (0.24.10-1~trusty1) trusty; urgency=low
+spreed-webrtc (0.24.10-1~precise1) precise; urgency=low
 
   * Imported Upstream version 0.24.10
   * Changes in 0.24.10
@@ -7,7 +7,7 @@ spreed-webrtc (0.24.10-1~trusty1) trusty; urgency=low
    + Only stop user media automatically, when all tracks have ended.
    + Stop waiting on video early if first video track is enabled but muted.
 
- -- Joachim Bauch <bauch@struktur.de>  Mon, 18 Jan 2016 11:10:15 +0100
+ -- Joachim Bauch <bauch@struktur.de>  Mon, 18 Jan 2016 11:14:24 +0100
 
 spreed-webrtc (0.24.9-1~precise1) precise; urgency=low
 
