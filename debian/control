@@ -28,7 +28,7 @@ Homepage: https://github.com/strukturag/spreed-webrtc
 
 Package: spreed-webrtc
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: logrotate, ${shlibs:Depends}, ${misc:Depends}
 Replaces: spreed-speakfreely
 Description: WebRTC audio/video call and conferencing server
  The spreed-webrtc server supports WebRTC based
