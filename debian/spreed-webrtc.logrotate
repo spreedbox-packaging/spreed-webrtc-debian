@@ -1,0 +1,9 @@
+/var/log/spreed/webrtc/server.log {
+	daily
+	rotate 52
+	copytruncate
+	delaycompress
+	compress
+	notifempty
+	missingok
+}
