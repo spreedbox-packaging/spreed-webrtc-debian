@@ -1,3 +1,9 @@
+spreed-webrtc (0.24.11-1~precise2) precise; urgency=low
+
+  * Rotate logfile.
+
+ -- Joachim Bauch <bauch@struktur.de>  Tue, 23 Feb 2016 13:05:55 +0100
+
 spreed-webrtc (0.24.11-1~precise1) precise; urgency=low
 
   * Imported Upstream version 0.24.11
