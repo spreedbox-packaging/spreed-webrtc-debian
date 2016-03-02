@@ -45,7 +45,7 @@ Description: WebRTC audio/video call and conferencing server
  .
  All calls use WebRTC's encrypted peer-to-peer support and chat will also use
  peer-to-peer connections whenever possible, providing a high degree of privacy
- andsecurity.
+ and security.
 
 Package: spreed-webrtc-assets
 Architecture: all
@@ -61,6 +61,6 @@ Description: WebRTC audio/video call and conferencing server - static assets
  .
  All calls use WebRTC's encrypted peer-to-peer support and chat will also use
  peer-to-peer connections whenever possible, providing a high degree of privacy
- andsecurity.
+ and security.
  .
  This package contains static assets.
