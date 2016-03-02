@@ -1,3 +1,10 @@
+spreed-webrtc (0.25.0-1~trusty2) trusty; urgency=low
+
+  * Fixed typo.
+  * Moved binaries to separate package.
+
+ -- Joachim Bauch <bauch@struktur.de>  Wed, 02 Mar 2016 12:08:20 +0100
+
 spreed-webrtc (0.25.0-1~trusty1) trusty; urgency=low
 
   * One dependency per line, wrap description text.
