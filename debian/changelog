@@ -1,3 +1,10 @@
+spreed-webrtc (0.25.1-1~trusty1) trusty; urgency=low
+
+  * Next version will require golang-phoenix-dev 1.0.0 or newer.
+  * Imported Upstream version 0.25.1
+
+ -- Joachim Bauch <bauch@struktur.de>  Wed, 02 Mar 2016 14:52:42 +0100
+
 spreed-webrtc (0.25.0-1~trusty2) trusty; urgency=low
 
   * Fixed typo.
