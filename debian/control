@@ -28,15 +28,19 @@ Homepage: https://github.com/strukturag/spreed-webrtc
 
 Package: spreed-webrtc
 Architecture: any
-Depends: logrotate, ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ logrotate,
+ ${shlibs:Depends},
+ ${misc:Depends}
 Replaces: spreed-speakfreely
 Description: WebRTC audio/video call and conferencing server
- The spreed-webrtc server supports WebRTC based
- conferencing using the latest web standards. Full STUN
- and TURN integration is supported, and client connect to
- the server over HTTP+WebSockets, making it possible to make
- calls through almost any firewall with the correct
- configuration. All calls use WebRTC's encrypted peer-to-peer
- support and chat will also use peer-to-peer connections
- whenever possible, providing a high degree of privacy and
- security.
+ The spreed-webrtc server supports WebRTC based conferencing using the latest
+ web standards.
+ .
+ Full STUN and TURN integration is supported, and clients connect to the server
+ over HTTP+WebSockets, making it possible to make calls through almost any
+ firewall with the correct configuration.
+ .
+ All calls use WebRTC's encrypted peer-to-peer support and chat will also use
+ peer-to-peer connections whenever possible, providing a high degree of privacy
+ andsecurity.
