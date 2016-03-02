@@ -7,7 +7,7 @@ Uploaders:
 Build-Depends:
  autoconf,
  automake,
- debhelper (>= 8.0.0),
+ debhelper (>= 8.9.7),
  golang (>= 1.3),
  golang-context-dev,
  golang-goacceptlanguageparser-dev,
@@ -31,6 +31,7 @@ Package: spreed-webrtc
 Architecture: any
 Depends:
  logrotate,
+ spreed-webrtc-assets (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
 Replaces: spreed-speakfreely
@@ -45,3 +46,21 @@ Description: WebRTC audio/video call and conferencing server
  All calls use WebRTC's encrypted peer-to-peer support and chat will also use
  peer-to-peer connections whenever possible, providing a high degree of privacy
  andsecurity.
+
+Package: spreed-webrtc-assets
+Architecture: all
+Depends:
+ ${misc:Depends}
+Description: WebRTC audio/video call and conferencing server - static assets
+ The spreed-webrtc server supports WebRTC based conferencing using the latest
+ web standards.
+ .
+ Full STUN and TURN integration is supported, and clients connect to the server
+ over HTTP+WebSockets, making it possible to make calls through almost any
+ firewall with the correct configuration.
+ .
+ All calls use WebRTC's encrypted peer-to-peer support and chat will also use
+ peer-to-peer connections whenever possible, providing a high degree of privacy
+ andsecurity.
+ .
+ This package contains static assets.

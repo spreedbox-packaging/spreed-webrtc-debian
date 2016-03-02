@@ -7,7 +7,8 @@ export CONFIG_PATH=/etc/spreed
 export CONFIG_FILE=webrtc.conf
 
 PACKAGE = $(firstword $(shell dh_listpackages))
-TMP     = $(CURDIR)/debian/$(PACKAGE)
+DEBIAN  = $(CURDIR)/debian
+TMP     = $(DEBIAN)/tmp
 
 ## Based on http://wiki.debian.org/onlyjob/get-orig-source
 PKD   = $(abspath $(dir $(MAKEFILE_LIST)))
@@ -40,18 +41,22 @@ override_dh_auto_configure:
 		autoreconf --install
 		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode --prefix=$(TMP)/usr/
 
-override_dh_auto_build:
+override_dh_auto_build-arch:
 		make get
-		dh_auto_build -- release
+		make release-binary
 
-override_dh_auto_install:
-		dh_auto_build -- install
+override_dh_auto_build-indep:
+		make release-assets
+
+override_dh_auto_install-arch:
+		make install-binary
 # See https://github.com/strukturag/spreed-webrtc/issues/161
-		install -d $(TMP)/$(CONFIG_PATH)
-		cp $(CURDIR)/server.conf.in $(TMP)/$(CONFIG_PATH)/$(CONFIG_FILE)
-		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(TMP)/$(CONFIG_PATH)/$(CONFIG_FILE)
-		install -d $(TMP)/usr/share/doc/spreed-webrtc
-		install $(CURDIR)/LICENSE $(TMP)/usr/share/doc/spreed-webrtc/AGPL-3
+		cp $(CURDIR)/server.conf.in $(DEBIAN)/${PACKAGE}/$(CONFIG_PATH)/$(CONFIG_FILE)
+		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(DEBIAN)/${PACKAGE}/$(CONFIG_PATH)/$(CONFIG_FILE)
+		install $(CURDIR)/LICENSE $(DEBIAN)/${PACKAGE}/usr/share/doc/spreed-webrtc/AGPL-3
+
+override_dh_auto_install-indep:
+		make install-assets
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
 
 override_dh_auto_test:
@@ -67,6 +72,6 @@ override_dh_auto_clean:
 		find . -type d -name .sass-cache -exec rm -rf \{\} \+
 
 %:
-	dh $@ 
+	dh $@
 
 .PHONY: get-orig-source
