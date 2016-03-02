@@ -1,10 +1,33 @@
-spreed-webrtc-server (0.24.12) trusty; urgency=medium
+## 0.25.0
+
+  * Added hints how CHANGELOG.md is created.
+  * Use markdown for changelog.
+  * Removed own debian folder, to avoid conflicts for packagers.
+  * Trigger NATS events non blocking through buffered channel.
+  * Split "release" target into binary and assets.
+  * Split "install" target into binary and assets. This way packaging can later move the static assets to a separate package.
+  * Brought back mediaDevices wrapper for gUM for Firefox >= 38 fixing #263 and #264.
+  * Added Go 1.6.
+  * Fixed tests to reflect busManager changes.
+  * Added startup bus event and a NATS client id.
+  * Removed auth bus event in favour of session bus event.
+  * Added docstrings and cleaned up code.
+  * Validate Offer and Answer content, so only events without _token key are triggered as channelling event to bus.
+  * Added support for NATS pub/sub messaging to trigger channeling events for external services.
+  * Added Leon to authors.
+  * cryptoRand.Int / pseudoRand.Intn to generate random integer. Previous way was modulo-biased
+  * Add missing characters to random string function, so we use the full upper+lowercase alphabet
+  * Avoid using LDFLAGS as this might be set to unexpected values in environment.
+  * Require a golang version of at least 1.3.0.
+  * Only run TravisCI builds against go1.3 and tip.
+
+
+## 0.24.12
 
   * Brought back mediaDevices wrapper for gUM for Firefox >= 38 fixing #263 and #264.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 01 Mar 2016 17:31:11 +0100
 
-spreed-webrtc-server (0.24.11) trusty; urgency=medium
+## 0.24.11
 
   * Stop waiting on video early if first video track is enabled but muted.
   * Use sh shebang instead of bash to be less Linux specific (#244).
@@ -17,18 +40,16 @@ spreed-webrtc-server (0.24.11) trusty; urgency=medium
   * Firefox 44 has fixed gUM permission indicator, so limiting workaround to 43 and lower.
   * Restrict VP9 experiment to Chrome >= 48.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 18 Feb 2016 11:05:49 +0100
 
-spreed-webrtc-server (0.24.10) trusty; urgency=medium
+## 0.24.10
 
   * Avoid to break when there is no mediaDevices.
   * Added compatibility fix for Chrome 38 which stopped working when called from Chrome 46+ (Munge remote offer UDP/TLS/RTP/SAVPF to RTP/SAVPF).
   * Only stop user media automatically, when all tracks have ended.
   * Stop waiting on video early if first video track is enabled but muted.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 15 Jan 2016 12:57:13 +0100
 
-spreed-webrtc-server (0.24.9) trusty; urgency=medium
+## 0.24.9
 
   * Added support for Firefox 43 API changes.
   * Use mediaDevices API to enumarate input devices to avoid deprecation warning in Chrome.
@@ -41,30 +62,26 @@ spreed-webrtc-server (0.24.9) trusty; urgency=medium
   * Added travis to test Go 1.5 compatibility.
   * ODF and PDF presentations now have a white background to avoid issues with files with have no background on their own.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 05 Jan 2016 14:48:27 +0100
 
-spreed-webrtc-server (0.24.8) trusty; urgency=medium
+## 0.24.8
 
-  * Avoid to scale up screen sharing when sharing not full screen. 
+  * Avoid to scale up screen sharing when sharing not full screen.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 13 Aug 2015 16:21:22 +0200
 
-spreed-webrtc-server (0.24.7) trusty; urgency=medium
+## 0.24.7
 
   * Fixed a problem where Chrome did not apply screen sharing constraints correctly and screen sharing was using a low resolution.
-  * Fixed a problem where sounds used as interval could not be disabled. 
+  * Fixed a problem where sounds used as interval could not be disabled.
   * Added window.showCiphers helper for testing WebRTC stats API.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 13 Aug 2015 16:01:41 +0200
 
-spreed-webrtc-server (0.24.6) trusty; urgency=medium
+## 0.24.6
 
   * Make travis run 'make test'.
-  * Disable notifications on Android Chrome (see https://code.google.com/p/chromium/issues/detail?id=481856). 
+  * Disable notifications on Android Chrome (see https://code.google.com/p/chromium/issues/detail?id=481856).
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 10 Aug 2015 17:33:46 +0200
 
-spreed-webrtc-server (0.24.5) trusty; urgency=medium
+## 0.24.5
 
   * Updated ua-parser to 0.7.9.
   * Fixed errors in unit tests.
@@ -76,18 +93,16 @@ spreed-webrtc-server (0.24.5) trusty; urgency=medium
   * Fixed a problem where streams could not be started when they were disabled when call was started and server has renegotiation disabled.
   * Fixed a problem where the renegotiation shrine was ignored.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 07 Aug 2015 16:08:14 +0200
 
-spreed-webrtc-server (0.24.4) precise; urgency=low
+## 0.24.4
 
   * Updated German translations.
   * Fixed invalid experimental constraints.
-  * Avoid to handle the main room as global room. 
+  * Avoid to handle the main room as global room.
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 29 Jul 2015 16:31:06 +0200
 
-spreed-webrtc-server (0.24.3) precise; urgency=low
- 
+## 0.24.3
+
   * Removed deprecated API to fix Chromium 47 compatibility.
   * Improved UI usability for smaller devices.
   * Increased the width of buddy list and chat.
@@ -102,15 +117,13 @@ spreed-webrtc-server (0.24.3) precise; urgency=low
   * Fixed a problem where screen sharing streams were not cleaned up.
   * Added support for custom type dialogs.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 28 Jul 2015 19:22:28 +0200
 
-spreed-webrtc-server (0.24.2) precise; urgency=low
+## 0.24.2
 
-  * Fixed javascript load order, so compiled scripts load properly. 
+  * Fixed javascript load order, so compiled scripts load properly.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 03 Jul 2015 15:15:18 +0200
 
-spreed-webrtc-server (0.24.1) precise; urgency=low
+## 0.24.1
 
   * Load sandboxes on demand, generated by server.
   * ODF and PDF sandboxes now use CSP from HTTP response header.
@@ -118,9 +131,8 @@ spreed-webrtc-server (0.24.1) precise; urgency=low
   * Sandbox iframes are now always created on demand.
   * Don't return users twice in "Welcome" from global room.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 03 Jul 2015 11:43:56 +0200
 
-spreed-webrtc-server (0.24.0) precise; urgency=low
+## 0.24.0
 
   * Added hover actions on buddy picture in group chat.
   * Jed.js was updated to 1.1.0 including API update for translations.
@@ -159,17 +171,15 @@ spreed-webrtc-server (0.24.0) precise; urgency=low
   * Styles were split up, so they can be built seperately.
   * Fixed a problem, where Chrome thought it already had an offer.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 16 Jun 2015 22:50:46 +0200
 
-spreed-webrtc-server (0.23.8) precise; urgency=low
+## 0.23.8
 
   * Session subscriptions now notify close both ways.
   * Reenable chat rooms on certain conditions related to peer connectivity.
   * Fixed an issue where replaced sessions cannot receive data from contacts in other rooms.
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 08 Apr 2015 17:24:59 +0200
 
-spreed-webrtc-server (0.23.7) precise; urgency=low
+## 0.23.7
 
   * Updated SCSS to match coding style.
   * Updated sjcl.js to 1.0.2.
@@ -183,9 +193,8 @@ spreed-webrtc-server (0.23.7) precise; urgency=low
   * Channeling API now discards all incoming messages larger than 1MB.
   * Video component now corretly exits from full screen in all cases.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 05 Mar 2015 18:00:55 +0100
 
-spreed-webrtc-server (0.23.6) precise; urgency=low
+## 0.23.6
 
   * Fixed Youtube module.
   * Contacts is now a module and can be disabled in server configuration.
@@ -197,16 +206,14 @@ spreed-webrtc-server (0.23.6) precise; urgency=low
   * Text.js was updated.
   * CPU overuse detection (Chrome) is no longe experimental and now enabled by default.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 20 Feb 2015 18:30:16 +0100
 
-spreed-webrtc-server (0.23.5) precise; urgency=low
+## 0.23.5
 
   * No longer install config file in install target of Makefile. We leave it to the packaging.
   * Sessions are no longer cleaned up when another connection replaced the session and a stale connection gets disconnected after that.
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 11 Feb 2015 11:16:47 +0100
 
-spreed-webrtc-server (0.23.4) precise; urgency=low
+## 0.23.4
 
   * Cleanup of README.
   * Fixed a problem where videos were not sized correctly.
@@ -220,9 +227,8 @@ spreed-webrtc-server (0.23.4) precise; urgency=low
   * Updated require.js and r.js to 2.1.5.
   * Fixed room reset when default room is disabled.
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 02 Feb 2015 17:18:53 +0100
 
-spreed-webrtc-server (0.23.3) precise; urgency=low
+## 0.23.3
 
   * Improved room bar room change and leave buttons.
   * Never hide room bar completely.
@@ -239,22 +245,19 @@ spreed-webrtc-server (0.23.3) precise; urgency=low
   * Avoid showing settings automatically when not connected or still in authorizing phase.
   * Added some missing CSS classes to allow easier UI mods.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 19 Dec 2014 17:15:10 +0100
 
-spreed-webrtc-server (0.23.2) precise; urgency=low
+## 0.23.2
 
-  * Do not build combined Javascript in strict mode to avoid compatibility issues. 
+  * Do not build combined Javascript in strict mode to avoid compatibility issues.
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 10 Dec 2014 17:18:17 +0100
 
-spreed-webrtc-server (0.23.1) precise; urgency=low
+## 0.23.1
 
   * Fixed strict mode on release compile.
   * Fixed prefix support of make install.
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 10 Dec 2014 14:03:15 +0100
 
-spreed-webrtc-server (0.23.0) precise; urgency=low
+## 0.23.0
 
   * Added support for renegotation in web client (disabled).
   * Rooms were refactored to be able to confirm joins.
@@ -280,9 +283,8 @@ spreed-webrtc-server (0.23.0) precise; urgency=low
   * Missed call toast now always is shown.
   * Improved toast notification styles.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 09 Dec 2014 15:45:52 +0100
 
-spreed-webrtc-server (0.22.8) precise; urgency=low
+## 0.22.8
 
   * Removed opacity transition from chat pane to avoid compositing issues.
   * Fixed timeout of usermedia test.
@@ -291,9 +293,8 @@ spreed-webrtc-server (0.22.8) precise; urgency=low
   * Make sure to stop stream after testing usermedia.
   * Several small UI alignment issues.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 11 Nov 2014 18:37:40 +0100
 
-spreed-webrtc-server (0.22.7) precise; urgency=low
+## 0.22.7
 
   * Fixed a typo in getStreamById api.
   * Roombar visibility is now controlled by layout.
@@ -303,9 +304,8 @@ spreed-webrtc-server (0.22.7) precise; urgency=low
   * Fixed an issue where incoming chat messages failed when getting called from the sender at the same time.
   * No longer use dpkg-parsechangelog on configure.
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 03 Nov 2014 11:02:53 +0100
 
-spreed-webrtc-server (0.22.6) precise; urgency=low
+## 0.22.6
 
   * Added missing gear to remove streams from peer connections.
   * FireFox no longer shows remove videos multiple times.
@@ -313,19 +313,17 @@ spreed-webrtc-server (0.22.6) precise; urgency=low
   * Added a bunch of experimental audio and video settings (disabled by default).
   * Added an option to automatically use same device for output as is used for input (Windows only and enabled by default).
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 23 Oct 2014 14:17:54 +0200
 
-spreed-webrtc-server (0.22.5) precise; urgency=low
+## 0.22.5
 
   * Fixed an issue where the own video was not showing in democrazy layout.
   * Own video is no longer delayed in democrazy layout.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 26 Sep 2014 22:29:35 +0200
 
-spreed-webrtc-server (0.22.4) precise; urgency=low
+## 0.22.4
 
   * Optimized Makefile and cleaned up building.
-  * WebODF was updated to 0.5.4.
+  * WebODF was updated to ## 0.5.4.
   * Video layout 'classroom' has been added.
   * Video layout 'smally' is now using black background.
   * Several smaller layout improvements.
@@ -335,9 +333,8 @@ spreed-webrtc-server (0.22.4) precise; urgency=low
   * Video layout 'onepeople' is now selectable als "Large view".
   * The own audio level indicator is now visible again.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 26 Sep 2014 16:06:23 +0200
 
-spreed-webrtc-server (0.22.3) precise; urgency=low
+## 0.22.3
 
   * Enable 1080p capturing for Chrome 38+.
   * Added option to use 8 FPS video capturing.
@@ -349,23 +346,20 @@ spreed-webrtc-server (0.22.3) precise; urgency=low
   * Fixed fast reenable of local video (added timeout).
   * Fixed issue where a failed peer connection did hangup the whole conference.
   * Added video layout self portrait.
-  * Fixed call state resurrection when there was a heartbeat timeout. 
+  * Fixed call state resurrection when there was a heartbeat timeout.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 19 Sep 2014 11:04:42 +0200
 
-spreed-webrtc-server (0.22.2) precise; urgency=low
+## 0.22.2
 
   * Fixed room join after reconnect.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 09 Sep 2014 11:00:08 +0200
 
-spreed-webrtc-server (0.22.1) precise; urgency=low
+## 0.22.1
 
-  * Fixed load of local stored date when not logged in. 
+  * Fixed load of local stored date when not logged in.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 05 Sep 2014 17:42:48 +0200
 
-spreed-webrtc-server (0.22.0) precise; urgency=low
+## 0.22.0
 
   * WebODF was updated to 0.5.2.
   * Multiple bugfixes and improvements to YouTube player.
@@ -374,7 +368,7 @@ spreed-webrtc-server (0.22.0) precise; urgency=low
   * Added support for promises during initialization code.
   * Added support for plugin provided translations.
   * Stream lined reconnects.
-  * Improved status update performance and avoid to do 
+  * Improved status update performance and avoid to do
     several during connect/authentication phase.
   * Increased timeout to wait for remote video.
   * Screen sharing extension waiter timeout fixed.
@@ -398,9 +392,8 @@ spreed-webrtc-server (0.22.0) precise; urgency=low
   * Fixed scaling of contact images.
   * Fixed chat room resume when it was previously deleted.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 05 Sep 2014 16:50:52 +0200
 
-spreed-webrtc-server (0.21.0) precise; urgency=low
+## 0.21.0
 
   * The language is now available in appData service.
   * Implemented YouTube video sharing.
@@ -418,9 +411,8 @@ spreed-webrtc-server (0.21.0) precise; urgency=low
   * Contacts can now be removed in contact manager.
   * Various other bug fixes.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 25 Jul 2014 17:53:34 +0200
 
-spreed-webrtc-server (0.20.0) precise; urgency=low
+## 0.20.0
 
   * Added presentation mode.
   * Added geolocation sharing in chat.
@@ -432,17 +424,15 @@ spreed-webrtc-server (0.20.0) precise; urgency=low
   * Added ES5 detection on startup.
   * Implemented a contact manager.
 
- -- Simon Eisenmann <longsleep@redemption.intranet.struktur.de>  Fri, 11 Jul 2014 19:12:00 +0200
 
-spreed-webrtc-server (0.19.1) precise; urgency=low
+## 0.19.1
 
   * Added Dockerfile.
   * Updates to compile time dependencies.
   * Session data no longer overwrites contact data.
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 30 Jun 2014 19:18:17 +0200
 
-spreed-webrtc-server (0.19.0) precise; urgency=low
+## 0.19.0
 
   * Implemented authenticated sessions.
   * Implemented contacts.
@@ -460,25 +450,22 @@ spreed-webrtc-server (0.19.0) precise; urgency=low
   * Multiple bug fixes.
   * Improved build system autoconf detections.
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 23 Jun 2014 15:44:30 +0200
 
-spreed-webrtc-server (0.18.1) precise; urgency=low
+## 0.18.1
 
   * Added autoconf/automake support.
-  * Build SCSS compressed in release mode. 
+  * Build SCSS compressed in release mode.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 27 May 2014 11:16:22 +0200
 
-spreed-webrtc-server (0.18.0) precise; urgency=low
+## 0.18.0
 
   * The project is now named Spreed WebRTC. All reference to the old
     name Spreed Speak Freely have been replaced.
   * Cleanup of Javascript code to match coding guide lines.
-  * Added various new targets to make to check javascript and scss code. 
+  * Added various new targets to make to check javascript and scss code.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 23 May 2014 10:46:51 +0200
 
-spreed-webrtc-server (0.17.5) precise; urgency=low
+## 0.17.5
 
   * Implemented server side support for user authentication and authorization.
   * Added an REST API end point (see docs).
@@ -498,9 +485,8 @@ spreed-webrtc-server (0.17.5) precise; urgency=low
   * Added support to specify the default language by URL parameter (?lang=en).
   * Added support for .webp images as buddy images.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 22 May 2014 17:49:16 +0200
 
-spreed-webrtc-server (0.17.4) precise; urgency=low
+## 0.17.4
 
   * Updated Japanese translation.
   * Allow Makefile variables CONFIG_FILE and CONFIG_PATH.
@@ -516,9 +502,8 @@ spreed-webrtc-server (0.17.4) precise; urgency=low
   * Use new websocket.Upgraded API.
   * No longer hang up on reload when not confirmed.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 24 Apr 2014 17:59:05 +0200
 
-spreed-webrtc-server (0.17.3) precise; urgency=low
+## 0.17.3
 
   * Buddy images are now loaded with seperate URL calls.
   * Updated Korean (ko) language.
@@ -531,9 +516,8 @@ spreed-webrtc-server (0.17.3) precise; urgency=low
   * Refactored video layout renderer in seperate service.
   * Implemented alternaitve conference view (not enabled yet).
 
- -- Simon Eisenmann <simon@struktur.de>  Wed, 16 Apr 2014 17:41:13 +0200
 
-spreed-webrtc-server (0.17.2) precise; urgency=low
+## 0.17.2
 
   * Fixed timeouts when there was a disconnect.
   * Use sleepy as submodule from external source.
@@ -554,9 +538,8 @@ spreed-webrtc-server (0.17.2) precise; urgency=low
   * Fixed Javascript code injection with room names.
   * Show current room name in title.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 11 Apr 2014 19:42:10 +0200
 
-spreed-webrtc-server (0.17.1) precise; urgency=low
+## 0.17.1
 
   * Added translations for Korean and Chinese.
   * Multiple updates to 3rd party js libraries.
@@ -564,9 +547,8 @@ spreed-webrtc-server (0.17.1) precise; urgency=low
   * Bootstrap update to 3.1.1.
   * No longer disconnect ongoing calls on websocket disconnect.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 04 Apr 2014 18:46:56 +0200
 
-spreed-webrtc-server (0.17.0) precise; urgency=low
+## 0.17.0
 
   * TURN user names now use expiration time stamp. This fixes compatibility
     with latest TURN REST specification and requires a reasonably recent
@@ -580,17 +562,15 @@ spreed-webrtc-server (0.17.0) precise; urgency=low
   * Use strong random number generator.
   * Support configuring pprof HTTP server.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 28 Mar 2014 16:48:46 +0100
 
-spreed-webrtc-server (0.16.1) precise; urgency=low
+## 0.16.1
 
   * Implemented chat session control UI.
   * Layout controller refactorization.
   * Chat UI bugfixes.
 
- -- Simon Eisenmann <simon@struktur.de>  Fri, 21 Mar 2014 11:46:10 +0100
 
-spreed-webrtc-server (0.16.0) precise; urgency=low
+## 0.16.0
 
   * Chat UI improvements.
   * Screen sharing is now a scroll pane and no longer scaled down.
@@ -603,11 +583,9 @@ spreed-webrtc-server (0.16.0) precise; urgency=low
     numer of cpus for GOMAXPROCS per default.
   * Added server helper for stats and profiling.
 
- -- Simon Eisenmann <simon@struktur.de>  Mon, 17 Mar 2014 18:35:08 +0100
 
-spreed-webrtc-server (0.15.0) precise; urgency=low
+## 0.15.0
 
   * Initial public release.
 
- -- Simon Eisenmann <simon@struktur.de>  Thu, 13 Feb 2014 16:14:05 +0100
 
