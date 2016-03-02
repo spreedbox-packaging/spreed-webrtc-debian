@@ -50,14 +50,14 @@ override_dh_auto_build-indep:
 
 override_dh_auto_install-arch:
 		make install-binary
-# See https://github.com/strukturag/spreed-webrtc/issues/161
-		cp $(CURDIR)/server.conf.in $(DEBIAN)/${PACKAGE}/$(CONFIG_PATH)/$(CONFIG_FILE)
-		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(DEBIAN)/${PACKAGE}/$(CONFIG_PATH)/$(CONFIG_FILE)
-		install $(CURDIR)/LICENSE $(DEBIAN)/${PACKAGE}/usr/share/doc/spreed-webrtc/AGPL-3
 
 override_dh_auto_install-indep:
 		make install-assets
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
+# See https://github.com/strukturag/spreed-webrtc/issues/161
+		cp $(CURDIR)/server.conf.in $(DEBIAN)/spreed-webrtc/${CONFIG_PATH}/$(CONFIG_FILE)
+		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(DEBIAN)/spreed-webrtc/$(CONFIG_PATH)/$(CONFIG_FILE)
+		install $(CURDIR)/LICENSE $(DEBIAN)/spreed-webrtc/usr/share/doc/spreed-webrtc/AGPL-3
 
 override_dh_auto_test:
 		# "make test" is currently broken, so don't check when packaging.
