@@ -13,6 +13,7 @@ Build-Depends:
  golang-goacceptlanguageparser-dev,
  golang-httputils-dev,
  golang-mux-dev,
+ golang-nats-dev,
  golang-phoenix-dev,
  golang-pkac-dev,
  golang-securecookie-dev,
