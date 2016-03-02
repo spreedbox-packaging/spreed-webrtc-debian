@@ -31,7 +31,7 @@ Package: spreed-webrtc
 Architecture: any
 Depends:
  logrotate,
- spreed-webrtc-assets (= ${binary:Version}),
+ spreed-webrtc-assets (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
 Replaces: spreed-speakfreely
