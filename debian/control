@@ -53,6 +53,9 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: spreed-webrtc (<< 0.25.0)
+Conflicts: spreed-webrtc (<< 0.25.0)
+Breaks: spreed-webrtc (<< 0.25.0)
 Description: WebRTC audio/video call and conferencing server - binaries
  The spreed-webrtc server supports WebRTC based conferencing using the latest
  web standards.
@@ -71,6 +74,9 @@ Package: spreed-webrtc-assets
 Architecture: all
 Depends:
  ${misc:Depends}
+Replaces: spreed-webrtc (<< 0.25.0)
+Conflicts: spreed-webrtc (<< 0.25.0)
+Breaks: spreed-webrtc (<< 0.25.0)
 Description: WebRTC audio/video call and conferencing server - static assets
  The spreed-webrtc server supports WebRTC based conferencing using the latest
  web standards.
