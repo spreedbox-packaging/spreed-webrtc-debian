@@ -1,6 +1,6 @@
 # spreed-webrtc
 
-description "Spreed Speak Freely server"
+description "Spreed WebRTC server"
 
 start on runlevel [2345]
 stop on runlevel [!2345]
