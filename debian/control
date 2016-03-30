@@ -3,13 +3,15 @@ Section: web
 Priority: extra
 Maintainer: struktur AG <opensource@struktur.de>
 Uploaders:
- Joachim Bauch <bauch@struktur.de>
+ Joachim Bauch <bauch@struktur.de>,
+ Simon Eisenmann <simon@struktur.de>
 Build-Depends:
  autoconf,
  automake,
  debhelper (>= 8.9.7),
- golang (>= 1.3),
+ dh-golang,
  golang-context-dev,
+ golang-go (>= 1.3),
  golang-goacceptlanguageparser-dev,
  golang-httputils-dev,
  golang-mux-dev,
@@ -26,6 +28,24 @@ Build-Depends:
  ruby-sass (>= 3.2)
 Standards-Version: 3.9.3
 Homepage: https://github.com/strukturag/spreed-webrtc
+
+Package: golang-spreed-webrtc-dev
+Architecture: all
+Depends: ${misc:Depends},
+ golang-context-dev,
+ golang-go (>= 1.3),
+ golang-goacceptlanguageparser-dev,
+ golang-httputils-dev,
+ golang-mux-dev,
+ golang-nats-dev,
+ golang-phoenix-dev (>= 1.0.0),
+ golang-pkac-dev,
+ golang-securecookie-dev,
+ golang-sloth-dev,
+ golang-uuid-dev,
+ golang-websocket-dev
+Description: Spreed WebRTC development GO package
+ Provides Go modules from the Spreed WebRTC project.
 
 Package: spreed-webrtc
 Architecture: all

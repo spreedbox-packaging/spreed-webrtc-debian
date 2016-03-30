@@ -1,3 +1,11 @@
+spreed-webrtc (0.25.3-1~trusty0) trusty; urgency=medium
+
+  * Cleanup obsolete init scripting.
+  * Imported Upstream version 0.25.3
+  * Updated for Golang modules packaging.
+
+ -- Simon Eisenmann <simon@struktur.de>  Wed, 30 Mar 2016 10:53:38 +0200
+
 spreed-webrtc (0.25.1-1~trusty2) trusty; urgency=low
 
   * New arch-indep packages replace old single package.

@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 #export DH_VERBOSE=1
+
 export DH_OPTIONS
+export DH_GOPKG := github.com/strukturag/spreed-webrtc
 
 export CONFIG_PATH=/etc/spreed
 export CONFIG_FILE=webrtc.conf
@@ -14,56 +16,40 @@ TMP     = $(DEBIAN)/tmp
 PKD   = $(abspath $(dir $(MAKEFILE_LIST)))
 PKG   = $(word 2,$(shell dpkg-parsechangelog -l$(PKD)/changelog | grep ^Source))
 UVER  = $(shell dpkg-parsechangelog -l$(PKD)/changelog | perl -ne 'print $$1 if m{^Version:\s+(?:\d+:)?(\d.*)(?:\-\d+.*)};')
-DTYPE = 
+DTYPE =
 VERSION  ?= $(subst $(DTYPE),,$(UVER))
+PACKAGE_VERSION = "$VERSION"
 export VERSION
-
-get-orig-source: $(PKG)_$(VERSION)$(DTYPE).orig.tar.xz $(info I: $(PKG)_$(VERSION)$(DTYPE))
-		@
-
-$(PKG)_$(VERSION)$(DTYPE).orig.tar.xz:
-		@echo "# Downloading..."
-		uscan --noconf --verbose --rename --destdir=$(CURDIR) --check-dirname-level=0 --force-download --download-version $(VERSION) $(PKD)
-		$(if $(wildcard $(PKG)-$(VERSION)),$(error $(PKG)-$(VERSION) exist, aborting..))
-		@echo "# Extracting..."
-		mkdir $(PKG)-$(VERSION) \
-		&& tar -xf $(PKG)_$(VERSION).orig.tar.* --directory $(PKG)-$(VERSION) --strip-components 1 \
-		|| $(RM) -r $(PKG)-$(VERSION)
-		$(RM) -v $(PKG)_$(VERSION).orig.tar.*
-		@echo "# Cleaning-up..."
-		cd $(PKG)-$(VERSION) && $(RM) -r -v debian
-		@echo "# Packing..."
-		find -L "$(PKG)-$(VERSION)" -xdev -type f -print | sort \
-		| XZ_OPT="-6v" tar -caf "$(PKG)_$(VERSION)$(DTYPE).orig.tar.xz" -T- --owner=root --group=root --mode=a+rX \
-		&& $(RM) -r "$(PKG)-$(VERSION)"
+export PACKAGE_VERSION
 
 override_dh_auto_configure:
+		dh_auto_configure
 		autoreconf --install
-		dh_auto_configure -- VENDOR_GOPATH=/usr/share/gocode --prefix=$(TMP)/usr/
+		DEB_BUILDING=1 ./configure --prefix=$(TMP)/usr/
 
 override_dh_auto_build-arch:
-		make get
-		make release-binary
+		DEB_BUILDING=1 make get
+		DEB_BUILDING=1 make release-binary
 
 override_dh_auto_build-indep:
-		make release-assets
+		DEB_BUILDING=1 make release-assets
 
 override_dh_auto_install-arch:
-		make install-binary
+		DEB_BUILDING=1 make install-binary
 
 override_dh_auto_install-indep:
-		make install-assets
+		dh_auto_install
+		DEB_BUILDING=1 make install-assets
 		$(RM) $(TMP)/usr/share/spreed-webrtc-server/www/static/fonts/LICENSE
-# See https://github.com/strukturag/spreed-webrtc/issues/161
 		cp $(CURDIR)/server.conf.in $(DEBIAN)/spreed-webrtc/${CONFIG_PATH}/$(CONFIG_FILE)
 		sed -i 's|;root = .*|root = /usr/share/spreed-webrtc-server/www|' $(DEBIAN)/spreed-webrtc/$(CONFIG_PATH)/$(CONFIG_FILE)
 		install $(CURDIR)/LICENSE $(DEBIAN)/spreed-webrtc/usr/share/doc/spreed-webrtc/AGPL-3
 
 override_dh_auto_test:
-		# "make test" is currently broken, so don't check when packaging.
+#		dh_auto_build -- releasetest DEB_BUILDING=1
 
 override_dh_auto_clean:
-		dh_auto_build -- distclean
+		dh_auto_clean
 		rm -rf INSTALL aclocal.m4 \
 				config.h config.h.in config.log \
 				config.status configure install-sh \
@@ -72,6 +58,4 @@ override_dh_auto_clean:
 		find . -type d -name .sass-cache -exec rm -rf \{\} \+
 
 %:
-	dh $@
-
-.PHONY: get-orig-source
+	dh $@ --buildsystem=golang --with=golang --fail-missing
