@@ -1,3 +1,10 @@
+spreed-webrtc (0.25.4-1~trusty0) trusty; urgency=medium
+
+  * Imported Upstream version 0.25.4
+  * Remove systemgo patch which is now upstream.
+
+ -- Simon Eisenmann <simon@struktur.de>  Wed, 13 Apr 2016 15:51:23 +0200
+
 spreed-webrtc (0.25.3-1~trusty0) trusty; urgency=medium
 
   * Cleanup obsolete init scripting.
