@@ -1,3 +1,11 @@
+spreed-webrtc (0.26.0-1~trusty0) trusty; urgency=low
+
+  * Imported Upstream version 0.26.0
+  * Use new release branches.
+  * Updated branches.
+
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 08 Jul 2016 10:51:34 +0200
+
 spreed-webrtc (0.25.5-1~trusty0) trusty; urgency=medium
 
   * Imported Upstream version 0.25.5
