@@ -1,3 +1,9 @@
+spreed-webrtc (0.27.0-1~trusty0) trusty; urgency=low
+
+  * Imported Upstream version 0.27.0
+
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 08 Jul 2016 11:03:58 +0200
+
 spreed-webrtc (0.26.0-1~trusty0) trusty; urgency=low
 
   * Imported Upstream version 0.26.0
