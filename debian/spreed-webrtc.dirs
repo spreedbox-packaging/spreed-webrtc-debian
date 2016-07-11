@@ -1,2 +1,3 @@
 etc/spreed
 usr/share/doc/spreed-webrtc
+usr/share/spreed-webrtc-server/extra.d
