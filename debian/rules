@@ -58,4 +58,4 @@ override_dh_auto_clean:
 		find . -type d -name .sass-cache -exec rm -rf \{\} \+
 
 %:
-	dh $@ --buildsystem=golang --with=golang --fail-missing
+	dh $@ --buildsystem=golang --with=golang --with systemd --fail-missing

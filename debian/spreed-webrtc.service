@@ -1,0 +1,18 @@
+[Unit]
+Description=Spreed WebRTC server
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/spreed-webrtc
+# TODO: These values should come from the EnvironmentFile.
+Environment=GOMAXPROCS=1
+LimitNOFILE=1024
+User=spreed-webrtc
+Group=www-data
+PermissionsStartOnly=true
+ExecStart=/usr/sbin/spreed-webrtc-server -c ${WEBRTC_CONF} -l ${WEBRTC_LOG} ${WEBRTC_ARGS}
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
