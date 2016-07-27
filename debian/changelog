@@ -1,6 +1,15 @@
+spreed-webrtc (0.27.1-1~trusty2) trusty; urgency=medium
+
+  * Add armhf and arm64 builds
+
+ -- Simon Eisenmann <simon@struktur.de>  Wed, 27 Jul 2016 09:27:23 +0200
+
 spreed-webrtc (0.27.1-1~trusty1) trusty; urgency=low
 
+  [ Joachim Bauch ]
   * Add support for systemd.
+
+  [ Simon Eisenmann ]
 
  -- Joachim Bauch <bauch@struktur.de>  Fri, 22 Jul 2016 13:53:39 +0200
 
