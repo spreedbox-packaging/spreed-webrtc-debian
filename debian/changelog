@@ -1,3 +1,9 @@
+spreed-webrtc (0.27.1-2~trusty1) trusty; urgency=medium
+
+  * Updated go.uuid dependency
+
+ -- Simon Eisenmann <simon@struktur.de>  Wed, 03 Aug 2016 14:47:55 +0200
+
 spreed-webrtc (0.27.1-1~trusty2) trusty; urgency=medium
 
   * Add armhf and arm64 builds
