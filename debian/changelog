@@ -1,3 +1,10 @@
+spreed-webrtc (0.28.0-1~trusty1) trusty; urgency=medium
+
+  * Imported Upstream version 0.28.0
+  * Updated dependencies to "golang-go (>= 1.4)".
+
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 12 Aug 2016 16:49:27 +0200
+
 spreed-webrtc (0.27.1-2~trusty1) trusty; urgency=medium
 
   * Updated go.uuid dependency
