@@ -1,3 +1,9 @@
+## 0.29.1
+
+  * Filter rtx support from remote SDP for Chrone <= 38
+  * Fix Go 1.4 detection for minor versions
+
+
 ## 0.29.0
 
   * Add Spanish translation (#307)
@@ -14,6 +20,17 @@
   * Allow dist_gopath to fail
   * Add make tarball to travis
   * Allow specifying docker secrets with enviroment variables
+
+
+## 0.28.1
+
+  * Filter rtx support from remote SDP for Chrome <= 38
+  * Fix Go 1.4 detection for minor versions
+  * Bump minimal Go version
+  * Fix Go 1.4 release target
+  * Allow dist_gopath to fail
+  * Check if system GOPATH exists
+  * Add make tarball to travis
 
 
 ## 0.28.0
