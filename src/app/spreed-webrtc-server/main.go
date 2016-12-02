@@ -209,7 +209,7 @@ func runner(runtime phoenix.Runtime) error {
 
 	// Load templates.
 	templates = template.New("")
-	templates.Delims("<%", "%>")
+	templates.Delims("<%", "%>").Funcs(templateFuncMap())
 
 	// Load html templates folder
 	err = filepath.Walk(path.Join(rootFolder, "html"), func(path string, info os.FileInfo, err error) error {
