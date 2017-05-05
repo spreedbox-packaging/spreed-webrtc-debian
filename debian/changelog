@@ -1,3 +1,10 @@
+spreed-webrtc (0.29.6-1~trusty1) trusty; urgency=medium
+
+  * Imported Upstream version 0.29.6
+  * Upgrade to pkac 0.1.0
+
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 05 May 2017 10:39:22 +0200
+
 spreed-webrtc (0.29.5-1~trusty1) trusty; urgency=medium
 
   * Imported Upstream version 0.29.5
