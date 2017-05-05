@@ -20,7 +20,7 @@ Build-Depends:
  golang-mux-dev,
  golang-nats-dev,
  golang-phoenix-dev (>= 1.0.2),
- golang-pkac-dev,
+ golang-pkac-dev (>= 0.1.0),
  golang-securecookie-dev,
  golang-sloth-dev,
  golang-websocket-dev,
